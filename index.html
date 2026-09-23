@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة الحسابات - مصنع تريند مان</title>
+    <title>نظام إدارة الحسابات والموديلات - مصنع تريند مان</title>
     <!-- Bootstrap 5 RTL CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
     <!-- Font Awesome Icons -->
@@ -78,10 +78,10 @@
         <div class="container d-flex justify-content-between align-items-center">
             <div>
                 <h1 class="h3 mb-0 font-weight-bold"><i class="fa-solid fa-vest me-2"></i>مصنع تريند مان - TREND MAN</h1>
-                <small class="text-light opacity-75">إدارة العملاء والموردين - Google Sheets Sync</small>
+                <small class="text-light opacity-75">إدارة العملاء والموردين ودليل الموديلات - Google Sheets Sync</small>
             </div>
             <button class="btn btn-outline-light btn-sm" onclick="window.print()">
-                <i class="fa-solid fa-print me-1"></i> طباعة كشف الحساب
+                <i class="fa-solid fa-print me-1"></i> طباعة التقرير
             </button>
         </div>
     </header>
@@ -97,6 +97,11 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="suppliers-tab" data-bs-toggle="tab" data-bs-target="#suppliers-section" type="button" role="tab">
                     <i class="fa-solid fa-truck-field me-2"></i>حسابات الموردين
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="models-tab" data-bs-toggle="tab" data-bs-target="#models-section" type="button" role="tab">
+                    <i class="fa-solid fa-shirt me-2"></i>بيان الموديلات
                 </button>
             </li>
         </ul>
@@ -327,6 +332,69 @@
                 </div>
             </div>
 
+            <!-- SECTION 3: MODELS STATEMENT -->
+            <div class="tab-pane fade" id="models-section" role="tabpanel">
+                <div class="card p-4 no-print">
+                    <h5 class="card-title mb-3 text-primary fw-bold"><i class="fa-solid fa-shirt me-2"></i>إضافة / تسجيل موديل جديد</h5>
+                    <form id="modelForm" onsubmit="addModel(event)">
+                        <div class="row g-3">
+                            <div class="col-md-2">
+                                <label class="form-label">كود / اسم الموديل</label>
+                                <input type="text" id="modelCode" class="form-control" placeholder="مثال: M-101" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">وصف / نوع الموديل</label>
+                                <input type="text" id="modelName" class="form-control" placeholder="مثال: بنطلون جينز غامق" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">نوع القماش</label>
+                                <input type="text" id="modelFabric" class="form-control" placeholder="مثال: جينز ليكرا">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">تكلفة القطعة (تقديري)</label>
+                                <input type="number" step="0.01" id="modelCost" class="form-control" placeholder="0.00">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">سعر البيع للجملة</label>
+                                <input type="number" step="0.01" id="modelWholesalePrice" class="form-control" placeholder="0.00" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">الكمية المنتجة</label>
+                                <input type="number" id="modelQuantity" class="form-control" value="0">
+                            </div>
+                            <div class="col-md-10 d-flex align-items-end justify-content-end">
+                                <button type="submit" class="btn btn-primary px-4"><i class="fa-solid fa-plus me-1"></i> حفظ الموديل</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Models Table -->
+                <div class="card p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0"><i class="fa-solid fa-list me-2"></i>دفتر بيان الموديلات</h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-center align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>كود الموديل</th>
+                                    <th>البيان / الوصف</th>
+                                    <th>نوع القماش</th>
+                                    <th>الكمية المنتجة</th>
+                                    <th>التكلفة (تقديري)</th>
+                                    <th>سعر البيع للجملة</th>
+                                    <th>هامش الربح للقطعة</th>
+                                    <th class="no-print">إجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody id="modelsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -382,7 +450,7 @@
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby_u9tzfD8FTORqbjEq3BZfOWkfNnFOgvsz-gWF7HF_y8P7ihaN9psd0u5hBwneljgm/exec";
 
-        let appData = { clients: [], transactions: [], suppliers: [], supplierTransactions: [] };
+        let appData = { clients: [], transactions: [], suppliers: [], supplierTransactions: [], models: [] };
         let currentClientId = null;
         let currentSupplierId = null;
 
@@ -412,6 +480,8 @@
 
                 renderSupplierOptions();
                 loadSupplierData();
+
+                loadModelsData();
             } catch (err) {
                 console.error("خطأ في جلب البيانات:", err);
             } finally {
@@ -527,12 +597,14 @@
                     <td class="fw-bold">${tx.description}</td>
                     <td>${tx.quantity}</td>
                     <td>${tx.price.toFixed(2)}</td>
-                    <td>${tx.total.toFixed(2)}</td>
-                    <td class="text-success fw-bold">${tx.paid.toFixed(2)}</td>
+                    <td class="table-primary fw-bold">${tx.total.toFixed(2)}</td>
+                    <td class="table-success fw-bold">${tx.paid.toFixed(2)}</td>
                     <td><span class="badge bg-info text-dark">${tx.paymentMethod}</span></td>
                     <td class="fw-bold ${runningBalance > 0 ? 'text-danger' : 'text-success'}">${runningBalance.toFixed(2)}</td>
                     <td class="no-print">
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteTransaction('${tx.id}')"><i class="fa-solid fa-trash"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteTransaction('${tx.id}')">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
                     </td>
                 `;
                 tableBody.appendChild(row);
@@ -544,19 +616,19 @@
         }
 
         async function deleteTransaction(txId) {
-            if(confirm('حذف الحركة؟')) {
-                appData.transactions = appData.transactions.filter(t => t.id !== txId);
-                loadClientData();
-                showLoading(true);
-                try {
-                    await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ action: 'deleteTransaction', txId: txId })
-                    });
-                } finally { showLoading(false); }
-            }
+            if(!confirm('هل أنت تأكد من حذف هذه الحركة؟')) return;
+            appData.transactions = appData.transactions.filter(t => t.id !== txId);
+            loadClientData();
+
+            showLoading(true);
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'deleteTransaction', id: txId })
+                });
+            } finally { showLoading(false); }
         }
 
         /* SUPPLIERS FUNCTIONS */
@@ -642,7 +714,7 @@
         function loadSupplierData() {
             currentSupplierId = document.getElementById('supplierSelect').value;
             const currentSupplier = appData.suppliers ? appData.suppliers.find(s => s.id === currentSupplierId) : null;
-            document.getElementById('supplierNameDisplay').textContent = currentSupplier ? `${currentSupplier.name} - ${currentSupplier.category}` : '';
+            document.getElementById('supplierNameDisplay').textContent = currentSupplier ? currentSupplier.name : '';
 
             const supTxs = appData.supplierTransactions ? appData.supplierTransactions.filter(t => t.supplierId === currentSupplierId) : [];
             let runningBalance = 0, grandTotal = 0, grandPaid = 0;
@@ -662,12 +734,14 @@
                     <td class="fw-bold">${tx.description}</td>
                     <td>${tx.quantity}</td>
                     <td>${tx.price.toFixed(2)}</td>
-                    <td>${tx.total.toFixed(2)}</td>
-                    <td class="text-success fw-bold">${tx.paid.toFixed(2)}</td>
-                    <td><span class="badge bg-warning text-dark">${tx.paymentMethod}</span></td>
+                    <td class="table-primary fw-bold">${tx.total.toFixed(2)}</td>
+                    <td class="table-success fw-bold">${tx.paid.toFixed(2)}</td>
+                    <td><span class="badge bg-info text-dark">${tx.paymentMethod}</span></td>
                     <td class="fw-bold ${runningBalance > 0 ? 'text-danger' : 'text-success'}">${runningBalance.toFixed(2)}</td>
                     <td class="no-print">
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteSupplierTransaction('${tx.id}')"><i class="fa-solid fa-trash"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteSupplierTransaction('${tx.id}')">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
                     </td>
                 `;
                 tableBody.appendChild(row);
@@ -679,19 +753,103 @@
         }
 
         async function deleteSupplierTransaction(txId) {
-            if(confirm('حذف حركة المورد؟')) {
-                appData.supplierTransactions = appData.supplierTransactions.filter(t => t.id !== txId);
-                loadSupplierData();
-                showLoading(true);
-                try {
-                    await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ action: 'deleteSupplierTransaction', txId: txId })
-                    });
-                } finally { showLoading(false); }
+            if(!confirm('هل أنت تأكد من حذف هذه الحركة؟')) return;
+            appData.supplierTransactions = appData.supplierTransactions.filter(t => t.id !== txId);
+            loadSupplierData();
+
+            showLoading(true);
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'deleteSupplierTransaction', id: txId })
+                });
+            } finally { showLoading(false); }
+        }
+
+        /* MODELS FUNCTIONS */
+        async function addModel(e) {
+            e.preventDefault();
+
+            const newModel = {
+                id: Date.now().toString(),
+                code: document.getElementById('modelCode').value.trim(),
+                name: document.getElementById('modelName').value.trim(),
+                fabric: document.getElementById('modelFabric').value.trim(),
+                cost: parseFloat(document.getElementById('modelCost').value) || 0,
+                wholesalePrice: parseFloat(document.getElementById('modelWholesalePrice').value) || 0,
+                quantity: parseInt(document.getElementById('modelQuantity').value) || 0
+            };
+
+            if(!appData.models) appData.models = [];
+            appData.models.push(newModel);
+            loadModelsData();
+
+            document.getElementById('modelCode').value = '';
+            document.getElementById('modelName').value = '';
+            document.getElementById('modelFabric').value = '';
+            document.getElementById('modelCost').value = '';
+            document.getElementById('modelWholesalePrice').value = '';
+            document.getElementById('modelQuantity').value = '0';
+
+            showLoading(true);
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'addModel', model: newModel })
+                });
+            } finally { showLoading(false); }
+        }
+
+        function loadModelsData() {
+            const tableBody = document.getElementById('modelsTableBody');
+            tableBody.innerHTML = '';
+
+            const models = appData.models || [];
+            if (models.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="9" class="text-muted">لا يوجد موديلات مسجلة بعد</td></tr>';
+                return;
             }
+
+            models.forEach((m, idx) => {
+                const margin = (m.wholesalePrice - m.cost);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${idx + 1}</td>
+                    <td><span class="badge bg-dark">${m.code}</span></td>
+                    <td class="fw-bold">${m.name}</td>
+                    <td>${m.fabric || '-'}</td>
+                    <td>${m.quantity}</td>
+                    <td>${m.cost ? m.cost.toFixed(2) + ' ج.م' : '-'}</td>
+                    <td class="table-success fw-bold">${m.wholesalePrice.toFixed(2)} ج.م</td>
+                    <td class="fw-bold ${margin >= 0 ? 'text-success' : 'text-danger'}">${margin.toFixed(2)} ج.م</td>
+                    <td class="no-print">
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteModel('${m.id}')">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        async function deleteModel(modelId) {
+            if(!confirm('هل أنت تأكد من حذف هذا الموديل؟')) return;
+            appData.models = appData.models.filter(m => m.id !== modelId);
+            loadModelsData();
+
+            showLoading(true);
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'deleteModel', id: modelId })
+                });
+            } finally { showLoading(false); }
         }
     </script>
 </body>

@@ -57,6 +57,23 @@
             align-items: center;
             z-index: 9999;
         }
+        .model-img-thumb {
+            width: 55px;
+            height: 55px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            cursor: pointer;
+        }
+        .color-badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            margin: 1px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            background-color: #e2e8f0;
+            color: #1e293b;
+        }
         @media print {
             .no-print { display: none !important; }
             body { background-color: white; }
@@ -335,35 +352,67 @@
             <!-- SECTION 3: MODELS STATEMENT -->
             <div class="tab-pane fade" id="models-section" role="tabpanel">
                 <div class="card p-4 no-print">
-                    <h5 class="card-title mb-3 text-primary fw-bold"><i class="fa-solid fa-shirt me-2"></i>إضافة / تسجيل موديل جديد</h5>
+                    <h5 class="card-title mb-3 text-primary fw-bold"><i class="fa-solid fa-shirt me-2"></i>إضافة موديل جديد</h5>
                     <form id="modelForm" onsubmit="addModel(event)">
                         <div class="row g-3">
                             <div class="col-md-2">
-                                <label class="form-label">كود / اسم الموديل</label>
-                                <input type="text" id="modelCode" class="form-control" placeholder="مثال: M-101" required>
+                                <label class="form-label">1. كود السيستم (تلقائي)</label>
+                                <input type="text" id="modelAutoCode" class="form-control bg-light fw-bold" readonly placeholder="تلقائي">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">2. رقم/اسم الموديل</label>
+                                <input type="text" id="modelNumber" class="form-control" placeholder="مثال: 502" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">3. نوع القماش</label>
+                                <input type="text" id="modelFabric" class="form-control" placeholder="مثال: جينز ليكرا" required>
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label">وصف / نوع الموديل</label>
-                                <input type="text" id="modelName" class="form-control" placeholder="مثال: بنطلون جينز غامق" required>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label">نوع القماش</label>
-                                <input type="text" id="modelFabric" class="form-control" placeholder="مثال: جينز ليكرا">
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label">تكلفة القطعة (تقديري)</label>
-                                <input type="number" step="0.01" id="modelCost" class="form-control" placeholder="0.00">
+                                <label class="form-label">4. الألوان المتاحة للموديل</label>
+                                <div class="border rounded p-2 bg-white" style="max-height: 100px; overflow-y: auto;">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input model-color-check" type="checkbox" value="أسود" id="colorBlack">
+                                        <label class="form-check-label" for="colorBlack">أسود</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input model-color-check" type="checkbox" value="كحلي" id="colorNavy">
+                                        <label class="form-check-label" for="colorNavy">كحلي</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input model-color-check" type="checkbox" value="أبيض" id="colorWhite">
+                                        <label class="form-check-label" for="colorWhite">أبيض</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input model-color-check" type="checkbox" value="تلجي" id="colorIce">
+                                        <label class="form-check-label" for="colorIce">تلجي</label>
+                                    </div>
+                                    <div class="mt-1">
+                                        <input type="text" id="modelOtherColors" class="form-control form-control-sm" placeholder="ألوان أخرى (فواصل بـ ,)">
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label">سعر البيع للجملة</label>
-                                <input type="number" step="0.01" id="modelWholesalePrice" class="form-control" placeholder="0.00" required>
+                                <label class="form-label">7. كمية استهلاك القماش (للقطعة)</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" id="modelFabricConsumption" class="form-control" placeholder="مثال: 1.25" required>
+                                    <span class="input-group-text">متر</span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label class="form-label">5. تكلفة القطعة (تقديري)</label>
+                                <input type="number" step="0.01" id="modelCost" class="form-control" placeholder="0.00" required>
                             </div>
                             <div class="col-md-2">
-                                <label class="form-label">الكمية المنتجة</label>
-                                <input type="number" id="modelQuantity" class="form-control" value="0">
+                                <label class="form-label">6. سعر البيع</label>
+                                <input type="number" step="0.01" id="modelPrice" class="form-control" placeholder="0.00" required>
                             </div>
-                            <div class="col-md-10 d-flex align-items-end justify-content-end">
-                                <button type="submit" class="btn btn-primary px-4"><i class="fa-solid fa-plus me-1"></i> حفظ الموديل</button>
+                            <div class="col-md-4">
+                                <label class="form-label">8. صورة الموديل</label>
+                                <input type="file" id="modelImageInput" class="form-control" accept="image/*" onchange="previewModelImage(event)">
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end justify-content-end">
+                                <button type="submit" class="btn btn-primary px-4 w-100"><i class="fa-solid fa-plus me-1"></i> حفظ الموديل</button>
                             </div>
                         </div>
                     </form>
@@ -378,14 +427,15 @@
                         <table class="table table-bordered text-center align-middle">
                             <thead class="table-dark">
                                 <tr>
-                                    <th>#</th>
-                                    <th>كود الموديل</th>
-                                    <th>البيان / الوصف</th>
+                                    <th>صورة</th>
+                                    <th>كود السيستم</th>
+                                    <th>رقم الموديل</th>
                                     <th>نوع القماش</th>
-                                    <th>الكمية المنتجة</th>
-                                    <th>التكلفة (تقديري)</th>
-                                    <th>سعر البيع للجملة</th>
-                                    <th>هامش الربح للقطعة</th>
+                                    <th>الألوان المتاحة</th>
+                                    <th>استهلاك القطعة</th>
+                                    <th>تكلفة القطعة</th>
+                                    <th>سعر البيع</th>
+                                    <th>هامش الربح</th>
                                     <th class="no-print">إجراء</th>
                                 </tr>
                             </thead>
@@ -395,6 +445,17 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <!-- Image Modal Preview -->
+    <div class="modal fade" id="imagePreviewModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center p-2">
+                    <img id="modalPreviewImg" src="" class="img-fluid rounded" alt="صورة الموديل">
+                </div>
+            </div>
         </div>
     </div>
 
@@ -453,6 +514,7 @@
         let appData = { clients: [], transactions: [], suppliers: [], supplierTransactions: [], models: [] };
         let currentClientId = null;
         let currentSupplierId = null;
+        let tempBase64Image = "";
 
         function showLoading(show) {
             const overlay = document.getElementById('loadingOverlay');
@@ -463,8 +525,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('txDate').valueAsDate = new Date();
             document.getElementById('supTxDate').valueAsDate = new Date();
+            generateNextAutoCode();
             fetchDataFromGoogleSheets();
         });
+
+        function generateNextAutoCode() {
+            const count = (appData.models ? appData.models.length : 0) + 1;
+            document.getElementById('modelAutoCode').value = "MDL-" + (1000 + count);
+        }
 
         async function fetchDataFromGoogleSheets() {
             showLoading(true);
@@ -481,6 +549,7 @@
                 renderSupplierOptions();
                 loadSupplierData();
 
+                generateNextAutoCode();
                 loadModelsData();
             } catch (err) {
                 console.error("خطأ في جلب البيانات:", err);
@@ -769,29 +838,58 @@
         }
 
         /* MODELS FUNCTIONS */
+        function previewModelImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    tempBase64Image = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         async function addModel(e) {
             e.preventDefault();
 
+            // Collect selected colors
+            const colors = [];
+            document.querySelectorAll('.model-color-check:checked').forEach(chk => colors.push(chk.value));
+            const otherColors = document.getElementById('modelOtherColors').value.trim();
+            if (otherColors) {
+                otherColors.split(',').forEach(c => {
+                    if (c.trim()) colors.push(c.trim());
+                });
+            }
+
             const newModel = {
                 id: Date.now().toString(),
-                code: document.getElementById('modelCode').value.trim(),
-                name: document.getElementById('modelName').value.trim(),
+                autoCode: document.getElementById('modelAutoCode').value,
+                modelNumber: document.getElementById('modelNumber').value.trim(),
                 fabric: document.getElementById('modelFabric').value.trim(),
+                colors: colors,
+                fabricConsumption: parseFloat(document.getElementById('modelFabricConsumption').value) || 0,
                 cost: parseFloat(document.getElementById('modelCost').value) || 0,
-                wholesalePrice: parseFloat(document.getElementById('modelWholesalePrice').value) || 0,
-                quantity: parseInt(document.getElementById('modelQuantity').value) || 0
+                price: parseFloat(document.getElementById('modelPrice').value) || 0,
+                image: tempBase64Image || ""
             };
 
             if(!appData.models) appData.models = [];
             appData.models.push(newModel);
+            
+            generateNextAutoCode();
             loadModelsData();
 
-            document.getElementById('modelCode').value = '';
-            document.getElementById('modelName').value = '';
+            // Reset form
+            document.getElementById('modelNumber').value = '';
             document.getElementById('modelFabric').value = '';
+            document.getElementById('modelFabricConsumption').value = '';
             document.getElementById('modelCost').value = '';
-            document.getElementById('modelWholesalePrice').value = '';
-            document.getElementById('modelQuantity').value = '0';
+            document.getElementById('modelPrice').value = '';
+            document.getElementById('modelOtherColors').value = '';
+            document.getElementById('modelImageInput').value = '';
+            document.querySelectorAll('.model-color-check').forEach(chk => chk.checked = false);
+            tempBase64Image = "";
 
             showLoading(true);
             try {
@@ -810,21 +908,30 @@
 
             const models = appData.models || [];
             if (models.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="9" class="text-muted">لا يوجد موديلات مسجلة بعد</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="10" class="text-muted">لا يوجد موديلات مسجلة بعد</td></tr>';
                 return;
             }
 
-            models.forEach((m, idx) => {
-                const margin = (m.wholesalePrice - m.cost);
+            models.forEach((m) => {
+                const margin = (m.price - m.cost);
+                const colorsHtml = (m.colors && m.colors.length > 0) 
+                    ? m.colors.map(c => `<span class="color-badge">${c}</span>`).join(' ')
+                    : '-';
+
+                const imgHtml = m.image 
+                    ? `<img src="${m.image}" class="model-img-thumb" onclick="openImageModal('${m.image}')" title="اضغط للتكبير">` 
+                    : `<span class="text-muted small"><i class="fa-solid fa-image"></i> بدون صورة</span>`;
+
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${idx + 1}</td>
-                    <td><span class="badge bg-dark">${m.code}</span></td>
-                    <td class="fw-bold">${m.name}</td>
+                    <td>${imgHtml}</td>
+                    <td><span class="badge bg-primary">${m.autoCode || '-'}</span></td>
+                    <td class="fw-bold">${m.modelNumber}</td>
                     <td>${m.fabric || '-'}</td>
-                    <td>${m.quantity}</td>
+                    <td>${colorsHtml}</td>
+                    <td>${m.fabricConsumption ? m.fabricConsumption + ' متر' : '-'}</td>
                     <td>${m.cost ? m.cost.toFixed(2) + ' ج.م' : '-'}</td>
-                    <td class="table-success fw-bold">${m.wholesalePrice.toFixed(2)} ج.م</td>
+                    <td class="table-success fw-bold">${m.price ? m.price.toFixed(2) + ' ج.م' : '-'}</td>
                     <td class="fw-bold ${margin >= 0 ? 'text-success' : 'text-danger'}">${margin.toFixed(2)} ج.م</td>
                     <td class="no-print">
                         <button class="btn btn-sm btn-outline-danger" onclick="deleteModel('${m.id}')">
@@ -834,6 +941,11 @@
                 `;
                 tableBody.appendChild(row);
             });
+        }
+
+        function openImageModal(imgSrc) {
+            document.getElementById('modalPreviewImg').src = imgSrc;
+            new bootstrap.Modal(document.getElementById('imagePreviewModal')).show();
         }
 
         async function deleteModel(modelId) {
@@ -854,3 +966,4 @@
     </script>
 </body>
 </html>
+```eof

@@ -3,122 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة الحسابات والموديلات - مصنع تريند مان</title>
+    <title>TREND MAN - Luxury Factory & Inventory Management</title>
     <!-- Bootstrap 5 RTL CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Font Cairo -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #1e3a8a;
-            --accent-color: #3b82f6;
-            --bg-color: #f1f5f9;
+            --bg-dark: #0b0f17;
+            --card-bg: #131b2e;
+            --gold-primary: #d4af37;
+            --gold-light: #f3e5ab;
+            --gold-dark: #aa7c11;
+            --gold-gradient: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa7c11 100%);
+            --text-gold: #e5c158;
+            --border-gold: rgba(212, 175, 55, 0.3);
+            --text-light: #f8fafc;
         }
+
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: var(--bg-color);
-            color: #1e293b;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
         }
+
+        /* Login Screen Overlay */
+        .login-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(11, 15, 23, 0.96);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card-bg);
+            border: 2px solid var(--gold-primary);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.25);
+        }
+
+        /* Gold Header & Branding */
         .app-header {
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
-            color: white;
-            padding: 1.5rem 0;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background: linear-gradient(180deg, #05080c 0%, #111827 100%);
+            border-bottom: 2px solid var(--gold-primary);
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15);
+            padding: 1.2rem 0;
         }
-        .card {
-            border: none;
+
+        .brand-logo-container {
+            background: #ffffff;
+            padding: 6px 14px;
             border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            margin-bottom: 1.5rem;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+            border: 2px solid var(--gold-primary);
         }
+
+        .brand-logo {
+            height: 48px;
+            width: auto;
+        }
+
+        .gold-text {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-gold);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-light);
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: var(--gold-primary);
+            box-shadow: 0 12px 30px rgba(212, 175, 55, 0.2);
+        }
+
         .stat-card {
-            border-right: 4px solid var(--accent-color);
+            border-right: 4px solid var(--gold-primary);
+            background: linear-gradient(135deg, #131b2e 0%, #1e293b 100%);
         }
-        .nav-tabs .nav-link {
-            font-weight: 700;
-            color: #475569;
+
+        .custom-nav-tabs {
+            border-bottom: 2px solid #1e293b;
+            gap: 8px;
+        }
+
+        .custom-nav-tabs .nav-link {
+            font-weight: 800;
+            font-size: 1.05rem;
+            color: #94a3b8;
+            border: 1px solid transparent;
+            padding: 0.85rem 1.75rem;
+            border-radius: 12px 12px 0 0;
+            transition: all 0.25s ease;
+        }
+
+        .custom-nav-tabs .nav-link:hover {
+            color: var(--gold-light);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .custom-nav-tabs .nav-link.active {
+            color: #0b0f17;
+            background: var(--gold-gradient);
+            font-weight: 900;
+            box-shadow: 0 -4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .form-control, .form-select {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            color: #ffffff;
+            border-radius: 10px;
+            padding: 0.65rem 1rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: #0b0f17;
+            border-color: var(--gold-primary);
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-gold {
+            background: var(--gold-gradient);
+            color: #0b0f17;
+            font-weight: 800;
             border: none;
-            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            padding: 0.65rem 1.5rem;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25);
         }
-        .nav-tabs .nav-link.active {
-            color: var(--primary-color);
-            border-bottom: 3px solid var(--primary-color);
-            background: transparent;
+
+        .btn-gold:hover {
+            color: #000;
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
         }
+
+        .table-dark-custom {
+            --bs-table-bg: #131b2e;
+            --bs-table-color: #f8fafc;
+            --bs-table-border-color: #1e293b;
+        }
+
+        .table-dark-custom thead {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            color: var(--gold-primary);
+            border-bottom: 2px solid var(--gold-primary);
+        }
+
+        .model-img-thumb {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid var(--gold-primary);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .model-img-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 12px var(--gold-primary);
+        }
+
+        .color-badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            margin: 2px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 6px;
+            background-color: #1e293b;
+            color: var(--gold-light);
+            border: 1px solid var(--border-gold);
+        }
+
+        .offline-status-badge {
+            background-color: #d97706;
+            color: white;
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: none;
+        }
+
         .loading-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255,255,255,0.7);
+            background: rgba(11, 15, 23, 0.85);
+            backdrop-filter: blur(5px);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 9999;
         }
-        .model-img-thumb {
-            width: 55px;
-            height: 55px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 1px solid #cbd5e1;
-            cursor: pointer;
+
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 10000;
         }
-        .color-badge {
-            display: inline-block;
-            padding: 0.2rem 0.5rem;
-            margin: 1px;
-            font-size: 0.75rem;
-            border-radius: 4px;
-            background-color: #e2e8f0;
-            color: #1e293b;
+
+        /* Hide elements for Viewer Role */
+        .viewer-hide {
+            display: none !important;
         }
+
         @media print {
             .no-print { display: none !important; }
-            body { background-color: white; }
-            .card { box-shadow: none; border: 1px solid #ccc; }
+            body { background-color: white; color: black; }
+            .card { box-shadow: none; border: 1px solid #ccc; background: white; color: black; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Loading Indicator -->
-    <div id="loadingOverlay" class="loading-overlay d-none">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="visually-hidden">جاري التحميل...</span>
+    <!-- Login Screen Modal -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-card text-center">
+            <div class="brand-logo-container mb-3 d-inline-block">
+                <svg class="brand-logo" viewBox="0 0 450 160" xmlns="http://www.w3.org/2000/svg">
+                    <text x="10" y="125" font-family="'Cairo', sans-serif" font-weight="900" font-size="135" fill="#0b0f17" letter-spacing="-3">TM</text>
+                </svg>
+            </div>
+            <h3 class="gold-text mb-1">TREND MAN</h3>
+            <p class="text-secondary small mb-4">تسجيل الدخول للنظام الإداري</p>
+            
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="mb-3 text-start">
+                    <label class="form-label text-warning small fw-bold">اسم المستخدم</label>
+                    <input type="text" id="loginUsername" class="form-control form-control-lg" placeholder="اسم المستخدم" required>
+                </div>
+                <div class="mb-4 text-start">
+                    <label class="form-label text-warning small fw-bold">كلمة المرور</label>
+                    <input type="password" id="loginPassword" class="form-control form-control-lg" placeholder="كلمة المرور" required>
+                </div>
+                <div id="loginError" class="alert alert-danger p-2 small d-none">بيانات الدخول غير صحيحة!</div>
+                <button type="submit" class="btn btn-gold w-100 py-3 fs-5"><i class="fa-solid fa-right-to-bracket me-2"></i> دخول النظام</button>
+            </form>
         </div>
     </div>
 
-    <!-- Header -->
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay d-none">
+        <div class="text-center">
+            <div class="spinner-border text-warning" style="width: 3.5rem; height: 3.5rem;" role="status"></div>
+            <div class="mt-3 fw-bold fs-5 gold-text">جاري الاتصال والمزامنة السحابية...</div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container">
+        <div id="liveToast" class="toast align-items-center text-dark bg-warning border-0 rounded-3 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fs-6 fw-bold" id="toastMessage">
+                    تمت العملية بنجاح!
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Header -->
     <header class="app-header no-print">
         <div class="container d-flex justify-content-between align-items-center">
-            <div>
-                <h1 class="h3 mb-0 font-weight-bold"><i class="fa-solid fa-vest me-2"></i>مصنع تريند مان - TREND MAN</h1>
-                <small class="text-light opacity-75">إدارة العملاء والموردين ودليل الموديلات - Google Sheets Sync</small>
+            <div class="d-flex align-items-center gap-3">
+                <div class="brand-logo-container">
+                    <svg class="brand-logo" viewBox="0 0 450 160" xmlns="http://www.w3.org/2000/svg">
+                        <text x="10" y="125" font-family="'Cairo', sans-serif" font-weight="900" font-size="135" fill="#0b0f17" letter-spacing="-3">TM</text>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="h3 mb-0 gold-text">TREND MAN</h1>
+                    <small class="text-secondary fw-bold">نظام إدارة الحسابات، الموديلات والمخزون الآلي</small>
+                </div>
             </div>
-            <button class="btn btn-outline-light btn-sm" onclick="window.print()">
-                <i class="fa-solid fa-print me-1"></i> طباعة التقرير
-            </button>
+            <div class="d-flex align-items-center gap-2">
+                <span id="roleBadge" class="badge bg-warning text-dark px-3 py-2 fw-bold"></span>
+                <span id="offlineBadge" class="offline-status-badge"><i class="fa-solid fa-wifi-slash me-1"></i> أوفلاين</span>
+                <button class="btn btn-outline-warning btn-sm px-3 rounded-3" onclick="window.print()">
+                    <i class="fa-solid fa-print me-1"></i> طباعة
+                </button>
+                <button class="btn btn-outline-danger btn-sm px-3 rounded-3 ms-2" onclick="handleLogout()">
+                    <i class="fa-solid fa-right-from-bracket me-1"></i> خروج
+                </button>
+            </div>
         </div>
     </header>
 
-    <div class="container">
+    <div class="container my-4">
         <!-- Main Navigation Tabs -->
-        <ul class="nav nav-tabs mb-4 no-print" id="mainTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="clients-tab" data-bs-toggle="tab" data-bs-target="#clients-section" type="button" role="tab">
+        <ul class="nav custom-nav-tabs mb-4 no-print" id="mainTab" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" id="clients-tab" data-bs-toggle="tab" data-bs-target="#clients-section" type="button">
                     <i class="fa-solid fa-users me-2"></i>حسابات العملاء
                 </button>
             </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="suppliers-tab" data-bs-toggle="tab" data-bs-target="#suppliers-section" type="button" role="tab">
+            <li class="nav-item">
+                <button class="nav-link" id="suppliers-tab" data-bs-toggle="tab" data-bs-target="#suppliers-section" type="button">
                     <i class="fa-solid fa-truck-field me-2"></i>حسابات الموردين
                 </button>
             </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="models-tab" data-bs-toggle="tab" data-bs-target="#models-section" type="button" role="tab">
+            <li class="nav-item">
+                <button class="nav-link" id="models-tab" data-bs-toggle="tab" data-bs-target="#models-section" type="button">
                     <i class="fa-solid fa-shirt me-2"></i>بيان الموديلات
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="inventory-tab" data-bs-toggle="tab" data-bs-target="#inventory-section" type="button">
+                    <i class="fa-solid fa-boxes-stacked me-2"></i>المخزون
                 </button>
             </li>
         </ul>
@@ -127,13 +341,13 @@
             
             <!-- SECTION 1: CLIENTS -->
             <div class="tab-pane fade show active" id="clients-section" role="tabpanel">
-                <div class="row no-print">
+                <div class="row no-print mb-3">
                     <div class="col-md-8">
                         <div class="card p-3">
-                            <label for="clientSelect" class="form-label fw-bold">اختر العميل:</label>
+                            <label for="clientSelect" class="form-label fw-bold gold-text">اختر العميل:</label>
                             <div class="d-flex gap-2">
-                                <select id="clientSelect" class="form-select form-select-lg" onchange="loadClientData()"></select>
-                                <button class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#addClientModal">
+                                <select id="clientSelect" class="form-select form-select-lg fw-bold" onchange="loadClientData()"></select>
+                                <button class="btn btn-gold text-nowrap admin-only" data-bs-toggle="modal" data-bs-target="#addClientModal">
                                     <i class="fa-solid fa-user-plus me-1"></i> عميل جديد
                                 </button>
                             </div>
@@ -141,59 +355,65 @@
                     </div>
                 </div>
 
-                <!-- Client Stats -->
+                <!-- Stats Cards -->
                 <div class="row mb-3">
                     <div class="col-md-4">
-                        <div class="card p-3 stat-card" style="border-color: #3b82f6;">
-                            <div class="text-muted small">إجمالي قيمة المبيعات/الفواتير</div>
-                            <div class="h3 mb-0 text-primary fw-bold" id="totalAmount">0.00 ج.م</div>
+                        <div class="card p-3 stat-card">
+                            <div class="text-secondary small fw-bold">إجمالي المبيعات / الفواتير</div>
+                            <div class="h3 mb-0 gold-text mt-1" id="totalAmount">0.00 ج.م</div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="card p-3 stat-card" style="border-color: #10b981;">
-                            <div class="text-muted small">إجمالي التحصيلات (المقبوضات)</div>
-                            <div class="h3 mb-0 text-success fw-bold" id="totalPaid">0.00 ج.م</div>
+                            <div class="text-secondary small fw-bold">إجمالي المقبوضات (المدفوع)</div>
+                            <div class="h3 mb-0 text-success fw-bold mt-1" id="totalPaid">0.00 ج.م</div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="card p-3 stat-card" style="border-color: #ef4444;">
-                            <div class="text-muted small">الرصيد المتبقي على العميل</div>
-                            <div class="h3 mb-0 text-danger fw-bold" id="finalBalance">0.00 ج.م</div>
+                            <div class="text-secondary small fw-bold">الرصيد المتبقي على العميل</div>
+                            <div class="h3 mb-0 text-danger fw-bold mt-1" id="finalBalance">0.00 ج.م</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Client Transaction Form -->
-                <div class="card p-4 no-print">
-                    <h5 class="card-title mb-3 text-primary fw-bold"><i class="fa-solid fa-file-circle-plus me-2"></i>إضافة حركة مبيعات جديدة</h5>
+                <!-- Client Form (Admin Only) -->
+                <div class="card p-4 no-print mb-4 admin-only">
+                    <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-cart-plus me-2"></i>تسجيل فاتورة بيع جديدة</h5>
                     <form id="transactionForm" onsubmit="addTransaction(event)">
                         <div class="row g-3">
                             <div class="col-md-2">
-                                <label class="form-label">التاريخ</label>
+                                <label class="form-label fw-bold">التاريخ</label>
                                 <input type="date" id="txDate" class="form-control" required>
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label">البيان (الموديل/البضاعة)</label>
-                                <input type="text" id="txDescription" class="form-control" placeholder="مثال: بنطلون جينز موديل..." required>
+                                <label class="form-label fw-bold gold-text">موديل من المخزون (خصم آلي)</label>
+                                <select id="txModelSelect" class="form-select border-warning fw-bold" onchange="onTxModelSelectChange()">
+                                    <option value="">بدون خصم مخزون</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">البيان / الوصف</label>
+                                <input type="text" id="txDescription" class="form-control" placeholder="مثال: بنطلون جينز..." required>
                             </div>
                             <div class="col-md-1">
-                                <label class="form-label">العدد</label>
+                                <label class="form-label fw-bold">العدد</label>
                                 <input type="number" id="txQuantity" class="form-control" value="0" oninput="calculateTotal('txQuantity', 'txPrice', 'txTotal')">
                             </div>
-                            <div class="col-md-2">
-                                <label class="form-label">السعر (ج.م)</label>
+                            <div class="col-md-1">
+                                <label class="form-label fw-bold">السعر</label>
                                 <input type="number" step="0.01" id="txPrice" class="form-control" value="0" oninput="calculateTotal('txQuantity', 'txPrice', 'txTotal')">
                             </div>
                             <div class="col-md-2">
-                                <label class="form-label">الإجمالي</label>
-                                <input type="number" id="txTotal" class="form-control bg-light" readonly value="0.00">
+                                <label class="form-label fw-bold">الإجمالي</label>
+                                <input type="number" id="txTotal" class="form-control bg-dark text-warning fw-bold" readonly value="0.00">
                             </div>
                             <div class="col-md-2">
-                                <label class="form-label">المدفوعات</label>
+                                <label class="form-label fw-bold">المبلغ المدفوع</label>
                                 <input type="number" step="0.01" id="txPaid" class="form-control" value="0">
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label">طريقة التحصيل</label>
+                                <label class="form-label fw-bold">طريقة التحصيل</label>
                                 <select id="txPaymentMethod" class="form-select">
                                     <option value="نقدي">نقدي</option>
                                     <option value="تحويل بنكي">تحويل بنكي</option>
@@ -202,25 +422,26 @@
                                     <option value="آجل">آجل</option>
                                 </select>
                             </div>
-                            <div class="col-md-9 d-flex align-items-end justify-content-end">
-                                <button type="submit" class="btn btn-primary px-4"><i class="fa-solid fa-plus me-1"></i> حفظ الحركة</button>
+                            <div class="col-md-7 d-flex align-items-end justify-content-end">
+                                <button type="submit" class="btn btn-gold px-4"><i class="fa-solid fa-check me-1"></i> حفظ فاتورة البيع</button>
                             </div>
                         </div>
                     </form>
                 </div>
 
-                <!-- Client Ledger Table -->
+                <!-- Ledger Table -->
                 <div class="card p-3">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="fw-bold mb-0">كشف حساب العميل</h5>
-                        <span id="clientNameDisplay" class="badge bg-secondary fs-6"></span>
+                        <h5 class="fw-bold mb-0 gold-text"><i class="fa-solid fa-receipt me-2"></i>كشف حساب العميل</h5>
+                        <span id="clientNameDisplay" class="badge bg-warning text-dark fs-6 px-3 py-2 fw-bold"></span>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-bordered text-center align-middle">
-                            <thead class="table-dark">
+                        <table class="table table-dark-custom table-hover table-bordered text-center align-middle">
+                            <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>التاريخ</th>
+                                    <th>رقم الموديل</th>
                                     <th>البيان</th>
                                     <th>العدد</th>
                                     <th>السعر</th>
@@ -228,7 +449,7 @@
                                     <th>المقبوضات</th>
                                     <th>الطريقة</th>
                                     <th>الرصيد المتبقي</th>
-                                    <th class="no-print">إجراء</th>
+                                    <th class="no-print admin-only">إجراء</th>
                                 </tr>
                             </thead>
                             <tbody id="ledgerTableBody"></tbody>
@@ -239,13 +460,13 @@
 
             <!-- SECTION 2: SUPPLIERS -->
             <div class="tab-pane fade" id="suppliers-section" role="tabpanel">
-                <div class="row no-print">
+                <div class="row no-print mb-3">
                     <div class="col-md-8">
                         <div class="card p-3">
-                            <label for="supplierSelect" class="form-label fw-bold">اختر المورد / الشركة:</label>
+                            <label for="supplierSelect" class="form-label fw-bold gold-text">اختر المورد / الشركة:</label>
                             <div class="d-flex gap-2">
-                                <select id="supplierSelect" class="form-select form-select-lg" onchange="loadSupplierData()"></select>
-                                <button class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
+                                <select id="supplierSelect" class="form-select form-select-lg fw-bold" onchange="loadSupplierData()"></select>
+                                <button class="btn btn-gold text-nowrap admin-only" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
                                     <i class="fa-solid fa-truck-arrow-right me-1"></i> مورد جديد
                                 </button>
                             </div>
@@ -256,56 +477,56 @@
                 <!-- Supplier Stats -->
                 <div class="row mb-3">
                     <div class="col-md-4">
-                        <div class="card p-3 stat-card" style="border-color: #3b82f6;">
-                            <div class="text-muted small">إجمالي قيم المشتريات / الخدمات</div>
-                            <div class="h3 mb-0 text-primary fw-bold" id="supTotalAmount">0.00 ج.م</div>
+                        <div class="card p-3 stat-card">
+                            <div class="text-secondary small fw-bold">إجمالي المشتريات / خدمات</div>
+                            <div class="h3 mb-0 gold-text mt-1" id="supTotalAmount">0.00 ج.م</div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="card p-3 stat-card" style="border-color: #10b981;">
-                            <div class="text-muted small">إجمالي المبالغ المسددة للمورد</div>
-                            <div class="h3 mb-0 text-success fw-bold" id="supTotalPaid">0.00 ج.م</div>
+                            <div class="text-secondary small fw-bold">إجمالي المسدد للمورد</div>
+                            <div class="h3 mb-0 text-success fw-bold mt-1" id="supTotalPaid">0.00 ج.م</div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="card p-3 stat-card" style="border-color: #ef4444;">
-                            <div class="text-muted small">الرصيد المتبقي للمورد (المستحق له)</div>
-                            <div class="h3 mb-0 text-danger fw-bold" id="supFinalBalance">0.00 ج.م</div>
+                            <div class="text-secondary small fw-bold">الرصيد المستحق للمورد</div>
+                            <div class="h3 mb-0 text-danger fw-bold mt-1" id="supFinalBalance">0.00 ج.م</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Supplier Transaction Form -->
-                <div class="card p-4 no-print">
-                    <h5 class="card-title mb-3 text-primary fw-bold"><i class="fa-solid fa-file-circle-plus me-2"></i>إضافة فاتورة / توريد من مورد</h5>
+                <!-- Supplier Form (Admin Only) -->
+                <div class="card p-4 no-print mb-4 admin-only">
+                    <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-file-invoice-dollar me-2"></i>إضافة توريد من مورد</h5>
                     <form id="supTransactionForm" onsubmit="addSupplierTransaction(event)">
                         <div class="row g-3">
                             <div class="col-md-2">
-                                <label class="form-label">التاريخ</label>
+                                <label class="form-label fw-bold">التاريخ</label>
                                 <input type="date" id="supTxDate" class="form-control" required>
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label">البيان (أثواب قماش/سوست/مغسلة...)</label>
+                                <label class="form-label fw-bold">البيان (أثواب/سوست/تجهيز...)</label>
                                 <input type="text" id="supTxDescription" class="form-control" placeholder="مثال: قماش جينز..." required>
                             </div>
                             <div class="col-md-1">
-                                <label class="form-label">عدد الامتار</label>
+                                <label class="form-label fw-bold">الكمية/أمتار</label>
                                 <input type="number" id="supTxQuantity" class="form-control" value="0" oninput="calculateTotal('supTxQuantity', 'supTxPrice', 'supTxTotal')">
                             </div>
                             <div class="col-md-2">
-                                <label class="form-label">السعر (ج.م)</label>
+                                <label class="form-label fw-bold">السعر</label>
                                 <input type="number" step="0.01" id="supTxPrice" class="form-control" value="0" oninput="calculateTotal('supTxQuantity', 'supTxPrice', 'supTxTotal')">
                             </div>
                             <div class="col-md-2">
-                                <label class="form-label">الإجمالي</label>
-                                <input type="number" id="supTxTotal" class="form-control bg-light" readonly value="0.00">
+                                <label class="form-label fw-bold">الإجمالي</label>
+                                <input type="number" id="supTxTotal" class="form-control bg-dark text-warning fw-bold" readonly value="0.00">
                             </div>
                             <div class="col-md-2">
-                                <label class="form-label">المدفوع له</label>
+                                <label class="form-label fw-bold">المدفوع للمورد</label>
                                 <input type="number" step="0.01" id="supTxPaid" class="form-control" value="0">
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label">طريقة السداد</label>
+                                <label class="form-label fw-bold">طريقة السداد</label>
                                 <select id="supTxPaymentMethod" class="form-select">
                                     <option value="نقدي">نقدي</option>
                                     <option value="تحويل بنكي">تحويل بنكي</option>
@@ -315,7 +536,7 @@
                                 </select>
                             </div>
                             <div class="col-md-9 d-flex align-items-end justify-content-end">
-                                <button type="submit" class="btn btn-primary px-4"><i class="fa-solid fa-plus me-1"></i> حفظ توريد المورد</button>
+                                <button type="submit" class="btn btn-gold px-4"><i class="fa-solid fa-check me-1"></i> حفظ حركة التوريد</button>
                             </div>
                         </div>
                     </form>
@@ -324,23 +545,23 @@
                 <!-- Supplier Ledger Table -->
                 <div class="card p-3">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="fw-bold mb-0">كشف حساب المورد</h5>
-                        <span id="supplierNameDisplay" class="badge bg-secondary fs-6"></span>
+                        <h5 class="fw-bold mb-0 gold-text"><i class="fa-solid fa-file-contract me-2"></i>كشف حساب المورد</h5>
+                        <span id="supplierNameDisplay" class="badge bg-warning text-dark fs-6 px-3 py-2 fw-bold"></span>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-bordered text-center align-middle">
-                            <thead class="table-dark">
+                        <table class="table table-dark-custom table-hover table-bordered text-center align-middle">
+                            <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>التاريخ</th>
                                     <th>البيان</th>
-                                    <th>عدد الامتار</th>
+                                    <th>الكمية/الأمتار</th>
                                     <th>السعر</th>
                                     <th>الإجمالي</th>
                                     <th>المسدد له</th>
                                     <th>طريقة السداد</th>
                                     <th>المتبقي للمورد</th>
-                                    <th class="no-print">إجراء</th>
+                                    <th class="no-print admin-only">إجراء</th>
                                 </tr>
                             </thead>
                             <tbody id="supLedgerTableBody"></tbody>
@@ -351,25 +572,26 @@
 
             <!-- SECTION 3: MODELS STATEMENT -->
             <div class="tab-pane fade" id="models-section" role="tabpanel">
-                <div class="card p-4 no-print">
-                    <h5 class="card-title mb-3 text-primary fw-bold"><i class="fa-solid fa-shirt me-2"></i>إضافة موديل جديد</h5>
+                <!-- Models Form (Admin Only) -->
+                <div class="card p-4 no-print mb-4 admin-only">
+                    <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-shirt me-2"></i>إضافة موديل تصنيع جديد</h5>
                     <form id="modelForm" onsubmit="addModel(event)">
                         <div class="row g-3">
                             <div class="col-md-2">
-                                <label class="form-label">1. كود السيستم (تلقائي)</label>
-                                <input type="text" id="modelAutoCode" class="form-control bg-light fw-bold" readonly placeholder="تلقائي">
+                                <label class="form-label fw-bold">كود السيستم</label>
+                                <input type="text" id="modelAutoCode" class="form-control bg-dark text-warning fw-bold" readonly placeholder="تلقائي">
                             </div>
                             <div class="col-md-2">
-                                <label class="form-label">2. رقم/اسم الموديل</label>
-                                <input type="text" id="modelNumber" class="form-control" placeholder="مثال: 502" required>
+                                <label class="form-label fw-bold">رقم / اسم الموديل</label>
+                                <input type="text" id="modelNumber" class="form-control fw-bold" placeholder="مثال: 502" required>
                             </div>
                             <div class="col-md-2">
-                                <label class="form-label">3. نوع القماش</label>
+                                <label class="form-label fw-bold">نوع القماش</label>
                                 <input type="text" id="modelFabric" class="form-control" placeholder="مثال: جينز ليكرا" required>
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label">4. الألوان المتاحة للموديل</label>
-                                <div class="border rounded p-2 bg-white" style="max-height: 100px; overflow-y: auto;">
+                                <label class="form-label fw-bold">الألوان المتاحة للموديل</label>
+                                <div class="border rounded p-2 bg-dark" style="max-height: 100px; overflow-y: auto;">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input model-color-check" type="checkbox" value="أسود" id="colorBlack">
                                         <label class="form-check-label" for="colorBlack">أسود</label>
@@ -392,27 +614,27 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label">7. كمية استهلاك القماش (للقطعة)</label>
+                                <label class="form-label fw-bold">كمية استهلاك القماش (للقطعة)</label>
                                 <div class="input-group">
                                     <input type="number" step="0.01" id="modelFabricConsumption" class="form-control" placeholder="مثال: 1.25" required>
-                                    <span class="input-group-text">متر</span>
+                                    <span class="input-group-text bg-dark text-warning border-secondary">متر</span>
                                 </div>
                             </div>
 
                             <div class="col-md-2">
-                                <label class="form-label">5. تكلفة القطعة (تقديري)</label>
+                                <label class="form-label fw-bold">تكلفة القطعة (تقديري)</label>
                                 <input type="number" step="0.01" id="modelCost" class="form-control" placeholder="0.00" required>
                             </div>
                             <div class="col-md-2">
-                                <label class="form-label">6. سعر البيع</label>
+                                <label class="form-label fw-bold">سعر البيع</label>
                                 <input type="number" step="0.01" id="modelPrice" class="form-control" placeholder="0.00" required>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label">8. صورة الموديل</label>
+                                <label class="form-label fw-bold">صورة الموديل</label>
                                 <input type="file" id="modelImageInput" class="form-control" accept="image/*" onchange="previewModelImage(event)">
                             </div>
                             <div class="col-md-4 d-flex align-items-end justify-content-end">
-                                <button type="submit" class="btn btn-primary px-4 w-100"><i class="fa-solid fa-plus me-1"></i> حفظ الموديل</button>
+                                <button type="submit" class="btn btn-gold px-4 w-100"><i class="fa-solid fa-plus me-1"></i> حفظ الموديل</button>
                             </div>
                         </div>
                     </form>
@@ -421,11 +643,11 @@
                 <!-- Models Table -->
                 <div class="card p-3">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="fw-bold mb-0"><i class="fa-solid fa-list me-2"></i>دفتر بيان الموديلات</h5>
+                        <h5 class="fw-bold mb-0 gold-text"><i class="fa-solid fa-layer-group me-2"></i>دفتر دليل الموديلات</h5>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-bordered text-center align-middle">
-                            <thead class="table-dark">
+                        <table class="table table-dark-custom table-hover table-bordered text-center align-middle">
+                            <thead>
                                 <tr>
                                     <th>صورة</th>
                                     <th>كود السيستم</th>
@@ -436,10 +658,78 @@
                                     <th>تكلفة القطعة</th>
                                     <th>سعر البيع</th>
                                     <th>هامش الربح</th>
-                                    <th class="no-print">إجراء</th>
+                                    <th class="no-print admin-only">إجراء</th>
                                 </tr>
                             </thead>
                             <tbody id="modelsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 4: INVENTORY -->
+            <div class="tab-pane fade" id="inventory-section" role="tabpanel">
+                <!-- Inventory Form (Admin Only) -->
+                <div class="card p-4 no-print mb-4 admin-only">
+                    <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-boxes-stacked me-2"></i>تسجيل مخزون موديل</h5>
+                    <form id="inventoryForm" onsubmit="addInventoryItem(event)">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">رقم الموديل</label>
+                                <input type="text" id="invModelNumber" class="form-control fw-bold" placeholder="مثال: 502" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">الخامة / نوع القماش</label>
+                                <input type="text" id="invFabric" class="form-control" placeholder="مثال: جينز ليكرا" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">تم التصنيع (عدد أساسي)</label>
+                                <input type="number" id="invTotalQty" class="form-control fw-bold text-warning" value="0" required oninput="calcRemainingInventory()">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">خرج لعملاء</label>
+                                <input type="number" id="invOutQty" class="form-control fw-bold text-danger" value="0" required oninput="calcRemainingInventory()">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">المتبقي حالياً</label>
+                                <input type="number" id="invRemainingQty" class="form-control bg-dark fw-bold text-success fs-5" readonly value="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">سعر البيع للقطعة (ج.م)</label>
+                                <input type="number" step="0.01" id="invPrice" class="form-control" placeholder="0.00" required>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label fw-bold">صورة الموديل</label>
+                                <input type="file" id="invImageInput" class="form-control" accept="image/*" onchange="previewInventoryImage(event)">
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end justify-content-end">
+                                <button type="submit" class="btn btn-gold px-4 w-100"><i class="fa-solid fa-box-archive me-1"></i> حفظ في المخزون</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Inventory Table -->
+                <div class="card p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0 gold-text"><i class="fa-solid fa-warehouse me-2"></i>جدول حركة وتقارير المخزون</h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-dark-custom table-hover table-bordered text-center align-middle">
+                            <thead>
+                                <tr>
+                                    <th>صورة الموديل</th>
+                                    <th>رقم الموديل</th>
+                                    <th>الخامة</th>
+                                    <th>تم التصنيع (عدد أساسي)</th>
+                                    <th>خرج لعملاء</th>
+                                    <th>المتبقي بالمخزون</th>
+                                    <th>سعر البيع</th>
+                                    <th>إجمالي قيمة المتبقي</th>
+                                    <th class="no-print admin-only">إجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryTableBody"></tbody>
                         </table>
                     </div>
                 </div>
@@ -451,9 +741,9 @@
     <!-- Image Modal Preview -->
     <div class="modal fade" id="imagePreviewModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body text-center p-2">
-                    <img id="modalPreviewImg" src="" class="img-fluid rounded" alt="صورة الموديل">
+            <div class="modal-content bg-dark border-warning shadow-lg rounded-4">
+                <div class="modal-body text-center p-3">
+                    <img id="modalPreviewImg" src="" class="img-fluid rounded-3" alt="صورة الموديل">
                 </div>
             </div>
         </div>
@@ -461,19 +751,19 @@
 
     <!-- Modal Add Client -->
     <div class="modal fade" id="addClientModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold">إضافة عميل جديد</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white border-warning rounded-4">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title fw-bold gold-text"><i class="fa-solid fa-user-plus me-2"></i>إضافة عميل جديد</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <input type="text" id="newClientName" class="form-control mb-2" placeholder="اسم العميل / المحل" required>
-                    <input type="text" id="newClientPhone" class="form-control" placeholder="رقم الهاتف">
+                <div class="modal-body p-4">
+                    <input type="text" id="newClientName" class="form-control form-control-lg mb-3" placeholder="اسم العميل / المحل" required>
+                    <input type="text" id="newClientPhone" class="form-control form-control-lg" placeholder="رقم الهاتف / الواتساب">
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                    <button type="button" class="btn btn-primary" onclick="createNewClient()">حفظ العميل</button>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-gold" onclick="createNewClient()">حفظ العميل</button>
                 </div>
             </div>
         </div>
@@ -481,25 +771,25 @@
 
     <!-- Modal Add Supplier -->
     <div class="modal fade" id="addSupplierModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold">إضافة مورد جديد</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white border-warning rounded-4">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title fw-bold gold-text"><i class="fa-solid fa-truck-arrow-right me-2"></i>إضافة مورد جديد</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <input type="text" id="newSupplierName" class="form-control mb-2" placeholder="اسم المورد / الشركة" required>
-                    <input type="text" id="newSupplierPhone" class="form-control mb-2" placeholder="رقم الهاتف">
-                    <select id="newSupplierCategory" class="form-select">
+                <div class="modal-body p-4">
+                    <input type="text" id="newSupplierName" class="form-control form-control-lg mb-3" placeholder="اسم المورد / الشركة" required>
+                    <input type="text" id="newSupplierPhone" class="form-control form-control-lg mb-3" placeholder="رقم الهاتف">
+                    <select id="newSupplierCategory" class="form-select form-select-lg">
                         <option value="أقمشة">أقمشة</option>
                         <option value="مستلزمات واكسسوارات">مستلزمات واكسسوارات (أزرار/سوست...)</option>
                         <option value="مغاسل وتجهيز">مغاسل وتجهيز</option>
                         <option value="عام">مورد عام</option>
                     </select>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                    <button type="button" class="btn btn-primary" onclick="createNewSupplier()">حفظ المورد</button>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-gold" onclick="createNewSupplier()">حفظ المورد</button>
                 </div>
             </div>
         </div>
@@ -509,12 +799,84 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby_u9tzfD8FTORqbjEq3BZfOWkfNnFOgvsz-gWF7HF_y8P7ihaN9psd0u5hBwneljgm/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyk0y9j1rCF79CE1PR0v-KCNfjciteBag1B590WBHP6xBPnGDHJQtpz3mBUD_m8r-aG/exec";
+        const LOCAL_STORAGE_KEY = "TREND_MAN_APP_DATA_CACHE";
+        const AUTH_STORAGE_KEY = "TREND_MAN_AUTH_USER";
 
-        let appData = { clients: [], transactions: [], suppliers: [], supplierTransactions: [], models: [] };
+        // حسابات الدخول المعتمدة
+        const USERS = {
+            "admin": { pass: "admin123", role: "admin", name: "مدير النظام" },
+            "user": { pass: "user123", role: "viewer", name: "مشاهدة فقط" }
+        };
+
+        let currentRole = null; // 'admin' or 'viewer'
+        let appData = { clients: [], transactions: [], suppliers: [], supplierTransactions: [], models: [], inventory: [] };
         let currentClientId = null;
         let currentSupplierId = null;
         let tempBase64Image = "";
+        let tempInvBase64Image = "";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('txDate').valueAsDate = new Date();
+            document.getElementById('supTxDate').valueAsDate = new Date();
+            
+            window.addEventListener('online', updateNetworkStatus);
+            window.addEventListener('offline', updateNetworkStatus);
+
+            checkAuthSession();
+        });
+
+        /* AUTH & ROLE MANAGEMENT */
+        function checkAuthSession() {
+            const savedUser = localStorage.getItem(AUTH_STORAGE_KEY);
+            if (savedUser && USERS[savedUser]) {
+                currentRole = USERS[savedUser].role;
+                document.getElementById('loginOverlay').classList.add('d-none');
+                applyRolePermissions(USERS[savedUser]);
+                loadCacheData();
+                fetchDataFromGoogleSheets();
+            } else {
+                document.getElementById('loginOverlay').classList.remove('d-none');
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('loginUsername').value.trim();
+            const p = document.getElementById('loginPassword').value.trim();
+            const err = document.getElementById('loginError');
+
+            if (USERS[u] && USERS[u].pass === p) {
+                err.classList.add('d-none');
+                localStorage.setItem(AUTH_STORAGE_KEY, u);
+                currentRole = USERS[u].role;
+                document.getElementById('loginOverlay').classList.add('d-none');
+                applyRolePermissions(USERS[u]);
+                loadCacheData();
+                fetchDataFromGoogleSheets();
+            } else {
+                err.classList.remove('d-none');
+            }
+        }
+
+        function handleLogout() {
+            if (confirm('هل أنت تأكد من تسجيل الخروج؟')) {
+                localStorage.removeItem(AUTH_STORAGE_KEY);
+                location.reload();
+            }
+        }
+
+        function applyRolePermissions(userObj) {
+            const roleBadge = document.getElementById('roleBadge');
+            roleBadge.textContent = `${userObj.name} (${userObj.role === 'admin' ? 'مدير' : 'مشاهدة'})`;
+
+            const adminElements = document.querySelectorAll('.admin-only');
+            if (userObj.role === 'viewer') {
+                adminElements.forEach(el => el.classList.add('viewer-hide'));
+            } else {
+                adminElements.forEach(el => el.classList.remove('viewer-hide'));
+            }
+        }
 
         function showLoading(show) {
             const overlay = document.getElementById('loadingOverlay');
@@ -522,12 +884,51 @@
             else overlay.classList.add('d-none');
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('txDate').valueAsDate = new Date();
-            document.getElementById('supTxDate').valueAsDate = new Date();
+        function showNotification(msg) {
+            document.getElementById('toastMessage').textContent = msg;
+            const toastEl = document.getElementById('liveToast');
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }
+
+        function updateNetworkStatus() {
+            const badge = document.getElementById('offlineBadge');
+            if (!navigator.onLine) badge.style.display = 'inline-block';
+            else badge.style.display = 'none';
+        }
+
+        function saveCacheData() {
+            try {
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(appData));
+            } catch (e) { console.error("Cache Save Error", e); }
+        }
+
+        function loadCacheData() {
+            try {
+                const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
+                if (cached) {
+                    appData = JSON.parse(cached);
+                    renderAllDataUI();
+                }
+            } catch (e) { console.error("Cache Read Error", e); }
+        }
+
+        function renderAllDataUI() {
+            if(appData.clients && appData.clients.length > 0 && !currentClientId) currentClientId = appData.clients[0].id;
+            if(appData.suppliers && appData.suppliers.length > 0 && !currentSupplierId) currentSupplierId = appData.suppliers[0].id;
+
+            renderClientOptions();
+            loadClientData();
+
+            renderSupplierOptions();
+            loadSupplierData();
+
             generateNextAutoCode();
-            fetchDataFromGoogleSheets();
-        });
+            loadModelsData();
+
+            loadInventoryData();
+            renderInventoryModelDropdown();
+        }
 
         function generateNextAutoCode() {
             const count = (appData.models ? appData.models.length : 0) + 1;
@@ -535,24 +936,17 @@
         }
 
         async function fetchDataFromGoogleSheets() {
+            updateNetworkStatus();
+            if (!navigator.onLine) return;
+
             showLoading(true);
             try {
                 const res = await fetch(SCRIPT_URL);
                 appData = await res.json();
-                
-                if(appData.clients && appData.clients.length > 0) currentClientId = appData.clients[0].id;
-                if(appData.suppliers && appData.suppliers.length > 0) currentSupplierId = appData.suppliers[0].id;
-
-                renderClientOptions();
-                loadClientData();
-
-                renderSupplierOptions();
-                loadSupplierData();
-
-                generateNextAutoCode();
-                loadModelsData();
+                saveCacheData();
+                renderAllDataUI();
             } catch (err) {
-                console.error("خطأ في جلب البيانات:", err);
+                console.warn("جلب أوفلاين:", err);
             } finally {
                 showLoading(false);
             }
@@ -562,6 +956,29 @@
             const qty = parseFloat(document.getElementById(qtyId).value) || 0;
             const price = parseFloat(document.getElementById(priceId).value) || 0;
             document.getElementById(totalId).value = (qty * price).toFixed(2);
+        }
+
+        function renderInventoryModelDropdown() {
+            const select = document.getElementById('txModelSelect');
+            select.innerHTML = '<option value="">بدون خصم مخزون</option>';
+            const inventory = appData.inventory || [];
+            inventory.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.modelNumber;
+                opt.textContent = `موديل ${item.modelNumber} (${item.fabric}) - المتبقي: ${item.totalQty - item.outQty} قطعة`;
+                select.appendChild(opt);
+            });
+        }
+
+        function onTxModelSelectChange() {
+            const selectedModelNum = document.getElementById('txModelSelect').value;
+            if (!selectedModelNum) return;
+            const invItem = (appData.inventory || []).find(i => i.modelNumber.toString() === selectedModelNum.toString());
+            if (invItem) {
+                document.getElementById('txDescription').value = `موديل ${invItem.modelNumber} (${invItem.fabric})`;
+                document.getElementById('txPrice').value = invItem.price;
+                calculateTotal('txQuantity', 'txPrice', 'txTotal');
+            }
         }
 
         /* CLIENTS FUNCTIONS */
@@ -582,6 +999,7 @@
         }
 
         async function createNewClient() {
+            if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
             const name = document.getElementById('newClientName').value.trim();
             const phone = document.getElementById('newClientPhone').value.trim();
             if (!name) return alert('أدخل اسم العميل');
@@ -591,31 +1009,40 @@
             appData.clients.push(newClient);
             currentClientId = newClient.id;
 
+            saveCacheData();
             renderClientOptions();
             loadClientData();
             bootstrap.Modal.getInstance(document.getElementById('addClientModal')).hide();
+            showNotification('تم إضافة العميل بنجاح');
 
-            showLoading(true);
-            try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'addClient', client: newClient })
-                });
-            } finally { showLoading(false); }
+            if (navigator.onLine) {
+                showLoading(true);
+                try {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'addClient', client: newClient })
+                    });
+                } finally { showLoading(false); }
+            }
         }
 
         async function addTransaction(e) {
             e.preventDefault();
+            if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
             if(!currentClientId) return alert('اختر عميل أولاً');
+
+            const selectedModelNum = document.getElementById('txModelSelect').value;
+            const qty = parseFloat(document.getElementById('txQuantity').value) || 0;
 
             const newTx = {
                 id: Date.now().toString(),
                 clientId: currentClientId,
                 date: document.getElementById('txDate').value,
+                modelNumber: selectedModelNum,
                 description: document.getElementById('txDescription').value,
-                quantity: parseFloat(document.getElementById('txQuantity').value) || 0,
+                quantity: qty,
                 price: parseFloat(document.getElementById('txPrice').value) || 0,
                 total: parseFloat(document.getElementById('txTotal').value) || 0,
                 paid: parseFloat(document.getElementById('txPaid').value) || 0,
@@ -624,23 +1051,39 @@
 
             if(!appData.transactions) appData.transactions = [];
             appData.transactions.push(newTx);
+
+            if (selectedModelNum && qty > 0) {
+                const invItem = (appData.inventory || []).find(i => i.modelNumber.toString() === selectedModelNum.toString());
+                if (invItem) {
+                    invItem.outQty = Number(invItem.outQty) + qty;
+                    loadInventoryData();
+                    renderInventoryModelDropdown();
+                }
+            }
+
+            saveCacheData();
             loadClientData();
 
+            document.getElementById('txModelSelect').value = '';
             document.getElementById('txDescription').value = '';
             document.getElementById('txQuantity').value = '0';
             document.getElementById('txPrice').value = '0';
             document.getElementById('txTotal').value = '0.00';
             document.getElementById('txPaid').value = '0';
 
-            showLoading(true);
-            try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'addTransaction', tx: newTx })
-                });
-            } finally { showLoading(false); }
+            showNotification('تم تسجيل فاتورة البيع والخصم من المخزون');
+
+            if (navigator.onLine) {
+                showLoading(true);
+                try {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'addTransaction', tx: newTx })
+                    });
+                } finally { showLoading(false); }
+            }
         }
 
         function loadClientData() {
@@ -659,22 +1102,23 @@
                 grandPaid += tx.paid;
                 runningBalance += (tx.total - tx.paid);
 
+                const deleteBtnHtml = (currentRole === 'admin') 
+                    ? `<button class="btn btn-sm btn-outline-danger" onclick="deleteTransaction('${tx.id}')"><i class="fa-solid fa-trash"></i></button>`
+                    : `-`;
+
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${idx + 1}</td>
                     <td>${tx.date}</td>
+                    <td><span class="badge bg-warning text-dark fs-6">${tx.modelNumber || '-'}</span></td>
                     <td class="fw-bold">${tx.description}</td>
                     <td>${tx.quantity}</td>
                     <td>${tx.price.toFixed(2)}</td>
-                    <td class="table-primary fw-bold">${tx.total.toFixed(2)}</td>
-                    <td class="table-success fw-bold">${tx.paid.toFixed(2)}</td>
-                    <td><span class="badge bg-info text-dark">${tx.paymentMethod}</span></td>
+                    <td class="gold-text fw-bold">${tx.total.toFixed(2)}</td>
+                    <td class="text-success fw-bold">${tx.paid.toFixed(2)}</td>
+                    <td><span class="badge bg-secondary">${tx.paymentMethod}</span></td>
                     <td class="fw-bold ${runningBalance > 0 ? 'text-danger' : 'text-success'}">${runningBalance.toFixed(2)}</td>
-                    <td class="no-print">
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteTransaction('${tx.id}')">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </td>
+                    <td class="no-print admin-only">${deleteBtnHtml}</td>
                 `;
                 tableBody.appendChild(row);
             });
@@ -685,19 +1129,34 @@
         }
 
         async function deleteTransaction(txId) {
+            if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
             if(!confirm('هل أنت تأكد من حذف هذه الحركة؟')) return;
-            appData.transactions = appData.transactions.filter(t => t.id !== txId);
-            loadClientData();
+            const txToDelete = (appData.transactions || []).find(t => t.id === txId);
+            if (txToDelete && txToDelete.modelNumber && txToDelete.quantity > 0) {
+                const invItem = (appData.inventory || []).find(i => i.modelNumber.toString() === txToDelete.modelNumber.toString());
+                if (invItem) {
+                    invItem.outQty = Math.max(0, Number(invItem.outQty) - txToDelete.quantity);
+                    loadInventoryData();
+                    renderInventoryModelDropdown();
+                }
+            }
 
-            showLoading(true);
-            try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'deleteTransaction', id: txId })
-                });
-            } finally { showLoading(false); }
+            appData.transactions = appData.transactions.filter(t => t.id !== txId);
+            saveCacheData();
+            loadClientData();
+            showNotification('تم حذف الحركة وإرجاع الكمية للمخزون');
+
+            if (navigator.onLine) {
+                showLoading(true);
+                try {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'deleteTransaction', id: txId })
+                    });
+                } finally { showLoading(false); }
+            }
         }
 
         /* SUPPLIERS FUNCTIONS */
@@ -718,6 +1177,7 @@
         }
 
         async function createNewSupplier() {
+            if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
             const name = document.getElementById('newSupplierName').value.trim();
             const phone = document.getElementById('newSupplierPhone').value.trim();
             const category = document.getElementById('newSupplierCategory').value;
@@ -728,23 +1188,28 @@
             appData.suppliers.push(newSupplier);
             currentSupplierId = newSupplier.id;
 
+            saveCacheData();
             renderSupplierOptions();
             loadSupplierData();
             bootstrap.Modal.getInstance(document.getElementById('addSupplierModal')).hide();
+            showNotification('تم إضافة المورد بنجاح');
 
-            showLoading(true);
-            try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'addSupplier', supplier: newSupplier })
-                });
-            } finally { showLoading(false); }
+            if (navigator.onLine) {
+                showLoading(true);
+                try {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'addSupplier', supplier: newSupplier })
+                    });
+                } finally { showLoading(false); }
+            }
         }
 
         async function addSupplierTransaction(e) {
             e.preventDefault();
+            if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
             if(!currentSupplierId) return alert('اختر مورد أولاً');
 
             const newTx = {
@@ -761,6 +1226,7 @@
 
             if(!appData.supplierTransactions) appData.supplierTransactions = [];
             appData.supplierTransactions.push(newTx);
+            saveCacheData();
             loadSupplierData();
 
             document.getElementById('supTxDescription').value = '';
@@ -769,15 +1235,19 @@
             document.getElementById('supTxTotal').value = '0.00';
             document.getElementById('supTxPaid').value = '0';
 
-            showLoading(true);
-            try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'addSupplierTransaction', tx: newTx })
-                });
-            } finally { showLoading(false); }
+            showNotification('تم حفظ فاتورة التوريد بنجاح');
+
+            if (navigator.onLine) {
+                showLoading(true);
+                try {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'addSupplierTransaction', tx: newTx })
+                    });
+                } finally { showLoading(false); }
+            }
         }
 
         function loadSupplierData() {
@@ -796,6 +1266,10 @@
                 grandPaid += tx.paid;
                 runningBalance += (tx.total - tx.paid);
 
+                const deleteBtnHtml = (currentRole === 'admin') 
+                    ? `<button class="btn btn-sm btn-outline-danger" onclick="deleteSupplierTransaction('${tx.id}')"><i class="fa-solid fa-trash"></i></button>`
+                    : `-`;
+
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${idx + 1}</td>
@@ -803,15 +1277,11 @@
                     <td class="fw-bold">${tx.description}</td>
                     <td>${tx.quantity}</td>
                     <td>${tx.price.toFixed(2)}</td>
-                    <td class="table-primary fw-bold">${tx.total.toFixed(2)}</td>
-                    <td class="table-success fw-bold">${tx.paid.toFixed(2)}</td>
-                    <td><span class="badge bg-info text-dark">${tx.paymentMethod}</span></td>
+                    <td class="gold-text fw-bold">${tx.total.toFixed(2)}</td>
+                    <td class="text-success fw-bold">${tx.paid.toFixed(2)}</td>
+                    <td><span class="badge bg-secondary">${tx.paymentMethod}</span></td>
                     <td class="fw-bold ${runningBalance > 0 ? 'text-danger' : 'text-success'}">${runningBalance.toFixed(2)}</td>
-                    <td class="no-print">
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteSupplierTransaction('${tx.id}')">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </td>
+                    <td class="no-print admin-only">${deleteBtnHtml}</td>
                 `;
                 tableBody.appendChild(row);
             });
@@ -822,19 +1292,24 @@
         }
 
         async function deleteSupplierTransaction(txId) {
+            if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
             if(!confirm('هل أنت تأكد من حذف هذه الحركة؟')) return;
             appData.supplierTransactions = appData.supplierTransactions.filter(t => t.id !== txId);
+            saveCacheData();
             loadSupplierData();
+            showNotification('تم حذف حركة التوريد');
 
-            showLoading(true);
-            try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'deleteSupplierTransaction', id: txId })
-                });
-            } finally { showLoading(false); }
+            if (navigator.onLine) {
+                showLoading(true);
+                try {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'deleteSupplierTransaction', id: txId })
+                    });
+                } finally { showLoading(false); }
+            }
         }
 
         /* MODELS FUNCTIONS */
@@ -842,17 +1317,15 @@
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    tempBase64Image = e.target.result;
-                };
+                reader.onload = function(e) { tempBase64Image = e.target.result; };
                 reader.readAsDataURL(file);
             }
         }
 
         async function addModel(e) {
             e.preventDefault();
+            if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
 
-            // Collect selected colors
             const colors = [];
             document.querySelectorAll('.model-color-check:checked').forEach(chk => colors.push(chk.value));
             const otherColors = document.getElementById('modelOtherColors').value.trim();
@@ -876,11 +1349,11 @@
 
             if(!appData.models) appData.models = [];
             appData.models.push(newModel);
-            
+            saveCacheData();
+
             generateNextAutoCode();
             loadModelsData();
 
-            // Reset form
             document.getElementById('modelNumber').value = '';
             document.getElementById('modelFabric').value = '';
             document.getElementById('modelFabricConsumption').value = '';
@@ -891,15 +1364,19 @@
             document.querySelectorAll('.model-color-check').forEach(chk => chk.checked = false);
             tempBase64Image = "";
 
-            showLoading(true);
-            try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'addModel', model: newModel })
-                });
-            } finally { showLoading(false); }
+            showNotification('تم إضافة الموديل بنجاح');
+
+            if (navigator.onLine) {
+                showLoading(true);
+                try {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'addModel', model: newModel })
+                    });
+                } finally { showLoading(false); }
+            }
         }
 
         function loadModelsData() {
@@ -922,48 +1399,176 @@
                     ? `<img src="${m.image}" class="model-img-thumb" onclick="openImageModal('${m.image}')" title="اضغط للتكبير">` 
                     : `<span class="text-muted small"><i class="fa-solid fa-image"></i> بدون صورة</span>`;
 
+                const deleteBtnHtml = (currentRole === 'admin') 
+                    ? `<button class="btn btn-sm btn-outline-danger" onclick="deleteModel('${m.id}')"><i class="fa-solid fa-trash"></i></button>`
+                    : `-`;
+
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${imgHtml}</td>
-                    <td><span class="badge bg-primary">${m.autoCode || '-'}</span></td>
-                    <td class="fw-bold">${m.modelNumber}</td>
+                    <td><span class="badge bg-warning text-dark fs-6 fw-bold">${m.autoCode || '-'}</span></td>
+                    <td class="fw-bold gold-text">${m.modelNumber}</td>
                     <td>${m.fabric || '-'}</td>
                     <td>${colorsHtml}</td>
                     <td>${m.fabricConsumption ? m.fabricConsumption + ' متر' : '-'}</td>
                     <td>${m.cost ? m.cost.toFixed(2) + ' ج.م' : '-'}</td>
-                    <td class="table-success fw-bold">${m.price ? m.price.toFixed(2) + ' ج.م' : '-'}</td>
+                    <td class="text-success fw-bold">${m.price ? m.price.toFixed(2) + ' ج.م' : '-'}</td>
                     <td class="fw-bold ${margin >= 0 ? 'text-success' : 'text-danger'}">${margin.toFixed(2)} ج.م</td>
-                    <td class="no-print">
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteModel('${m.id}')">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </td>
+                    <td class="no-print admin-only">${deleteBtnHtml}</td>
                 `;
                 tableBody.appendChild(row);
             });
+        }
+
+        async function deleteModel(modelId) {
+            if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
+            if(!confirm('هل أنت تأكد من حذف هذا الموديل؟')) return;
+            appData.models = appData.models.filter(m => m.id !== modelId);
+            saveCacheData();
+            loadModelsData();
+            showNotification('تم حذف الموديل');
+
+            if (navigator.onLine) {
+                showLoading(true);
+                try {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'deleteModel', id: modelId })
+                    });
+                } finally { showLoading(false); }
+            }
+        }
+
+        /* INVENTORY FUNCTIONS */
+        function previewInventoryImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) { tempInvBase64Image = e.target.result; };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function calcRemainingInventory() {
+            const total = parseInt(document.getElementById('invTotalQty').value) || 0;
+            const outQty = parseInt(document.getElementById('invOutQty').value) || 0;
+            document.getElementById('invRemainingQty').value = (total - outQty);
+        }
+
+        async function addInventoryItem(e) {
+            e.preventDefault();
+            if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
+
+            const total = parseInt(document.getElementById('invTotalQty').value) || 0;
+            const outQty = parseInt(document.getElementById('invOutQty').value) || 0;
+
+            const newItem = {
+                id: Date.now().toString(),
+                modelNumber: document.getElementById('invModelNumber').value.trim(),
+                fabric: document.getElementById('invFabric').value.trim(),
+                totalQty: total,
+                outQty: outQty,
+                price: parseFloat(document.getElementById('invPrice').value) || 0,
+                image: tempInvBase64Image || ""
+            };
+
+            if(!appData.inventory) appData.inventory = [];
+            appData.inventory.push(newItem);
+            saveCacheData();
+
+            loadInventoryData();
+            renderInventoryModelDropdown();
+
+            document.getElementById('invModelNumber').value = '';
+            document.getElementById('invFabric').value = '';
+            document.getElementById('invTotalQty').value = '0';
+            document.getElementById('invOutQty').value = '0';
+            document.getElementById('invRemainingQty').value = '0';
+            document.getElementById('invPrice').value = '';
+            document.getElementById('invImageInput').value = '';
+            tempInvBase64Image = "";
+
+            showNotification('تم إضافة الموديل للمخزون بنجاح');
+
+            if (navigator.onLine) {
+                showLoading(true);
+                try {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'addInventory', item: newItem })
+                    });
+                } finally { showLoading(false); }
+            }
+        }
+
+        function loadInventoryData() {
+            const tableBody = document.getElementById('inventoryTableBody');
+            tableBody.innerHTML = '';
+
+            const inventory = appData.inventory || [];
+            if (inventory.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="9" class="text-muted">لا يوجد موديلات في المخزون بعد</td></tr>';
+                return;
+            }
+
+            inventory.forEach((item) => {
+                const remaining = (item.totalQty - item.outQty);
+                const totalValue = remaining * item.price;
+
+                const imgHtml = item.image 
+                    ? `<img src="${item.image}" class="model-img-thumb" onclick="openImageModal('${item.image}')" title="اضغط للتكبير">` 
+                    : `<span class="text-muted small"><i class="fa-solid fa-image"></i> بدون صورة</span>`;
+
+                const deleteBtnHtml = (currentRole === 'admin') 
+                    ? `<button class="btn btn-sm btn-outline-danger" onclick="deleteInventoryItem('${item.id}')"><i class="fa-solid fa-trash"></i></button>`
+                    : `-`;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${imgHtml}</td>
+                    <td class="fw-bold gold-text fs-6">${item.modelNumber}</td>
+                    <td>${item.fabric}</td>
+                    <td><span class="badge bg-secondary fs-6">${item.totalQty}</span></td>
+                    <td><span class="badge bg-danger fs-6">${item.outQty}</span></td>
+                    <td><span class="badge ${remaining > 0 ? 'bg-success' : 'bg-warning text-dark'} fs-6">${remaining}</span></td>
+                    <td class="fw-bold">${item.price.toFixed(2)} ج.م</td>
+                    <td class="gold-text fw-bold">${totalValue.toFixed(2)} ج.م</td>
+                    <td class="no-print admin-only">${deleteBtnHtml}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        async function deleteInventoryItem(id) {
+            if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
+            if(!confirm('هل أنت تأكد من حذف حركة المخزون هذه؟')) return;
+            appData.inventory = appData.inventory.filter(i => i.id !== id);
+            saveCacheData();
+            loadInventoryData();
+            renderInventoryModelDropdown();
+            showNotification('تم حذف الموديل من المخزون');
+
+            if (navigator.onLine) {
+                showLoading(true);
+                try {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'deleteInventory', id: id })
+                    });
+                } finally { showLoading(false); }
+            }
         }
 
         function openImageModal(imgSrc) {
             document.getElementById('modalPreviewImg').src = imgSrc;
             new bootstrap.Modal(document.getElementById('imagePreviewModal')).show();
         }
-
-        async function deleteModel(modelId) {
-            if(!confirm('هل أنت تأكد من حذف هذا الموديل؟')) return;
-            appData.models = appData.models.filter(m => m.id !== modelId);
-            loadModelsData();
-
-            showLoading(true);
-            try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'deleteModel', id: modelId })
-                });
-            } finally { showLoading(false); }
-        }
     </script>
 </body>
 </html>
-```eof

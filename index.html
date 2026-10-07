@@ -749,6 +749,27 @@
         </div>
     </div>
 
+    <!-- Modal: إشعار التحديث الجديد -->
+    <div class="modal fade" id="updateAlertModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-light border-success">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title text-success fw-bold">
+                        <i class="fa-solid fa-bell me-2"></i>تحديث جديد في النظام!
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>تم تحديث النظام بنجاح، إليك ما تم إضافته أو تعديله:</p>
+                    <div id="updateDetails" class="p-3 bg-secondary rounded text-white" style="white-space: pre-wrap; line-height: 1.8;"></div>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">فهمت، استمر</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Add Client -->
     <div class="modal fade" id="addClientModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -803,6 +824,10 @@
         const LOCAL_STORAGE_KEY = "TREND_MAN_APP_DATA_CACHE";
         const AUTH_STORAGE_KEY = "TREND_MAN_AUTH_USER";
 
+        // إعدادات نسخة النظام والتحديثات
+        const CURRENT_VERSION = "v1.2"; 
+        const UPDATE_MESSAGE = "• إضافة نظام إشعارات التحديث التلقائي.\n• تحديث وتطوير واجهة المخزون والحسابات.";
+
         // حسابات الدخول المعتمدة
         const USERS = {
             "admin": { pass: "admin123", role: "admin", name: "مدير النظام" },
@@ -826,6 +851,17 @@
             checkAuthSession();
         });
 
+        /* فحص تحديثات النظام الجديدة */
+        function checkSystemUpdates() {
+            const savedVersion = localStorage.getItem('trendManAppVersion');
+            if (savedVersion !== CURRENT_VERSION) {
+                document.getElementById('updateDetails').innerText = UPDATE_MESSAGE;
+                const updateModal = new bootstrap.Modal(document.getElementById('updateAlertModal'));
+                updateModal.show();
+                localStorage.setItem('trendManAppVersion', CURRENT_VERSION);
+            }
+        }
+
         /* AUTH & ROLE MANAGEMENT */
         function checkAuthSession() {
             const savedUser = localStorage.getItem(AUTH_STORAGE_KEY);
@@ -835,6 +871,7 @@
                 applyRolePermissions(USERS[savedUser]);
                 loadCacheData();
                 fetchDataFromGoogleSheets();
+                checkSystemUpdates(); // فحص التحديثات
             } else {
                 document.getElementById('loginOverlay').classList.remove('d-none');
             }
@@ -854,6 +891,7 @@
                 applyRolePermissions(USERS[u]);
                 loadCacheData();
                 fetchDataFromGoogleSheets();
+                checkSystemUpdates(); // فحص التحديثات عند تسجيل الدخول
             } else {
                 err.classList.remove('d-none');
             }

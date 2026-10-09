@@ -379,15 +379,22 @@
 
                 <!-- Client Form (Admin Only) -->
                 <div class="card p-4 no-print mb-4 admin-only">
-                    <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-cart-plus me-2"></i>تسجيل فاتورة بيع جديدة</h5>
+                    <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-cart-plus me-2"></i>تسجيل حركة بيع / مرتجع</h5>
                     <form id="transactionForm" onsubmit="addTransaction(event)">
                         <div class="row g-3">
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold gold-text">نوع الحركة</label>
+                                <select id="txType" class="form-select border-warning fw-bold">
+                                    <option value="بيع">بيع (فاتورة)</option>
+                                    <option value="مرتجع">مرتجع (استرجاع)</option>
+                                </select>
+                            </div>
                             <div class="col-md-2">
                                 <label class="form-label fw-bold">التاريخ</label>
                                 <input type="date" id="txDate" class="form-control" required>
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label fw-bold gold-text">موديل من المخزون (خصم آلي)</label>
+                                <label class="form-label fw-bold gold-text">موديل من المخزون (خصم/إضافة)</label>
                                 <select id="txModelSelect" class="form-select border-warning fw-bold" onchange="onTxModelSelectChange()">
                                     <option value="">بدون خصم مخزون</option>
                                 </select>
@@ -409,11 +416,11 @@
                                 <input type="number" id="txTotal" class="form-control bg-dark text-warning fw-bold" readonly value="0.00">
                             </div>
                             <div class="col-md-2">
-                                <label class="form-label fw-bold">المبلغ المدفوع</label>
+                                <label class="form-label fw-bold">المبلغ المدفوع/المسترد</label>
                                 <input type="number" step="0.01" id="txPaid" class="form-control" value="0">
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label fw-bold">طريقة التحصيل</label>
+                                <label class="form-label fw-bold">طريقة التحصيل / الدفع</label>
                                 <select id="txPaymentMethod" class="form-select">
                                     <option value="نقدي">نقدي</option>
                                     <option value="تحويل بنكي">تحويل بنكي</option>
@@ -422,8 +429,8 @@
                                     <option value="آجل">آجل</option>
                                 </select>
                             </div>
-                            <div class="col-md-7 d-flex align-items-end justify-content-end">
-                                <button type="submit" class="btn btn-gold px-4"><i class="fa-solid fa-check me-1"></i> حفظ فاتورة البيع</button>
+                            <div class="col-md-5 d-flex align-items-end justify-content-end">
+                                <button type="submit" class="btn btn-gold px-4"><i class="fa-solid fa-check me-1"></i> حفظ الحركة</button>
                             </div>
                         </div>
                     </form>
@@ -1071,12 +1078,14 @@
             if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
             if(!currentClientId) return alert('اختر عميل أولاً');
 
+            const txType = document.getElementById('txType').value;
             const selectedModelNum = document.getElementById('txModelSelect').value;
             const qty = parseFloat(document.getElementById('txQuantity').value) || 0;
 
             const newTx = {
                 id: Date.now().toString(),
                 clientId: currentClientId,
+                type: txType,
                 date: document.getElementById('txDate').value,
                 modelNumber: selectedModelNum,
                 description: document.getElementById('txDescription').value,
@@ -1093,7 +1102,11 @@
             if (selectedModelNum && qty > 0) {
                 const invItem = (appData.inventory || []).find(i => i.modelNumber.toString() === selectedModelNum.toString());
                 if (invItem) {
-                    invItem.outQty = Number(invItem.outQty) + qty;
+                    if (txType === 'مرتجع') {
+                        invItem.outQty = Math.max(0, Number(invItem.outQty) - qty);
+                    } else {
+                        invItem.outQty = Number(invItem.outQty) + qty;
+                    }
                     loadInventoryData();
                     renderInventoryModelDropdown();
                 }
@@ -1102,6 +1115,7 @@
             saveCacheData();
             loadClientData();
 
+            document.getElementById('txType').value = 'بيع';
             document.getElementById('txModelSelect').value = '';
             document.getElementById('txDescription').value = '';
             document.getElementById('txQuantity').value = '0';
@@ -1109,7 +1123,7 @@
             document.getElementById('txTotal').value = '0.00';
             document.getElementById('txPaid').value = '0';
 
-            showNotification('تم تسجيل فاتورة البيع والخصم من المخزون');
+            showNotification(txType === 'مرتجع' ? 'تم تسجيل المرتجع وإعادة الكمية للمخزون' : 'تم تسجيل فاتورة البيع والخصم من المخزون');
 
             if (navigator.onLine) {
                 showLoading(true);
@@ -1136,24 +1150,38 @@
             tableBody.innerHTML = '';
 
             clientTxs.forEach((tx, idx) => {
-                grandTotal += tx.total;
-                grandPaid += tx.paid;
-                runningBalance += (tx.total - tx.paid);
+                const isReturn = (tx.type === 'مرتجع');
+
+                if (isReturn) {
+                    grandTotal -= tx.total;
+                    grandPaid -= tx.paid;
+                    runningBalance -= (tx.total - tx.paid);
+                } else {
+                    grandTotal += tx.total;
+                    grandPaid += tx.paid;
+                    runningBalance += (tx.total - tx.paid);
+                }
 
                 const deleteBtnHtml = (currentRole === 'admin') 
                     ? `<button class="btn btn-sm btn-outline-danger" onclick="deleteTransaction('${tx.id}')"><i class="fa-solid fa-trash"></i></button>`
                     : `-`;
 
+                const typeBadge = isReturn 
+                    ? `<span class="badge bg-danger ms-1">مرتجع</span>` 
+                    : `<span class="badge bg-success ms-1">بيع</span>`;
+
                 const row = document.createElement('tr');
+                if (isReturn) row.classList.add('table-danger', 'text-dark');
+
                 row.innerHTML = `
                     <td>${idx + 1}</td>
                     <td>${tx.date}</td>
                     <td><span class="badge bg-warning text-dark fs-6">${tx.modelNumber || '-'}</span></td>
-                    <td class="fw-bold">${tx.description}</td>
+                    <td class="fw-bold">${tx.description} ${typeBadge}</td>
                     <td>${tx.quantity}</td>
                     <td>${tx.price.toFixed(2)}</td>
-                    <td class="gold-text fw-bold">${tx.total.toFixed(2)}</td>
-                    <td class="text-success fw-bold">${tx.paid.toFixed(2)}</td>
+                    <td class="fw-bold ${isReturn ? 'text-danger' : 'gold-text'}">${isReturn ? '-' : ''}${tx.total.toFixed(2)}</td>
+                    <td class="text-success fw-bold">${isReturn ? '-' : ''}${tx.paid.toFixed(2)}</td>
                     <td><span class="badge bg-secondary">${tx.paymentMethod}</span></td>
                     <td class="fw-bold ${runningBalance > 0 ? 'text-danger' : 'text-success'}">${runningBalance.toFixed(2)}</td>
                     <td class="no-print admin-only">${deleteBtnHtml}</td>
@@ -1169,11 +1197,16 @@
         async function deleteTransaction(txId) {
             if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
             if(!confirm('هل أنت تأكد من حذف هذه الحركة؟')) return;
+            
             const txToDelete = (appData.transactions || []).find(t => t.id === txId);
             if (txToDelete && txToDelete.modelNumber && txToDelete.quantity > 0) {
                 const invItem = (appData.inventory || []).find(i => i.modelNumber.toString() === txToDelete.modelNumber.toString());
                 if (invItem) {
-                    invItem.outQty = Math.max(0, Number(invItem.outQty) - txToDelete.quantity);
+                    if (txToDelete.type === 'مرتجع') {
+                        invItem.outQty = Number(invItem.outQty) + txToDelete.quantity;
+                    } else {
+                        invItem.outQty = Math.max(0, Number(invItem.outQty) - txToDelete.quantity);
+                    }
                     loadInventoryData();
                     renderInventoryModelDropdown();
                 }
@@ -1182,7 +1215,7 @@
             appData.transactions = appData.transactions.filter(t => t.id !== txId);
             saveCacheData();
             loadClientData();
-            showNotification('تم حذف الحركة وإرجاع الكمية للمخزون');
+            showNotification('تم حذف الحركة وتحديث المخزون');
 
             if (navigator.onLine) {
                 showLoading(true);

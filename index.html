@@ -225,7 +225,6 @@
             z-index: 10000;
         }
 
-        /* Hide elements for Viewer Role */
         .viewer-hide {
             display: none !important;
         }
@@ -234,6 +233,8 @@
             .no-print { display: none !important; }
             body { background-color: white; color: black; }
             .card { box-shadow: none; border: 1px solid #ccc; background: white; color: black; }
+            .table-dark-custom { --bs-table-bg: white; --bs-table-color: black; }
+            .gold-text { background: none; -webkit-text-fill-color: black; color: black; }
         }
     </style>
 </head>
@@ -436,8 +437,23 @@
                     </form>
                 </div>
 
-                <!-- Ledger Table -->
+                <!-- Ledger Table & Filter -->
                 <div class="card p-3">
+                    <!-- Date Filter Bar -->
+                    <div class="row no-print mb-3 align-items-center g-2 bg-dark p-2 rounded-3 border border-secondary mx-0">
+                        <div class="col-auto text-warning fw-bold"><i class="fa-solid fa-filter me-1"></i> فلترة بالمدة:</div>
+                        <div class="col-md-3">
+                            <input type="date" id="clientFromDate" class="form-control form-control-sm" placeholder="من تاريخ">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="date" id="clientToDate" class="form-control form-control-sm" placeholder="إلى تاريخ">
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-gold" onclick="loadClientData()"><i class="fa-solid fa-magnifying-glass me-1"></i> تصفية</button>
+                            <button class="btn btn-sm btn-outline-secondary text-white ms-1" onclick="resetClientFilter()"><i class="fa-solid fa-rotate-left"></i> إلغاء</button>
+                        </div>
+                    </div>
+
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="fw-bold mb-0 gold-text"><i class="fa-solid fa-receipt me-2"></i>كشف حساب العميل</h5>
                         <span id="clientNameDisplay" class="badge bg-warning text-dark fs-6 px-3 py-2 fw-bold"></span>
@@ -549,8 +565,23 @@
                     </form>
                 </div>
 
-                <!-- Supplier Ledger Table -->
+                <!-- Supplier Ledger Table & Filter -->
                 <div class="card p-3">
+                    <!-- Date Filter Bar -->
+                    <div class="row no-print mb-3 align-items-center g-2 bg-dark p-2 rounded-3 border border-secondary mx-0">
+                        <div class="col-auto text-warning fw-bold"><i class="fa-solid fa-filter me-1"></i> فلترة بالمدة:</div>
+                        <div class="col-md-3">
+                            <input type="date" id="supFromDate" class="form-control form-control-sm" placeholder="من تاريخ">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="date" id="supToDate" class="form-control form-control-sm" placeholder="إلى تاريخ">
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-gold" onclick="loadSupplierData()"><i class="fa-solid fa-magnifying-glass me-1"></i> تصفية</button>
+                            <button class="btn btn-sm btn-outline-secondary text-white ms-1" onclick="resetSupplierFilter()"><i class="fa-solid fa-rotate-left"></i> إلغاء</button>
+                        </div>
+                    </div>
+
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="fw-bold mb-0 gold-text"><i class="fa-solid fa-file-contract me-2"></i>كشف حساب المورد</h5>
                         <span id="supplierNameDisplay" class="badge bg-warning text-dark fs-6 px-3 py-2 fw-bold"></span>
@@ -745,33 +776,79 @@
         </div>
     </div>
 
+    <!-- Printable Invoice Modal -->
+    <div class="modal fade" id="invoiceModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content bg-white text-dark">
+                <div class="modal-body p-4" id="printableInvoiceArea">
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+                        <div>
+                            <h2 class="fw-bold mb-0 text-dark">TREND MAN</h2>
+                            <p class="text-muted mb-0 small">فاتورة بيع / استلام رسمية</p>
+                        </div>
+                        <div class="text-end">
+                            <h5 class="mb-0 fw-bold">رقم الحركة: <span id="invModalTxId"></span></h5>
+                            <small class="text-muted" id="invModalDate"></small>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong class="d-block text-muted">العميل:</strong>
+                            <span id="invModalClientName" class="fs-5 fw-bold"></span>
+                        </div>
+                        <div class="col-6 text-end">
+                            <strong class="d-block text-muted">طريقة الدفع:</strong>
+                            <span id="invModalPaymentMethod" class="badge bg-dark fs-6"></span>
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered text-center my-3">
+                        <thead class="table-light">
+                            <tr>
+                                <th>بيان الحركة</th>
+                                <th>رقم الموديل</th>
+                                <th>الكمية</th>
+                                <th>السعر</th>
+                                <th>الإجمالي</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="invModalDesc" class="fw-bold"></td>
+                                <td id="invModalModel"></td>
+                                <td id="invModalQty"></td>
+                                <td id="invModalPrice"></td>
+                                <td id="invModalTotal" class="fw-bold"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="row mt-4 pt-2 border-top">
+                        <div class="col-6">
+                            <p class="small text-muted mb-1">شكراً لتعاملكم معنا!</p>
+                            <p class="small text-muted mb-0">مصنع ومؤسسة **TREND MAN** للملابس الجاهزة.</p>
+                        </div>
+                        <div class="col-6 text-end">
+                            <p class="mb-1 fw-bold">المبلغ المدفوع: <span id="invModalPaid" class="text-success"></span> ج.م</p>
+                            <p class="mb-0 fw-bold fs-5">المتبقي: <span id="invModalBalance" class="text-danger"></span> ج.م</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer no-print bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    <button type="button" class="btn btn-primary" onclick="window.print()"><i class="fa-solid fa-print me-1"></i> طباعة الفاتورة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Image Modal Preview -->
     <div class="modal fade" id="imagePreviewModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content bg-dark border-warning shadow-lg rounded-4">
                 <div class="modal-body text-center p-3">
                     <img id="modalPreviewImg" src="" class="img-fluid rounded-3" alt="صورة الموديل">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: إشعار التحديث الجديد -->
-    <div class="modal fade" id="updateAlertModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-dark text-light border-success">
-                <div class="modal-header border-secondary">
-                    <h5 class="modal-title text-success fw-bold">
-                        <i class="fa-solid fa-bell me-2"></i>تحديث جديد في النظام!
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>تم تحديث النظام بنجاح، إليك ما تم إضافته أو تعديله:</p>
-                    <div id="updateDetails" class="p-3 bg-secondary rounded text-white" style="white-space: pre-wrap; line-height: 1.8;"></div>
-                </div>
-                <div class="modal-footer border-secondary">
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">فهمت، استمر</button>
                 </div>
             </div>
         </div>
@@ -831,17 +908,12 @@
         const LOCAL_STORAGE_KEY = "TREND_MAN_APP_DATA_CACHE";
         const AUTH_STORAGE_KEY = "TREND_MAN_AUTH_USER";
 
-        // إعدادات نسخة النظام والتحديثات
-        const CURRENT_VERSION = "v1.2"; 
-        const UPDATE_MESSAGE = "• إضافة نظام إشعارات التحديث التلقائي.\n• تحديث وتطوير واجهة المخزون والحسابات.";
-
-        // حسابات الدخول المعتمدة
         const USERS = {
             "admin": { pass: "admin123", role: "admin", name: "مدير النظام" },
             "user": { pass: "user123", role: "viewer", name: "مشاهدة فقط" }
         };
 
-        let currentRole = null; // 'admin' or 'viewer'
+        let currentRole = null;
         let appData = { clients: [], transactions: [], suppliers: [], supplierTransactions: [], models: [], inventory: [] };
         let currentClientId = null;
         let currentSupplierId = null;
@@ -858,788 +930,8 @@
             checkAuthSession();
         });
 
-        /* فحص تحديثات النظام الجديدة */
-        function checkSystemUpdates() {
-            const savedVersion = localStorage.getItem('trendManAppVersion');
-            if (savedVersion !== CURRENT_VERSION) {
-                document.getElementById('updateDetails').innerText = UPDATE_MESSAGE;
-                const updateModal = new bootstrap.Modal(document.getElementById('updateAlertModal'));
-                updateModal.show();
-                localStorage.setItem('trendManAppVersion', CURRENT_VERSION);
-            }
-        }
-
-        /* AUTH & ROLE MANAGEMENT */
         function checkAuthSession() {
             const savedUser = localStorage.getItem(AUTH_STORAGE_KEY);
             if (savedUser && USERS[savedUser]) {
                 currentRole = USERS[savedUser].role;
-                document.getElementById('loginOverlay').classList.add('d-none');
-                applyRolePermissions(USERS[savedUser]);
-                loadCacheData();
-                fetchDataFromGoogleSheets();
-                checkSystemUpdates(); // فحص التحديثات
-            } else {
-                document.getElementById('loginOverlay').classList.remove('d-none');
-            }
-        }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const u = document.getElementById('loginUsername').value.trim();
-            const p = document.getElementById('loginPassword').value.trim();
-            const err = document.getElementById('loginError');
-
-            if (USERS[u] && USERS[u].pass === p) {
-                err.classList.add('d-none');
-                localStorage.setItem(AUTH_STORAGE_KEY, u);
-                currentRole = USERS[u].role;
-                document.getElementById('loginOverlay').classList.add('d-none');
-                applyRolePermissions(USERS[u]);
-                loadCacheData();
-                fetchDataFromGoogleSheets();
-                checkSystemUpdates(); // فحص التحديثات عند تسجيل الدخول
-            } else {
-                err.classList.remove('d-none');
-            }
-        }
-
-        function handleLogout() {
-            if (confirm('هل أنت تأكد من تسجيل الخروج؟')) {
-                localStorage.removeItem(AUTH_STORAGE_KEY);
-                location.reload();
-            }
-        }
-
-        function applyRolePermissions(userObj) {
-            const roleBadge = document.getElementById('roleBadge');
-            roleBadge.textContent = `${userObj.name} (${userObj.role === 'admin' ? 'مدير' : 'مشاهدة'})`;
-
-            const adminElements = document.querySelectorAll('.admin-only');
-            if (userObj.role === 'viewer') {
-                adminElements.forEach(el => el.classList.add('viewer-hide'));
-            } else {
-                adminElements.forEach(el => el.classList.remove('viewer-hide'));
-            }
-        }
-
-        function showLoading(show) {
-            const overlay = document.getElementById('loadingOverlay');
-            if (show) overlay.classList.remove('d-none');
-            else overlay.classList.add('d-none');
-        }
-
-        function showNotification(msg) {
-            document.getElementById('toastMessage').textContent = msg;
-            const toastEl = document.getElementById('liveToast');
-            const toast = new bootstrap.Toast(toastEl);
-            toast.show();
-        }
-
-        function updateNetworkStatus() {
-            const badge = document.getElementById('offlineBadge');
-            if (!navigator.onLine) badge.style.display = 'inline-block';
-            else badge.style.display = 'none';
-        }
-
-        function saveCacheData() {
-            try {
-                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(appData));
-            } catch (e) { console.error("Cache Save Error", e); }
-        }
-
-        function loadCacheData() {
-            try {
-                const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
-                if (cached) {
-                    appData = JSON.parse(cached);
-                    renderAllDataUI();
-                }
-            } catch (e) { console.error("Cache Read Error", e); }
-        }
-
-        function renderAllDataUI() {
-            if(appData.clients && appData.clients.length > 0 && !currentClientId) currentClientId = appData.clients[0].id;
-            if(appData.suppliers && appData.suppliers.length > 0 && !currentSupplierId) currentSupplierId = appData.suppliers[0].id;
-
-            renderClientOptions();
-            loadClientData();
-
-            renderSupplierOptions();
-            loadSupplierData();
-
-            generateNextAutoCode();
-            loadModelsData();
-
-            loadInventoryData();
-            renderInventoryModelDropdown();
-        }
-
-        function generateNextAutoCode() {
-            const count = (appData.models ? appData.models.length : 0) + 1;
-            document.getElementById('modelAutoCode').value = "MDL-" + (1000 + count);
-        }
-
-        async function fetchDataFromGoogleSheets() {
-            updateNetworkStatus();
-            if (!navigator.onLine) return;
-
-            showLoading(true);
-            try {
-                const res = await fetch(SCRIPT_URL);
-                appData = await res.json();
-                saveCacheData();
-                renderAllDataUI();
-            } catch (err) {
-                console.warn("جلب أوفلاين:", err);
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        function calculateTotal(qtyId, priceId, totalId) {
-            const qty = parseFloat(document.getElementById(qtyId).value) || 0;
-            const price = parseFloat(document.getElementById(priceId).value) || 0;
-            document.getElementById(totalId).value = (qty * price).toFixed(2);
-        }
-
-        function renderInventoryModelDropdown() {
-            const select = document.getElementById('txModelSelect');
-            select.innerHTML = '<option value="">بدون خصم مخزون</option>';
-            const inventory = appData.inventory || [];
-            inventory.forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item.modelNumber;
-                opt.textContent = `موديل ${item.modelNumber} (${item.fabric}) - المتبقي: ${item.totalQty - item.outQty} قطعة`;
-                select.appendChild(opt);
-            });
-        }
-
-        function onTxModelSelectChange() {
-            const selectedModelNum = document.getElementById('txModelSelect').value;
-            if (!selectedModelNum) return;
-            const invItem = (appData.inventory || []).find(i => i.modelNumber.toString() === selectedModelNum.toString());
-            if (invItem) {
-                document.getElementById('txDescription').value = `موديل ${invItem.modelNumber} (${invItem.fabric})`;
-                document.getElementById('txPrice').value = invItem.price;
-                calculateTotal('txQuantity', 'txPrice', 'txTotal');
-            }
-        }
-
-        /* CLIENTS FUNCTIONS */
-        function renderClientOptions() {
-            const select = document.getElementById('clientSelect');
-            select.innerHTML = '';
-            if(!appData.clients || appData.clients.length === 0) {
-                select.innerHTML = '<option value="">لا يوجد عملاء حالياً</option>';
-                return;
-            }
-            appData.clients.forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = c.id;
-                opt.textContent = c.name;
-                if(c.id === currentClientId) opt.selected = true;
-                select.appendChild(opt);
-            });
-        }
-
-        async function createNewClient() {
-            if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
-            const name = document.getElementById('newClientName').value.trim();
-            const phone = document.getElementById('newClientPhone').value.trim();
-            if (!name) return alert('أدخل اسم العميل');
-
-            const newClient = { id: Date.now().toString(), name, phone };
-            if(!appData.clients) appData.clients = [];
-            appData.clients.push(newClient);
-            currentClientId = newClient.id;
-
-            saveCacheData();
-            renderClientOptions();
-            loadClientData();
-            bootstrap.Modal.getInstance(document.getElementById('addClientModal')).hide();
-            showNotification('تم إضافة العميل بنجاح');
-
-            if (navigator.onLine) {
-                showLoading(true);
-                try {
-                    await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ action: 'addClient', client: newClient })
-                    });
-                } finally { showLoading(false); }
-            }
-        }
-
-        async function addTransaction(e) {
-            e.preventDefault();
-            if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
-            if(!currentClientId) return alert('اختر عميل أولاً');
-
-            const txType = document.getElementById('txType').value;
-            const selectedModelNum = document.getElementById('txModelSelect').value;
-            const qty = parseFloat(document.getElementById('txQuantity').value) || 0;
-
-            const newTx = {
-                id: Date.now().toString(),
-                clientId: currentClientId,
-                type: txType,
-                date: document.getElementById('txDate').value,
-                modelNumber: selectedModelNum,
-                description: document.getElementById('txDescription').value,
-                quantity: qty,
-                price: parseFloat(document.getElementById('txPrice').value) || 0,
-                total: parseFloat(document.getElementById('txTotal').value) || 0,
-                paid: parseFloat(document.getElementById('txPaid').value) || 0,
-                paymentMethod: document.getElementById('txPaymentMethod').value
-            };
-
-            if(!appData.transactions) appData.transactions = [];
-            appData.transactions.push(newTx);
-
-            if (selectedModelNum && qty > 0) {
-                const invItem = (appData.inventory || []).find(i => i.modelNumber.toString() === selectedModelNum.toString());
-                if (invItem) {
-                    if (txType === 'مرتجع') {
-                        invItem.outQty = Math.max(0, Number(invItem.outQty) - qty);
-                    } else {
-                        invItem.outQty = Number(invItem.outQty) + qty;
-                    }
-                    loadInventoryData();
-                    renderInventoryModelDropdown();
-                }
-            }
-
-            saveCacheData();
-            loadClientData();
-
-            document.getElementById('txType').value = 'بيع';
-            document.getElementById('txModelSelect').value = '';
-            document.getElementById('txDescription').value = '';
-            document.getElementById('txQuantity').value = '0';
-            document.getElementById('txPrice').value = '0';
-            document.getElementById('txTotal').value = '0.00';
-            document.getElementById('txPaid').value = '0';
-
-            showNotification(txType === 'مرتجع' ? 'تم تسجيل المرتجع وإعادة الكمية للمخزون' : 'تم تسجيل فاتورة البيع والخصم من المخزون');
-
-            if (navigator.onLine) {
-                showLoading(true);
-                try {
-                    await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ action: 'addTransaction', tx: newTx })
-                    });
-                } finally { showLoading(false); }
-            }
-        }
-
-        function loadClientData() {
-            currentClientId = document.getElementById('clientSelect').value;
-            const currentClient = appData.clients ? appData.clients.find(c => c.id === currentClientId) : null;
-            document.getElementById('clientNameDisplay').textContent = currentClient ? currentClient.name : '';
-
-            const clientTxs = appData.transactions ? appData.transactions.filter(t => t.clientId === currentClientId) : [];
-            let runningBalance = 0, grandTotal = 0, grandPaid = 0;
-
-            const tableBody = document.getElementById('ledgerTableBody');
-            tableBody.innerHTML = '';
-
-            clientTxs.forEach((tx, idx) => {
-                const isReturn = (tx.type === 'مرتجع');
-
-                if (isReturn) {
-                    grandTotal -= tx.total;
-                    grandPaid -= tx.paid;
-                    runningBalance -= (tx.total - tx.paid);
-                } else {
-                    grandTotal += tx.total;
-                    grandPaid += tx.paid;
-                    runningBalance += (tx.total - tx.paid);
-                }
-
-                const deleteBtnHtml = (currentRole === 'admin') 
-                    ? `<button class="btn btn-sm btn-outline-danger" onclick="deleteTransaction('${tx.id}')"><i class="fa-solid fa-trash"></i></button>`
-                    : `-`;
-
-                const typeBadge = isReturn 
-                    ? `<span class="badge bg-danger ms-1">مرتجع</span>` 
-                    : `<span class="badge bg-success ms-1">بيع</span>`;
-
-                const row = document.createElement('tr');
-                if (isReturn) row.classList.add('table-danger', 'text-dark');
-
-                row.innerHTML = `
-                    <td>${idx + 1}</td>
-                    <td>${tx.date}</td>
-                    <td><span class="badge bg-warning text-dark fs-6">${tx.modelNumber || '-'}</span></td>
-                    <td class="fw-bold">${tx.description} ${typeBadge}</td>
-                    <td>${tx.quantity}</td>
-                    <td>${tx.price.toFixed(2)}</td>
-                    <td class="fw-bold ${isReturn ? 'text-danger' : 'gold-text'}">${isReturn ? '-' : ''}${tx.total.toFixed(2)}</td>
-                    <td class="text-success fw-bold">${isReturn ? '-' : ''}${tx.paid.toFixed(2)}</td>
-                    <td><span class="badge bg-secondary">${tx.paymentMethod}</span></td>
-                    <td class="fw-bold ${runningBalance > 0 ? 'text-danger' : 'text-success'}">${runningBalance.toFixed(2)}</td>
-                    <td class="no-print admin-only">${deleteBtnHtml}</td>
-                `;
-                tableBody.appendChild(row);
-            });
-
-            document.getElementById('totalAmount').textContent = grandTotal.toFixed(2) + ' ج.م';
-            document.getElementById('totalPaid').textContent = grandPaid.toFixed(2) + ' ج.م';
-            document.getElementById('finalBalance').textContent = runningBalance.toFixed(2) + ' ج.م';
-        }
-
-        async function deleteTransaction(txId) {
-            if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
-            if(!confirm('هل أنت تأكد من حذف هذه الحركة؟')) return;
-            
-            const txToDelete = (appData.transactions || []).find(t => t.id === txId);
-            if (txToDelete && txToDelete.modelNumber && txToDelete.quantity > 0) {
-                const invItem = (appData.inventory || []).find(i => i.modelNumber.toString() === txToDelete.modelNumber.toString());
-                if (invItem) {
-                    if (txToDelete.type === 'مرتجع') {
-                        invItem.outQty = Number(invItem.outQty) + txToDelete.quantity;
-                    } else {
-                        invItem.outQty = Math.max(0, Number(invItem.outQty) - txToDelete.quantity);
-                    }
-                    loadInventoryData();
-                    renderInventoryModelDropdown();
-                }
-            }
-
-            appData.transactions = appData.transactions.filter(t => t.id !== txId);
-            saveCacheData();
-            loadClientData();
-            showNotification('تم حذف الحركة وتحديث المخزون');
-
-            if (navigator.onLine) {
-                showLoading(true);
-                try {
-                    await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ action: 'deleteTransaction', id: txId })
-                    });
-                } finally { showLoading(false); }
-            }
-        }
-
-        /* SUPPLIERS FUNCTIONS */
-        function renderSupplierOptions() {
-            const select = document.getElementById('supplierSelect');
-            select.innerHTML = '';
-            if(!appData.suppliers || appData.suppliers.length === 0) {
-                select.innerHTML = '<option value="">لا يوجد موردين حالياً</option>';
-                return;
-            }
-            appData.suppliers.forEach(s => {
-                const opt = document.createElement('option');
-                opt.value = s.id;
-                opt.textContent = `${s.name} (${s.category || 'عام'})`;
-                if(s.id === currentSupplierId) opt.selected = true;
-                select.appendChild(opt);
-            });
-        }
-
-        async function createNewSupplier() {
-            if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
-            const name = document.getElementById('newSupplierName').value.trim();
-            const phone = document.getElementById('newSupplierPhone').value.trim();
-            const category = document.getElementById('newSupplierCategory').value;
-            if (!name) return alert('أدخل اسم المورد');
-
-            const newSupplier = { id: Date.now().toString(), name, phone, category };
-            if(!appData.suppliers) appData.suppliers = [];
-            appData.suppliers.push(newSupplier);
-            currentSupplierId = newSupplier.id;
-
-            saveCacheData();
-            renderSupplierOptions();
-            loadSupplierData();
-            bootstrap.Modal.getInstance(document.getElementById('addSupplierModal')).hide();
-            showNotification('تم إضافة المورد بنجاح');
-
-            if (navigator.onLine) {
-                showLoading(true);
-                try {
-                    await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ action: 'addSupplier', supplier: newSupplier })
-                    });
-                } finally { showLoading(false); }
-            }
-        }
-
-        async function addSupplierTransaction(e) {
-            e.preventDefault();
-            if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
-            if(!currentSupplierId) return alert('اختر مورد أولاً');
-
-            const newTx = {
-                id: Date.now().toString(),
-                supplierId: currentSupplierId,
-                date: document.getElementById('supTxDate').value,
-                description: document.getElementById('supTxDescription').value,
-                quantity: parseFloat(document.getElementById('supTxQuantity').value) || 0,
-                price: parseFloat(document.getElementById('supTxPrice').value) || 0,
-                total: parseFloat(document.getElementById('supTxTotal').value) || 0,
-                paid: parseFloat(document.getElementById('supTxPaid').value) || 0,
-                paymentMethod: document.getElementById('supTxPaymentMethod').value
-            };
-
-            if(!appData.supplierTransactions) appData.supplierTransactions = [];
-            appData.supplierTransactions.push(newTx);
-            saveCacheData();
-            loadSupplierData();
-
-            document.getElementById('supTxDescription').value = '';
-            document.getElementById('supTxQuantity').value = '0';
-            document.getElementById('supTxPrice').value = '0';
-            document.getElementById('supTxTotal').value = '0.00';
-            document.getElementById('supTxPaid').value = '0';
-
-            showNotification('تم حفظ فاتورة التوريد بنجاح');
-
-            if (navigator.onLine) {
-                showLoading(true);
-                try {
-                    await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ action: 'addSupplierTransaction', tx: newTx })
-                    });
-                } finally { showLoading(false); }
-            }
-        }
-
-        function loadSupplierData() {
-            currentSupplierId = document.getElementById('supplierSelect').value;
-            const currentSupplier = appData.suppliers ? appData.suppliers.find(s => s.id === currentSupplierId) : null;
-            document.getElementById('supplierNameDisplay').textContent = currentSupplier ? currentSupplier.name : '';
-
-            const supTxs = appData.supplierTransactions ? appData.supplierTransactions.filter(t => t.supplierId === currentSupplierId) : [];
-            let runningBalance = 0, grandTotal = 0, grandPaid = 0;
-
-            const tableBody = document.getElementById('supLedgerTableBody');
-            tableBody.innerHTML = '';
-
-            supTxs.forEach((tx, idx) => {
-                grandTotal += tx.total;
-                grandPaid += tx.paid;
-                runningBalance += (tx.total - tx.paid);
-
-                const deleteBtnHtml = (currentRole === 'admin') 
-                    ? `<button class="btn btn-sm btn-outline-danger" onclick="deleteSupplierTransaction('${tx.id}')"><i class="fa-solid fa-trash"></i></button>`
-                    : `-`;
-
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${idx + 1}</td>
-                    <td>${tx.date}</td>
-                    <td class="fw-bold">${tx.description}</td>
-                    <td>${tx.quantity}</td>
-                    <td>${tx.price.toFixed(2)}</td>
-                    <td class="gold-text fw-bold">${tx.total.toFixed(2)}</td>
-                    <td class="text-success fw-bold">${tx.paid.toFixed(2)}</td>
-                    <td><span class="badge bg-secondary">${tx.paymentMethod}</span></td>
-                    <td class="fw-bold ${runningBalance > 0 ? 'text-danger' : 'text-success'}">${runningBalance.toFixed(2)}</td>
-                    <td class="no-print admin-only">${deleteBtnHtml}</td>
-                `;
-                tableBody.appendChild(row);
-            });
-
-            document.getElementById('supTotalAmount').textContent = grandTotal.toFixed(2) + ' ج.م';
-            document.getElementById('supTotalPaid').textContent = grandPaid.toFixed(2) + ' ج.م';
-            document.getElementById('supFinalBalance').textContent = runningBalance.toFixed(2) + ' ج.م';
-        }
-
-        async function deleteSupplierTransaction(txId) {
-            if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
-            if(!confirm('هل أنت تأكد من حذف هذه الحركة؟')) return;
-            appData.supplierTransactions = appData.supplierTransactions.filter(t => t.id !== txId);
-            saveCacheData();
-            loadSupplierData();
-            showNotification('تم حذف حركة التوريد');
-
-            if (navigator.onLine) {
-                showLoading(true);
-                try {
-                    await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ action: 'deleteSupplierTransaction', id: txId })
-                    });
-                } finally { showLoading(false); }
-            }
-        }
-
-        /* MODELS FUNCTIONS */
-        function previewModelImage(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) { tempBase64Image = e.target.result; };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        async function addModel(e) {
-            e.preventDefault();
-            if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
-
-            const colors = [];
-            document.querySelectorAll('.model-color-check:checked').forEach(chk => colors.push(chk.value));
-            const otherColors = document.getElementById('modelOtherColors').value.trim();
-            if (otherColors) {
-                otherColors.split(',').forEach(c => {
-                    if (c.trim()) colors.push(c.trim());
-                });
-            }
-
-            const newModel = {
-                id: Date.now().toString(),
-                autoCode: document.getElementById('modelAutoCode').value,
-                modelNumber: document.getElementById('modelNumber').value.trim(),
-                fabric: document.getElementById('modelFabric').value.trim(),
-                colors: colors,
-                fabricConsumption: parseFloat(document.getElementById('modelFabricConsumption').value) || 0,
-                cost: parseFloat(document.getElementById('modelCost').value) || 0,
-                price: parseFloat(document.getElementById('modelPrice').value) || 0,
-                image: tempBase64Image || ""
-            };
-
-            if(!appData.models) appData.models = [];
-            appData.models.push(newModel);
-            saveCacheData();
-
-            generateNextAutoCode();
-            loadModelsData();
-
-            document.getElementById('modelNumber').value = '';
-            document.getElementById('modelFabric').value = '';
-            document.getElementById('modelFabricConsumption').value = '';
-            document.getElementById('modelCost').value = '';
-            document.getElementById('modelPrice').value = '';
-            document.getElementById('modelOtherColors').value = '';
-            document.getElementById('modelImageInput').value = '';
-            document.querySelectorAll('.model-color-check').forEach(chk => chk.checked = false);
-            tempBase64Image = "";
-
-            showNotification('تم إضافة الموديل بنجاح');
-
-            if (navigator.onLine) {
-                showLoading(true);
-                try {
-                    await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ action: 'addModel', model: newModel })
-                    });
-                } finally { showLoading(false); }
-            }
-        }
-
-        function loadModelsData() {
-            const tableBody = document.getElementById('modelsTableBody');
-            tableBody.innerHTML = '';
-
-            const models = appData.models || [];
-            if (models.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="10" class="text-muted">لا يوجد موديلات مسجلة بعد</td></tr>';
-                return;
-            }
-
-            models.forEach((m) => {
-                const margin = (m.price - m.cost);
-                const colorsHtml = (m.colors && m.colors.length > 0) 
-                    ? m.colors.map(c => `<span class="color-badge">${c}</span>`).join(' ')
-                    : '-';
-
-                const imgHtml = m.image 
-                    ? `<img src="${m.image}" class="model-img-thumb" onclick="openImageModal('${m.image}')" title="اضغط للتكبير">` 
-                    : `<span class="text-muted small"><i class="fa-solid fa-image"></i> بدون صورة</span>`;
-
-                const deleteBtnHtml = (currentRole === 'admin') 
-                    ? `<button class="btn btn-sm btn-outline-danger" onclick="deleteModel('${m.id}')"><i class="fa-solid fa-trash"></i></button>`
-                    : `-`;
-
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${imgHtml}</td>
-                    <td><span class="badge bg-warning text-dark fs-6 fw-bold">${m.autoCode || '-'}</span></td>
-                    <td class="fw-bold gold-text">${m.modelNumber}</td>
-                    <td>${m.fabric || '-'}</td>
-                    <td>${colorsHtml}</td>
-                    <td>${m.fabricConsumption ? m.fabricConsumption + ' متر' : '-'}</td>
-                    <td>${m.cost ? m.cost.toFixed(2) + ' ج.م' : '-'}</td>
-                    <td class="text-success fw-bold">${m.price ? m.price.toFixed(2) + ' ج.م' : '-'}</td>
-                    <td class="fw-bold ${margin >= 0 ? 'text-success' : 'text-danger'}">${margin.toFixed(2)} ج.م</td>
-                    <td class="no-print admin-only">${deleteBtnHtml}</td>
-                `;
-                tableBody.appendChild(row);
-            });
-        }
-
-        async function deleteModel(modelId) {
-            if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
-            if(!confirm('هل أنت تأكد من حذف هذا الموديل؟')) return;
-            appData.models = appData.models.filter(m => m.id !== modelId);
-            saveCacheData();
-            loadModelsData();
-            showNotification('تم حذف الموديل');
-
-            if (navigator.onLine) {
-                showLoading(true);
-                try {
-                    await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ action: 'deleteModel', id: modelId })
-                    });
-                } finally { showLoading(false); }
-            }
-        }
-
-        /* INVENTORY FUNCTIONS */
-        function previewInventoryImage(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) { tempInvBase64Image = e.target.result; };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function calcRemainingInventory() {
-            const total = parseInt(document.getElementById('invTotalQty').value) || 0;
-            const outQty = parseInt(document.getElementById('invOutQty').value) || 0;
-            document.getElementById('invRemainingQty').value = (total - outQty);
-        }
-
-        async function addInventoryItem(e) {
-            e.preventDefault();
-            if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
-
-            const total = parseInt(document.getElementById('invTotalQty').value) || 0;
-            const outQty = parseInt(document.getElementById('invOutQty').value) || 0;
-
-            const newItem = {
-                id: Date.now().toString(),
-                modelNumber: document.getElementById('invModelNumber').value.trim(),
-                fabric: document.getElementById('invFabric').value.trim(),
-                totalQty: total,
-                outQty: outQty,
-                price: parseFloat(document.getElementById('invPrice').value) || 0,
-                image: tempInvBase64Image || ""
-            };
-
-            if(!appData.inventory) appData.inventory = [];
-            appData.inventory.push(newItem);
-            saveCacheData();
-
-            loadInventoryData();
-            renderInventoryModelDropdown();
-
-            document.getElementById('invModelNumber').value = '';
-            document.getElementById('invFabric').value = '';
-            document.getElementById('invTotalQty').value = '0';
-            document.getElementById('invOutQty').value = '0';
-            document.getElementById('invRemainingQty').value = '0';
-            document.getElementById('invPrice').value = '';
-            document.getElementById('invImageInput').value = '';
-            tempInvBase64Image = "";
-
-            showNotification('تم إضافة الموديل للمخزون بنجاح');
-
-            if (navigator.onLine) {
-                showLoading(true);
-                try {
-                    await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ action: 'addInventory', item: newItem })
-                    });
-                } finally { showLoading(false); }
-            }
-        }
-
-        function loadInventoryData() {
-            const tableBody = document.getElementById('inventoryTableBody');
-            tableBody.innerHTML = '';
-
-            const inventory = appData.inventory || [];
-            if (inventory.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="9" class="text-muted">لا يوجد موديلات في المخزون بعد</td></tr>';
-                return;
-            }
-
-            inventory.forEach((item) => {
-                const remaining = (item.totalQty - item.outQty);
-                const totalValue = remaining * item.price;
-
-                const imgHtml = item.image 
-                    ? `<img src="${item.image}" class="model-img-thumb" onclick="openImageModal('${item.image}')" title="اضغط للتكبير">` 
-                    : `<span class="text-muted small"><i class="fa-solid fa-image"></i> بدون صورة</span>`;
-
-                const deleteBtnHtml = (currentRole === 'admin') 
-                    ? `<button class="btn btn-sm btn-outline-danger" onclick="deleteInventoryItem('${item.id}')"><i class="fa-solid fa-trash"></i></button>`
-                    : `-`;
-
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${imgHtml}</td>
-                    <td class="fw-bold gold-text fs-6">${item.modelNumber}</td>
-                    <td>${item.fabric}</td>
-                    <td><span class="badge bg-secondary fs-6">${item.totalQty}</span></td>
-                    <td><span class="badge bg-danger fs-6">${item.outQty}</span></td>
-                    <td><span class="badge ${remaining > 0 ? 'bg-success' : 'bg-warning text-dark'} fs-6">${remaining}</span></td>
-                    <td class="fw-bold">${item.price.toFixed(2)} ج.م</td>
-                    <td class="gold-text fw-bold">${totalValue.toFixed(2)} ج.م</td>
-                    <td class="no-print admin-only">${deleteBtnHtml}</td>
-                `;
-                tableBody.appendChild(row);
-            });
-        }
-
-        async function deleteInventoryItem(id) {
-            if (currentRole !== 'admin') return alert('ليس لديك صلاحية لإجراء هذه العملية!');
-            if(!confirm('هل أنت تأكد من حذف حركة المخزون هذه؟')) return;
-            appData.inventory = appData.inventory.filter(i => i.id !== id);
-            saveCacheData();
-            loadInventoryData();
-            renderInventoryModelDropdown();
-            showNotification('تم حذف الموديل من المخزون');
-
-            if (navigator.onLine) {
-                showLoading(true);
-                try {
-                    await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ action: 'deleteInventory', id: id })
-                    });
-                } finally { showLoading(false); }
-            }
-        }
-
-        function openImageModal(imgSrc) {
-            document.getElementById('modalPreviewImg').src = imgSrc;
-            new bootstrap.Modal(document.getElementById('imagePreviewModal')).show();
-        }
-    </script>
-</body>
-</html>
+                document.getEl

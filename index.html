@@ -853,9 +853,10 @@
         const LOCAL_STORAGE_KEY = "TREND_MAN_APP_DATA_CACHE";
         const AUTH_STORAGE_KEY = "TREND_MAN_AUTH_USER";
 
+        // بيانات الدخول المحدثة
         const USERS = {
-            "admin": { pass: "admin123", role: "admin", name: "مدير النظام" },
-            "user": { pass: "user123", role: "viewer", name: "مشاهدة فقط" }
+            "trend_admin": { pass: "trend@2026", role: "admin", name: "مدير النظام" },
+            "trend_user": { pass: "user@2026", role: "viewer", name: "مشاهدة فقط" }
         };
 
         let currentRole = null;
@@ -1515,4 +1516,301 @@
             const supplier = appData.suppliers.find(s => s.id == currentSupplierId);
             const supplierName = supplier ? supplier.name : "مورد";
             
-            const fromDate = document.getElementById('sup
+            const fromDate = document.getElementById('supFromDate').value;
+            const toDate = document.getElementById('supToDate').value;
+            
+            let txs = appData.supplierTransactions.filter(t => t.supplierId == currentSupplierId);
+            if (fromDate) txs = txs.filter(t => t.date >= fromDate);
+            if (toDate) txs = txs.filter(t => t.date <= toDate);
+
+            if (txs.length === 0) {
+                showNotification("لا توجد حركات لتصديرها!");
+                return;
+            }
+
+            let runningBalance = 0;
+            const dataToExport = txs.map((t, index) => {
+                const total = parseFloat(t.total) || 0;
+                const paid = parseFloat(t.paid) || 0;
+                const net = total - paid;
+                runningBalance += net;
+
+                return {
+                    "م": index + 1,
+                    "التاريخ": String(t.date),
+                    "البيان": t.description,
+                    "الكمية/الأمتار": t.quantity,
+                    "السعر": t.price,
+                    "الإجمالي": total,
+                    "المسدد له": paid,
+                    "طريقة السداد": t.paymentMethod,
+                    "المتبقي للمورد": runningBalance
+                };
+            });
+
+            const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "كشف حساب المورد");
+            
+            XLSX.writeFile(workbook, `كشف_حساب_مورد_${supplierName}_${new Date().toISOString().slice(0,10)}.xlsx`);
+            showNotification("تم تصدير ملف Excel بنجاح!");
+        }
+
+        function importSupplierExcel(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!currentSupplierId) {
+                showNotification("الرجاء اختيار المورد أولاً!");
+                e.target.value = "";
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const data = new Uint8Array(evt.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const json = XLSX.utils.sheet_to_json(worksheet);
+
+                    if (json.length === 0) {
+                        showNotification("الملف فارغ أو غير صالح!");
+                        return;
+                    }
+
+                    let importedCount = 0;
+                    json.forEach(row => {
+                        const date = row["التاريخ"] || row["Date"] || new Date().toISOString().slice(0,10);
+                        const description = row["البيان"] || row["Description"] || "استيراد Excel";
+                        const quantity = parseFloat(row["الكمية/الأمتار"] || row["Quantity"] || 1);
+                        const price = parseFloat(row["السعر"] || row["Price"] || 0);
+                        const total = quantity * price;
+                        const paid = parseFloat(row["المسدد له"] || row["Paid"] || 0);
+                        const paymentMethod = row["طريقة السداد"] || row["PaymentMethod"] || "نقدي";
+
+                        const newTx = {
+                            id: 'STX_' + Date.now() + '_' + Math.floor(Math.random()*1000),
+                            supplierId: currentSupplierId,
+                            date: date,
+                            description: description,
+                            quantity: quantity,
+                            price: price,
+                            total: total,
+                            paid: paid,
+                            paymentMethod: paymentMethod
+                        };
+
+                        appData.supplierTransactions.push(newTx);
+                        importedCount++;
+                    });
+
+                    saveCacheData();
+                    loadSupplierData();
+                    showNotification(`تم استيراد ${importedCount} حركة للمورد بنجاح!`);
+                } catch (err) {
+                    console.error(err);
+                    showNotification("حدث خطأ أثناء قراءة ملف Excel!");
+                }
+                e.target.value = "";
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        /* ==================== COMMON UTILS ==================== */
+        function calculateTotal(qtyId, priceId, totalId) {
+            const q = parseFloat(document.getElementById(qtyId).value) || 0;
+            const p = parseFloat(document.getElementById(priceId).value) || 0;
+            document.getElementById(totalId).value = (q * p).toFixed(2);
+        }
+
+        function previewModelImage(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) { tempBase64Image = evt.target.result; };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function previewInventoryImage(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) { tempInvBase64Image = evt.target.result; };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function calcRemainingInventory() {
+            const total = parseFloat(document.getElementById('invTotalQty').value) || 0;
+            const out = parseFloat(document.getElementById('invOutQty').value) || 0;
+            document.getElementById('invRemainingQty').value = Math.max(0, total - out);
+        }
+
+        function addModel(e) {
+            e.preventDefault();
+            const autoCode = document.getElementById('modelAutoCode').value;
+            const number = document.getElementById('modelNumber').value.trim();
+            const fabric = document.getElementById('modelFabric').value.trim();
+            const consumption = parseFloat(document.getElementById('modelFabricConsumption').value) || 0;
+            const cost = parseFloat(document.getElementById('modelCost').value) || 0;
+            const price = parseFloat(document.getElementById('modelPrice').value) || 0;
+
+            let colors = [];
+            document.querySelectorAll('.model-color-check:checked').forEach(cb => colors.push(cb.value));
+            const otherColors = document.getElementById('modelOtherColors').value.trim();
+            if (otherColors) {
+                otherColors.split(',').forEach(c => { if(c.trim()) colors.push(c.trim()); });
+            }
+
+            const modelObj = {
+                id: 'M_' + Date.now(),
+                autoCode, number, fabric, colors: colors.join(', '), consumption, cost, price,
+                image: tempBase64Image
+            };
+
+            if (!appData.models) appData.models = [];
+            appData.models.push(modelObj);
+
+            sendDataToGoogleSheets({ action: "saveModel", data: modelObj });
+            loadModelsData();
+            generateNextAutoCode();
+
+            document.getElementById('modelForm').reset();
+            tempBase64Image = "";
+            showNotification("تم حفظ الموديل بنجاح!");
+        }
+
+        function loadModelsData() {
+            const tbody = document.getElementById('modelsTableBody');
+            tbody.innerHTML = "";
+            if (!appData.models || appData.models.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="10" class="text-secondary py-4">لا توجد موديلات مسجلة</td></tr>';
+                return;
+            }
+
+            appData.models.forEach((m, idx) => {
+                const profit = m.price - m.cost;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><img src="${m.image || 'https://via.placeholder.com/50'}" class="model-img-thumb" onclick="showImageModal('${m.image || ''}')"></td>
+                    <td><span class="badge bg-warning text-dark fw-bold">${m.autoCode}</span></td>
+                    <td class="fw-bold">${m.number}</td>
+                    <td>${m.fabric}</td>
+                    <td>${m.colors}</td>
+                    <td>${m.consumption} متر</td>
+                    <td>${m.cost} ج.م</td>
+                    <td class="text-warning fw-bold">${m.price} ج.م</td>
+                    <td class="text-success fw-bold">${profit} ج.م</td>
+                    <td class="no-print admin-only">
+                        <button class="btn btn-outline-danger btn-sm rounded-3" onclick="deleteModel('${m.id}')"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function deleteModel(id) {
+            if (!confirm("هل أنت متأكد من حذف الموديل؟")) return;
+            appData.models = appData.models.filter(m => m.id != id);
+            sendDataToGoogleSheets({ action: "deleteModel", id });
+            loadModelsData();
+            showNotification("تم حذف الموديل بنجاح!");
+        }
+
+        function addInventoryItem(e) {
+            e.preventDefault();
+            const modelNumber = document.getElementById('invModelNumber').value.trim();
+            const fabric = document.getElementById('invFabric').value.trim();
+            const totalQty = parseFloat(document.getElementById('invTotalQty').value) || 0;
+            const outQty = parseFloat(document.getElementById('invOutQty').value) || 0;
+            const price = parseFloat(document.getElementById('invPrice').value) || 0;
+
+            const invObj = {
+                id: 'INV_' + Date.now(),
+                modelNumber, fabric, totalQty, outQty, price,
+                image: tempInvBase64Image
+            };
+
+            if (!appData.inventory) appData.inventory = [];
+            appData.inventory.push(invObj);
+
+            sendDataToGoogleSheets({ action: "saveInventory", data: invObj });
+            loadInventoryData();
+
+            document.getElementById('inventoryForm').reset();
+            tempInvBase64Image = "";
+            showNotification("تم حفظ المخزون بنجاح!");
+        }
+
+        function loadInventoryData() {
+            const tbody = document.getElementById('inventoryTableBody');
+            tbody.innerHTML = "";
+            if (!appData.inventory || appData.inventory.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-secondary py-4">لا توجد بيانات مخزون مسجلة</td></tr>';
+                return;
+            }
+
+            appData.inventory.forEach(i => {
+                const remaining = Math.max(0, (parseFloat(i.totalQty) || 0) - (parseFloat(i.outQty) || 0));
+                const totalValue = remaining * (parseFloat(i.price) || 0);
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><img src="${i.image || 'https://via.placeholder.com/50'}" class="model-img-thumb" onclick="showImageModal('${i.image || ''}')"></td>
+                    <td class="fw-bold">${i.modelNumber}</td>
+                    <td>${i.fabric}</td>
+                    <td class="text-warning fw-bold">${i.totalQty}</td>
+                    <td class="text-danger fw-bold">${i.outQty}</td>
+                    <td class="text-success fw-bold fs-5">${remaining}</td>
+                    <td>${i.price} ج.م</td>
+                    <td class="text-warning fw-bold">${totalValue.toFixed(2)} ج.م</td>
+                    <td class="no-print admin-only">
+                        <button class="btn btn-outline-danger btn-sm rounded-3" onclick="deleteInventory('${i.id}')"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function deleteInventory(id) {
+            if (!confirm("هل أنت متأكد من حذف هذا الصنف من المخزون؟")) return;
+            appData.inventory = appData.inventory.filter(i => i.id != id);
+            sendDataToGoogleSheets({ action: "deleteInventory", id });
+            loadInventoryData();
+            showNotification("تم حذف الصنف بنجاح!");
+        }
+
+        function renderInventoryModelDropdown() {
+            const select = document.getElementById('txModelSelect');
+            select.innerHTML = '<option value="">بدون خصم مخزون</option>';
+            if (appData.inventory && appData.inventory.length > 0) {
+                appData.inventory.forEach(i => {
+                    const opt = document.createElement('option');
+                    opt.value = i.modelNumber;
+                    opt.textContent = `موديل ${i.modelNumber} (${i.fabric}) - متبقي: ${Math.max(0, i.totalQty - i.outQty)}`;
+                    select.appendChild(opt);
+                });
+            }
+        }
+
+        function onTxModelSelectChange() {
+            const val = document.getElementById('txModelSelect').value;
+            if (!val || !appData.inventory) return;
+            const inv = appData.inventory.find(i => i.modelNumber == val);
+            if (inv) {
+                document.getElementById('txDescription').value = `موديل رقم ${inv.modelNumber} (${inv.fabric})`;
+                document.getElementById('txPrice').value = inv.price || 0;
+            }
+        }
+
+        function showImageModal(src) {
+            if (!src) return;
+            document.getElementById('modalPreviewImg').src = src;
+            new bootstrap.Modal(document.getElementById('imagePreviewModal')).show();
+        }
+    </script>
+</body>
+</html>

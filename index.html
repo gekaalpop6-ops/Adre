@@ -333,13 +333,16 @@
             <!-- SECTION 1: CLIENTS -->
             <div class="tab-pane fade show active" id="clients-section" role="tabpanel">
                 <div class="row no-print mb-3">
-                    <div class="col-md-10">
+                    <div class="col-md-12">
                         <div class="card p-3">
                             <label for="clientSelect" class="form-label fw-bold gold-text">اختر العميل:</label>
                             <div class="d-flex gap-2 flex-wrap">
                                 <select id="clientSelect" class="form-select form-select-lg fw-bold" style="flex: 1; min-width: 200px;" onchange="loadClientData()"></select>
                                 <button class="btn btn-gold text-nowrap admin-only" data-bs-toggle="modal" data-bs-target="#addClientModal">
                                     <i class="fa-solid fa-user-plus me-1"></i> عميل جديد
+                                </button>
+                                <button class="btn btn-outline-warning text-nowrap admin-only" onclick="clearCurrentClientAccount()">
+                                    <i class="fa-solid fa-eraser me-1"></i> تصفير الحساب
                                 </button>
                                 <button class="btn btn-outline-danger text-nowrap admin-only" onclick="deleteCurrentClientAccount()">
                                     <i class="fa-solid fa-user-xmark me-1"></i> حذف الحساب
@@ -1058,6 +1061,37 @@
             showNotification("تم إضافة العميل بنجاح!");
         }
 
+        // دالة تصفير حساب العميل الحالي بكلمة مرور 123
+        function clearCurrentClientAccount() {
+            if (!currentClientId) {
+                showNotification("الرجاء اختيار العميل أولاً!");
+                return;
+            }
+
+            const client = appData.clients.find(c => c.id == currentClientId);
+            const clientName = client ? client.name : "العميل";
+
+            const password = prompt(`أدخل كلمة المرور لتأكيد تصفير حساب العميل "${clientName}":`);
+            if (password === null) return;
+
+            if (password !== "123") {
+                alert("كلمة المرور غير صحيحة! تم إلغاء عملية التصفير.");
+                return;
+            }
+
+            if (!confirm(`تحذير: سيتم حذف جميع حركات وفواتير العميل "${clientName}" ليصبح رصيده صفراً. هل أنت متأكد؟`)) {
+                return;
+            }
+
+            // حذف حركات هذا العميل فقط وإبقاء العميل نفسه
+            appData.transactions = appData.transactions.filter(t => t.clientId != currentClientId);
+
+            sendDataToGoogleSheets({ action: "clearClientTransactions", clientId: currentClientId, remainingTransactions: appData.transactions });
+            
+            loadClientData();
+            showNotification("تم تصفير حساب العميل بنجاح!");
+        }
+
         // دالة حذف حساب العميل بالكامل مع طلب كلمة المرور 123
         function deleteCurrentClientAccount() {
             if (!currentClientId) {
@@ -1069,7 +1103,7 @@
             const clientName = client ? client.name : "العميل";
 
             const password = prompt(`أدخل كلمة المرور لتأكيد حذف حساب العميل "${clientName}" بالكامل:`);
-            if (password === null) return; // المستخدم ضغط إلغاء
+            if (password === null) return;
 
             if (password !== "123") {
                 alert("كلمة المرور غير صحيحة! تم إلغاء عملية الحذف.");
@@ -1080,12 +1114,9 @@
                 return;
             }
 
-            // حذف حركات العميل المرتبطة
             appData.transactions = appData.transactions.filter(t => t.clientId != currentClientId);
-            // حذف العميل نفسه
             appData.clients = appData.clients.filter(c => c.id != currentClientId);
 
-            // تحديث العميل الحالي تلقائياً لأول عميل متبقي إن وجد
             currentClientId = appData.clients.length > 0 ? appData.clients[0].id : null;
 
             sendDataToGoogleSheets({ action: "deleteClientAccount", clientId: currentClientId, remainingClients: appData.clients, remainingTransactions: appData.transactions });

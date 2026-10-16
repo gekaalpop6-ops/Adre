@@ -32,28 +32,6 @@
             min-height: 100vh;
         }
 
-        /* Login Screen Overlay */
-        .login-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(11, 15, 23, 0.96);
-            backdrop-filter: blur(10px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-        }
-
-        .login-card {
-            width: 100%;
-            max-width: 420px;
-            background: var(--card-bg);
-            border: 2px solid var(--gold-primary);
-            border-radius: 20px;
-            padding: 2.5rem 2rem;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.25);
-        }
-
         /* Gold Header & Branding */
         .app-header {
             background: linear-gradient(180deg, #05080c 0%, #111827 100%);
@@ -215,10 +193,6 @@
             z-index: 10000;
         }
 
-        .viewer-hide {
-            display: none !important;
-        }
-
         @media print {
             .no-print { display: none !important; }
             body { background-color: white; color: black; }
@@ -229,32 +203,6 @@
     </style>
 </head>
 <body>
-
-    <!-- Login Screen Modal -->
-    <div id="loginOverlay" class="login-overlay">
-        <div class="login-card text-center">
-            <div class="brand-logo-container mb-3 d-inline-block">
-                <svg class="brand-logo" viewBox="0 0 450 160" xmlns="http://www.w3.org/2000/svg">
-                    <text x="10" y="125" font-family="'Cairo', sans-serif" font-weight="900" font-size="135" fill="#0b0f17" letter-spacing="-3">TM</text>
-                </svg>
-            </div>
-            <h3 class="gold-text mb-1">TREND MAN</h3>
-            <p class="text-secondary small mb-4">تسجيل الدخول للنظام الإداري</p>
-            
-            <form id="loginForm" onsubmit="handleLogin(event)">
-                <div class="mb-3 text-start">
-                    <label class="form-label text-warning small fw-bold">اسم المستخدم</label>
-                    <input type="text" id="loginUsername" class="form-control form-control-lg" placeholder="اسم المستخدم" required>
-                </div>
-                <div class="mb-4 text-start">
-                    <label class="form-label text-warning small fw-bold">كلمة المرور</label>
-                    <input type="password" id="loginPassword" class="form-control form-control-lg" placeholder="كلمة المرور" required>
-                </div>
-                <div id="loginError" class="alert alert-danger p-2 small d-none">بيانات الدخول غير صحيحة!</div>
-                <button type="submit" class="btn btn-gold w-100 py-3 fs-5"><i class="fa-solid fa-right-to-bracket me-2"></i> دخول النظام</button>
-            </form>
-        </div>
-    </div>
 
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay d-none">
@@ -291,13 +239,10 @@
                 </div>
             </div>
             <div class="d-flex align-items-center gap-2">
-                <span id="roleBadge" class="badge bg-warning text-dark px-3 py-2 fw-bold"></span>
+                <span id="roleBadge" class="badge bg-warning text-dark px-3 py-2 fw-bold">مدير النظام</span>
                 <span id="offlineBadge" class="offline-status-badge"><i class="fa-solid fa-wifi-slash me-1"></i> أوفلاين</span>
                 <button class="btn btn-outline-warning btn-sm px-3 rounded-3" onclick="window.print()">
                     <i class="fa-solid fa-print me-1"></i> طباعة
-                </button>
-                <button class="btn btn-outline-danger btn-sm px-3 rounded-3 ms-2" onclick="handleLogout()">
-                    <i class="fa-solid fa-right-from-bracket me-1"></i> خروج
                 </button>
             </div>
         </div>
@@ -338,13 +283,13 @@
                             <label for="clientSelect" class="form-label fw-bold gold-text">اختر العميل:</label>
                             <div class="d-flex gap-2 flex-wrap">
                                 <select id="clientSelect" class="form-select form-select-lg fw-bold" style="flex: 1; min-width: 200px;" onchange="loadClientData()"></select>
-                                <button class="btn btn-gold text-nowrap admin-only" data-bs-toggle="modal" data-bs-target="#addClientModal">
+                                <button class="btn btn-gold text-nowrap" data-bs-toggle="modal" data-bs-target="#addClientModal">
                                     <i class="fa-solid fa-user-plus me-1"></i> عميل جديد
                                 </button>
-                                <button class="btn btn-outline-warning text-nowrap admin-only" onclick="clearCurrentClientAccount()">
+                                <button class="btn btn-outline-warning text-nowrap" onclick="clearCurrentClientAccount()">
                                     <i class="fa-solid fa-eraser me-1"></i> تصفير الحساب
                                 </button>
-                                <button class="btn btn-outline-danger text-nowrap admin-only" onclick="deleteCurrentClientAccount()">
+                                <button class="btn btn-outline-danger text-nowrap" onclick="deleteCurrentClientAccount()">
                                     <i class="fa-solid fa-user-xmark me-1"></i> حذف الحساب
                                 </button>
                             </div>
@@ -374,8 +319,8 @@
                     </div>
                 </div>
 
-                <!-- Client Form (Admin Only) -->
-                <div class="card p-4 no-print mb-4 admin-only">
+                <!-- Client Form -->
+                <div class="card p-4 no-print mb-4">
                     <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-cart-plus me-2"></i>تسجيل حركة بيع / مرتجع</h5>
                     <form id="transactionForm" onsubmit="addTransaction(event)">
                         <div class="row g-3">
@@ -455,7 +400,7 @@
                             <h5 class="fw-bold mb-0 gold-text"><i class="fa-solid fa-receipt me-2"></i>كشف حساب العميل</h5>
                             <span id="clientNameDisplay" class="badge bg-warning text-dark fs-6 px-3 py-2 fw-bold mt-1"></span>
                         </div>
-                        <div class="d-flex gap-2 no-print admin-only">
+                        <div class="d-flex gap-2 no-print">
                             <button class="btn btn-outline-success btn-sm fw-bold" onclick="exportClientExcel()"><i class="fa-solid fa-file-excel me-1"></i> تصدير Excel</button>
                             <label class="btn btn-outline-info btn-sm fw-bold mb-0" style="cursor: pointer;">
                                 <i class="fa-solid fa-file-import me-1"></i> استيراد Excel
@@ -477,7 +422,7 @@
                                     <th>المقبوضات</th>
                                     <th>الطريقة</th>
                                     <th>الرصيد المتبقي</th>
-                                    <th class="no-print admin-only">إجراء</th>
+                                    <th class="no-print">إجراء</th>
                                 </tr>
                             </thead>
                             <tbody id="ledgerTableBody"></tbody>
@@ -494,7 +439,7 @@
                             <label for="supplierSelect" class="form-label fw-bold gold-text">اختر المورد / الشركة:</label>
                             <div class="d-flex gap-2">
                                 <select id="supplierSelect" class="form-select form-select-lg fw-bold" onchange="loadSupplierData()"></select>
-                                <button class="btn btn-gold text-nowrap admin-only" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
+                                <button class="btn btn-gold text-nowrap" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
                                     <i class="fa-solid fa-truck-arrow-right me-1"></i> مورد جديد
                                 </button>
                             </div>
@@ -524,8 +469,8 @@
                     </div>
                 </div>
 
-                <!-- Supplier Form (Admin Only) -->
-                <div class="card p-4 no-print mb-4 admin-only">
+                <!-- Supplier Form -->
+                <div class="card p-4 no-print mb-4">
                     <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-file-invoice-dollar me-2"></i>إضافة توريد من مورد</h5>
                     <form id="supTransactionForm" onsubmit="addSupplierTransaction(event)">
                         <div class="row g-3">
@@ -592,7 +537,7 @@
                             <h5 class="fw-bold mb-0 gold-text"><i class="fa-solid fa-file-contract me-2"></i>كشف حساب المورد</h5>
                             <span id="supplierNameDisplay" class="badge bg-warning text-dark fs-6 px-3 py-2 fw-bold mt-1"></span>
                         </div>
-                        <div class="d-flex gap-2 no-print admin-only">
+                        <div class="d-flex gap-2 no-print">
                             <button class="btn btn-outline-success btn-sm fw-bold" onclick="exportSupplierExcel()"><i class="fa-solid fa-file-excel me-1"></i> تصدير Excel</button>
                             <label class="btn btn-outline-info btn-sm fw-bold mb-0" style="cursor: pointer;">
                                 <i class="fa-solid fa-file-import me-1"></i> استيراد Excel
@@ -613,7 +558,7 @@
                                     <th>المسدد له</th>
                                     <th>طريقة السداد</th>
                                     <th>المتبقي للمورد</th>
-                                    <th class="no-print admin-only">إجراء</th>
+                                    <th class="no-print">إجراء</th>
                                 </tr>
                             </thead>
                             <tbody id="supLedgerTableBody"></tbody>
@@ -624,7 +569,7 @@
 
             <!-- SECTION 3: MODELS STATEMENT -->
             <div class="tab-pane fade" id="models-section" role="tabpanel">
-                <div class="card p-4 no-print mb-4 admin-only">
+                <div class="card p-4 no-print mb-4">
                     <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-shirt me-2"></i>إضافة موديل تصنيع جديد</h5>
                     <form id="modelForm" onsubmit="addModel(event)">
                         <div class="row g-3">
@@ -709,7 +654,7 @@
                                     <th>تكلفة القطعة</th>
                                     <th>سعر البيع</th>
                                     <th>هامش الربح</th>
-                                    <th class="no-print admin-only">إجراء</th>
+                                    <th class="no-print">إجراء</th>
                                 </tr>
                             </thead>
                             <tbody id="modelsTableBody"></tbody>
@@ -720,7 +665,7 @@
 
             <!-- SECTION 4: INVENTORY -->
             <div class="tab-pane fade" id="inventory-section" role="tabpanel">
-                <div class="card p-4 no-print mb-4 admin-only">
+                <div class="card p-4 no-print mb-4">
                     <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-boxes-stacked me-2"></i>تسجيل مخزون موديل</h5>
                     <form id="inventoryForm" onsubmit="addInventoryItem(event)">
                         <div class="row g-3">
@@ -776,7 +721,7 @@
                                     <th>المتبقي بالمخزون</th>
                                     <th>سعر البيع</th>
                                     <th>إجمالي قيمة المتبقي</th>
-                                    <th class="no-print admin-only">إجراء</th>
+                                    <th class="no-print">إجراء</th>
                                 </tr>
                             </thead>
                             <tbody id="inventoryTableBody"></tbody>
@@ -851,15 +796,7 @@
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyk0y9j1rCF79CE1PR0v-KCNfjciteBag1B590WBHP6xBPnGDHJQtpz3mBUD_m8r-aG/exec";
         const LOCAL_STORAGE_KEY = "TREND_MAN_APP_DATA_CACHE";
-        const AUTH_STORAGE_KEY = "TREND_MAN_AUTH_USER";
 
-        // بيانات الدخول المحدثة
-        const USERS = {
-            "trend_admin": { pass: "trend@2026", role: "admin", name: "مدير النظام" },
-            "trend_user": { pass: "user@2026", role: "viewer", name: "مشاهدة فقط" }
-        };
-
-        let currentRole = null;
         let appData = { clients: [], transactions: [], suppliers: [], supplierTransactions: [], models: [], inventory: [] };
         let currentClientId = null;
         let currentSupplierId = null;
@@ -873,59 +810,9 @@
             window.addEventListener('online', updateNetworkStatus);
             window.addEventListener('offline', updateNetworkStatus);
 
-            checkAuthSession();
+            loadCacheData();
+            fetchDataFromGoogleSheets();
         });
-
-        function checkAuthSession() {
-            const savedUser = localStorage.getItem(AUTH_STORAGE_KEY);
-            if (savedUser && USERS[savedUser]) {
-                currentRole = USERS[savedUser].role;
-                document.getElementById('loginOverlay').classList.add('d-none');
-                applyRolePermissions(USERS[savedUser]);
-                loadCacheData();
-                fetchDataFromGoogleSheets();
-            } else {
-                document.getElementById('loginOverlay').classList.remove('d-none');
-            }
-        }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const u = document.getElementById('loginUsername').value.trim();
-            const p = document.getElementById('loginPassword').value.trim();
-            const err = document.getElementById('loginError');
-
-            if (USERS[u] && USERS[u].pass === p) {
-                err.classList.add('d-none');
-                localStorage.setItem(AUTH_STORAGE_KEY, u);
-                currentRole = USERS[u].role;
-                document.getElementById('loginOverlay').classList.add('d-none');
-                applyRolePermissions(USERS[u]);
-                loadCacheData();
-                fetchDataFromGoogleSheets();
-            } else {
-                err.classList.remove('d-none');
-            }
-        }
-
-        function handleLogout() {
-            if (confirm('هل أنت تأكد من تسجيل الخروج؟')) {
-                localStorage.removeItem(AUTH_STORAGE_KEY);
-                location.reload();
-            }
-        }
-
-        function applyRolePermissions(userObj) {
-            const roleBadge = document.getElementById('roleBadge');
-            roleBadge.textContent = `${userObj.name} (${userObj.role === 'admin' ? 'مدير' : 'مشاهدة'})`;
-
-            const adminElements = document.querySelectorAll('.admin-only');
-            if (userObj.role === 'viewer') {
-                adminElements.forEach(el => el.classList.add('viewer-hide'));
-            } else {
-                adminElements.forEach(el => el.classList.remove('viewer-hide'));
-            }
-        }
 
         function showLoading(show) {
             const overlay = document.getElementById('loadingOverlay');
@@ -1179,7 +1066,7 @@
                         <td class="text-success fw-bold">${paid} ج.م</td>
                         <td><span class="badge bg-dark border border-secondary">${t.paymentMethod}</span></td>
                         <td class="fw-bold ${runningBalance > 0 ? 'text-danger' : 'text-success'}">${runningBalance.toFixed(2)} ج.م</td>
-                        <td class="no-print admin-only">
+                        <td class="no-print">
                             <button class="btn btn-outline-danger btn-sm rounded-3" onclick="deleteTransaction('${t.id}')">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
@@ -1192,10 +1079,6 @@
             document.getElementById('totalAmount').textContent = totalAmt.toFixed(2) + " ج.م";
             document.getElementById('totalPaid').textContent = totalPd.toFixed(2) + " ج.م";
             document.getElementById('finalBalance').textContent = runningBalance.toFixed(2) + " ج.م";
-
-            if(currentRole === 'viewer') {
-                document.querySelectorAll('.admin-only').forEach(el => el.classList.add('viewer-hide'));
-            }
         }
 
         function resetClientFilter() {
@@ -1449,7 +1332,7 @@
                         <td class="text-success fw-bold">${paid} ج.م</td>
                         <td><span class="badge bg-dark border border-secondary">${t.paymentMethod}</span></td>
                         <td class="fw-bold ${runningBalance > 0 ? 'text-danger' : 'text-success'}">${runningBalance.toFixed(2)} ج.م</td>
-                        <td class="no-print admin-only">
+                        <td class="no-print">
                             <button class="btn btn-outline-danger btn-sm rounded-3" onclick="deleteSupplierTransaction('${t.id}')">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
@@ -1462,10 +1345,6 @@
             document.getElementById('supTotalAmount').textContent = totalAmt.toFixed(2) + " ج.م";
             document.getElementById('supTotalPaid').textContent = totalPd.toFixed(2) + " ج.م";
             document.getElementById('supFinalBalance').textContent = runningBalance.toFixed(2) + " ج.م";
-
-            if(currentRole === 'viewer') {
-                document.querySelectorAll('.admin-only').forEach(el => el.classList.add('viewer-hide'));
-            }
         }
 
         function resetSupplierFilter() {
@@ -1704,7 +1583,7 @@
                     <td>${m.cost} ج.م</td>
                     <td class="text-warning fw-bold">${m.price} ج.م</td>
                     <td class="text-success fw-bold">${profit} ج.م</td>
-                    <td class="no-print admin-only">
+                    <td class="no-print">
                         <button class="btn btn-outline-danger btn-sm rounded-3" onclick="deleteModel('${m.id}')"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;
@@ -1767,7 +1646,7 @@
                     <td class="text-success fw-bold fs-5">${remaining}</td>
                     <td>${i.price} ج.م</td>
                     <td class="text-warning fw-bold">${totalValue.toFixed(2)} ج.م</td>
-                    <td class="no-print admin-only">
+                    <td class="no-print">
                         <button class="btn btn-outline-danger btn-sm rounded-3" onclick="deleteInventory('${i.id}')"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;

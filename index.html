@@ -333,13 +333,16 @@
             <!-- SECTION 1: CLIENTS -->
             <div class="tab-pane fade show active" id="clients-section" role="tabpanel">
                 <div class="row no-print mb-3">
-                    <div class="col-md-8">
+                    <div class="col-md-10">
                         <div class="card p-3">
                             <label for="clientSelect" class="form-label fw-bold gold-text">اختر العميل:</label>
-                            <div class="d-flex gap-2">
-                                <select id="clientSelect" class="form-select form-select-lg fw-bold" onchange="loadClientData()"></select>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <select id="clientSelect" class="form-select form-select-lg fw-bold" style="flex: 1; min-width: 200px;" onchange="loadClientData()"></select>
                                 <button class="btn btn-gold text-nowrap admin-only" data-bs-toggle="modal" data-bs-target="#addClientModal">
                                     <i class="fa-solid fa-user-plus me-1"></i> عميل جديد
+                                </button>
+                                <button class="btn btn-outline-danger text-nowrap admin-only" onclick="deleteCurrentClientAccount()">
+                                    <i class="fa-solid fa-user-xmark me-1"></i> حذف الحساب
                                 </button>
                             </div>
                         </div>
@@ -1055,6 +1058,43 @@
             showNotification("تم إضافة العميل بنجاح!");
         }
 
+        // دالة حذف حساب العميل بالكامل مع طلب كلمة المرور 123
+        function deleteCurrentClientAccount() {
+            if (!currentClientId) {
+                showNotification("الرجاء اختيار العميل المراد حذفه أولاً!");
+                return;
+            }
+
+            const client = appData.clients.find(c => c.id == currentClientId);
+            const clientName = client ? client.name : "العميل";
+
+            const password = prompt(`أدخل كلمة المرور لتأكيد حذف حساب العميل "${clientName}" بالكامل:`);
+            if (password === null) return; // المستخدم ضغط إلغاء
+
+            if (password !== "123") {
+                alert("كلمة المرور غير صحيحة! تم إلغاء عملية الحذف.");
+                return;
+            }
+
+            if (!confirm(`تحذير: سيتم حذف حساب العميل "${clientName}" وجميع حركاته وفواتيره نهائياً. هل أنت متأكد؟`)) {
+                return;
+            }
+
+            // حذف حركات العميل المرتبطة
+            appData.transactions = appData.transactions.filter(t => t.clientId != currentClientId);
+            // حذف العميل نفسه
+            appData.clients = appData.clients.filter(c => c.id != currentClientId);
+
+            // تحديث العميل الحالي تلقائياً لأول عميل متبقي إن وجد
+            currentClientId = appData.clients.length > 0 ? appData.clients[0].id : null;
+
+            sendDataToGoogleSheets({ action: "deleteClientAccount", clientId: currentClientId, remainingClients: appData.clients, remainingTransactions: appData.transactions });
+            
+            renderClientOptions();
+            loadClientData();
+            showNotification("تم حذف حساب العميل بنجاح!");
+        }
+
         function loadClientData() {
             const select = document.getElementById('clientSelect');
             if (select.value) currentClientId = select.value;
@@ -1065,7 +1105,13 @@
             const tbody = document.getElementById('ledgerTableBody');
             tbody.innerHTML = "";
 
-            if (!currentClientId) return;
+            if (!currentClientId) {
+                document.getElementById('totalAmount').textContent = "0.00 ج.م";
+                document.getElementById('totalPaid').textContent = "0.00 ج.م";
+                document.getElementById('finalBalance').textContent = "0.00 ج.م";
+                tbody.innerHTML = '<tr><td colspan="11" class="text-secondary py-4">لا يوجد عملاء متاحين</td></tr>';
+                return;
+            }
 
             const fromDate = document.getElementById('clientFromDate').value;
             const toDate = document.getElementById('clientToDate').value;

@@ -1150,7 +1150,6 @@
             if (!appData.transactions) appData.transactions = [];
             appData.transactions.push(tx);
 
-            // خصم من المخزون تلقائياً إذا تم اختيار موديل
             if (modelNumber && appData.inventory) {
                 const inv = appData.inventory.find(i => i.modelNumber == modelNumber);
                 if (inv) {

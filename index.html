@@ -794,7 +794,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyk0y9j1rCF79CE1PR0v-KCNfjciteBag1B590WBHP6xBPnGDHJQtpz3mBUD_m8r-aG/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzPBpVjjhJpCATuqCHZtK_Hq14YsZZXWdQYj_9v8pS9sX0hsP2pD5N1sykB89Vybov/exec";
         const LOCAL_STORAGE_KEY = "TREND_MAN_APP_DATA_CACHE";
 
         let appData = { clients: [], transactions: [], suppliers: [], supplierTransactions: [], models: [], inventory: [] };
@@ -1237,7 +1237,6 @@
                     saveCacheData();
                     loadClientData();
 
-                    // مزامنة البيانات المستوردة سحابياً لتظهر على كل الأجهزة
                     showLoading(true);
                     for (let tx of importedTxs) {
                         await fetch(SCRIPT_URL, {
@@ -1500,7 +1499,6 @@
                     saveCacheData();
                     loadSupplierData();
 
-                    // مزامنة حركات المورد المستوردة سحابياً
                     showLoading(true);
                     for (let tx of importedSupTxs) {
                         await fetch(SCRIPT_URL, {

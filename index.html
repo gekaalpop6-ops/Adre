@@ -319,6 +319,14 @@
                     </div>
                 </div>
 
+                <!-- Daily Summary Boxes (مربعات الأيام وإجمالي الفواتير) -->
+                <div class="card p-3 mb-4">
+                    <h6 class="fw-bold gold-text mb-3"><i class="fa-solid fa-calendar-days me-2"></i>مربعات الإجماليات اليومية (حسب التاريخ)</h6>
+                    <div id="dailyBoxesContainer" class="row g-3">
+                        <!-- سيتم تعبئتها تلقائياً -->
+                    </div>
+                </div>
+
                 <!-- Client Form -->
                 <div class="card p-4 no-print mb-4">
                     <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-cart-plus me-2"></i>تسجيل حركة بيع / مرتجع</h5>
@@ -1021,11 +1029,15 @@
             const tbody = document.getElementById('ledgerTableBody');
             tbody.innerHTML = "";
 
+            const dailyContainer = document.getElementById('dailyBoxesContainer');
+            dailyContainer.innerHTML = "";
+
             if (!currentClientId) {
                 document.getElementById('totalAmount').textContent = "0.00 ج.م";
                 document.getElementById('totalPaid').textContent = "0.00 ج.م";
                 document.getElementById('finalBalance').textContent = "0.00 ج.م";
                 tbody.innerHTML = '<tr><td colspan="11" class="text-secondary py-4">لا يوجد عملاء متاحين</td></tr>';
+                dailyContainer.innerHTML = '<div class="text-secondary small">لا توجد بيانات</div>';
                 return;
             }
 
@@ -1039,9 +1051,11 @@
             let totalAmt = 0;
             let totalPd = 0;
             let runningBalance = 0;
+            let dailyMap = {};
 
             if (txs.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="11" class="text-secondary py-4">لا توجد حركات مسجلة لهذا العميل في الفترة المحددة</td></tr>';
+                dailyContainer.innerHTML = '<div class="text-secondary small">لا توجد أيام مسجلة للفترة الحالية</div>';
             } else {
                 txs.forEach((t, index) => {
                     const total = parseFloat(t.total) || 0;
@@ -1052,10 +1066,15 @@
                     totalAmt += total;
                     totalPd += paid;
 
+                    // تجميع الإجماليات حسب التاريخ للمربعات اليومية
+                    let dStr = String(t.date || '').slice(0, 10);
+                    if (!dailyMap[dStr]) dailyMap[dStr] = 0;
+                    dailyMap[dStr] += total;
+
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>${index + 1}</td>
-                        <td>${t.date}</td>
+                        <td>${dStr}</td>
                         <td><span class="badge bg-secondary">${t.modelNumber || '-'}</span></td>
                         <td class="fw-bold">${t.description}</td>
                         <td>${t.quantity}</td>
@@ -1071,6 +1090,20 @@
                         </td>
                     `;
                     tbody.appendChild(tr);
+                });
+
+                // تعبئة مربعات الأيام وإجمالي الفواتير
+                const sortedDates = Object.keys(dailyMap).sort();
+                sortedDates.forEach(d => {
+                    const col = document.createElement('div');
+                    col.className = 'col-md-3 col-sm-6';
+                    col.innerHTML = `
+                        <div class="card p-3 border-warning text-center" style="background: rgba(19, 27, 46, 0.9);">
+                            <div class="text-warning small fw-bold mb-1"><i class="fa-regular fa-calendar me-1"></i> ${d}</div>
+                            <div class="fs-5 fw-bold gold-text">${dailyMap[d].toFixed(2)} ج.م</div>
+                        </div>
+                    `;
+                    dailyContainer.appendChild(col);
                 });
             }
 
@@ -1090,7 +1123,7 @@
             if (!currentClientId) { alert("اختر عميل أولاً"); return; }
 
             const type = document.getElementById('txType').value;
-            const date = document.getElementById('txDate').value;
+            const date = String(document.getElementById('txDate').value);
             const modelNumber = document.getElementById('txModelSelect').value;
             const description = document.getElementById('txDescription').value.trim();
             const quantity = parseFloat(document.getElementById('txQuantity').value) || 0;
@@ -1159,7 +1192,7 @@
 
                 return {
                     "م": index + 1,
-                    "التاريخ": String(t.date),
+                    "التاريخ": String(t.date || '').slice(0, 10) + " ", // فرض كقيمة نصية لتاريخ نظيف بالإكسل
                     "نوع الحركة": t.type || 'بيع',
                     "رقم الموديل": t.modelNumber || '-',
                     "البيان": t.description,
@@ -1206,7 +1239,9 @@
 
                     let importedTxs = [];
                     json.forEach(row => {
-                        const date = row["التاريخ"] || row["Date"] || new Date().toISOString().slice(0,10);
+                        let rawDate = row["التاريخ"] || row["Date"] || new Date().toISOString().slice(0,10);
+                        let dateStr = String(rawDate).trim().slice(0, 10);
+
                         const type = row["نوع الحركة"] || row["Type"] || "بيع";
                         const modelNumber = row["رقم الموديل"] || row["Model"] || "";
                         const description = row["البيان"] || row["Description"] || "استيراد Excel";
@@ -1220,7 +1255,7 @@
                             id: 'TX_' + Date.now() + '_' + Math.floor(Math.random()*1000),
                             clientId: currentClientId,
                             type: type,
-                            date: date,
+                            date: dateStr,
                             modelNumber: modelNumber,
                             description: description,
                             quantity: quantity,
@@ -1335,7 +1370,7 @@
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>${index + 1}</td>
-                        <td>${t.date}</td>
+                        <td>${String(t.date || '').slice(0, 10)}</td>
                         <td class="fw-bold">${t.description}</td>
                         <td>${t.quantity}</td>
                         <td>${t.price} ج.م</td>
@@ -1368,7 +1403,7 @@
             e.preventDefault();
             if (!currentSupplierId) { alert("اختر مورد أولاً"); return; }
 
-            const date = document.getElementById('supTxDate').value;
+            const date = String(document.getElementById('supTxDate').value);
             const description = document.getElementById('supTxDescription').value.trim();
             const quantity = parseFloat(document.getElementById('supTxQuantity').value) || 0;
             const price = parseFloat(document.getElementById('supTxPrice').value) || 0;
@@ -1427,7 +1462,7 @@
 
                 return {
                     "م": index + 1,
-                    "التاريخ": String(t.date),
+                    "التاريخ": String(t.date || '').slice(0, 10) + " ",
                     "البيان": t.description,
                     "الكمية/الأمتار": t.quantity,
                     "السعر": t.price,
@@ -1472,7 +1507,9 @@
 
                     let importedSupTxs = [];
                     json.forEach(row => {
-                        const date = row["التاريخ"] || row["Date"] || new Date().toISOString().slice(0,10);
+                        let rawDate = row["التاريخ"] || row["Date"] || new Date().toISOString().slice(0,10);
+                        let dateStr = String(rawDate).trim().slice(0, 10);
+
                         const description = row["البيان"] || row["Description"] || "استيراد Excel";
                         const quantity = parseFloat(row["الكمية/الأمتار"] || row["Quantity"] || 1);
                         const price = parseFloat(row["السعر"] || row["Price"] || 0);
@@ -1483,7 +1520,7 @@
                         const newTx = {
                             id: 'STX_' + Date.now() + '_' + Math.floor(Math.random()*1000),
                             supplierId: currentSupplierId,
-                            date: date,
+                            date: dateStr,
                             description: description,
                             quantity: quantity,
                             price: price,

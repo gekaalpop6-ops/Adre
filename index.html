@@ -949,7 +949,6 @@
             showNotification("تم إضافة العميل بنجاح!");
         }
 
-        // دالة تصفير حساب العميل الحالي بكلمة مرور 123
         function clearCurrentClientAccount() {
             if (!currentClientId) {
                 showNotification("الرجاء اختيار العميل أولاً!");
@@ -979,7 +978,6 @@
             showNotification("تم تصفير حساب العميل بنجاح!");
         }
 
-        // دالة حذف حساب العميل بالكامل مع طلب كلمة المرور 123
         function deleteCurrentClientAccount() {
             if (!currentClientId) {
                 showNotification("الرجاء اختيار العميل المراد حذفه أولاً!");
@@ -1182,7 +1180,7 @@
             showNotification("تم تصدير ملف Excel بنجاح!");
         }
 
-        function importClientExcel(e) {
+        async function importClientExcel(e) {
             const file = e.target.files[0];
             if (!file) return;
 
@@ -1193,7 +1191,7 @@
             }
 
             const reader = new FileReader();
-            reader.onload = function(evt) {
+            reader.onload = async function(evt) {
                 try {
                     const data = new Uint8Array(evt.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
@@ -1206,7 +1204,7 @@
                         return;
                     }
 
-                    let importedCount = 0;
+                    let importedTxs = [];
                     json.forEach(row => {
                         const date = row["التاريخ"] || row["Date"] || new Date().toISOString().slice(0,10);
                         const type = row["نوع الحركة"] || row["Type"] || "بيع";
@@ -1233,15 +1231,29 @@
                         };
 
                         appData.transactions.push(newTx);
-                        importedCount++;
+                        importedTxs.push(newTx);
                     });
 
                     saveCacheData();
                     loadClientData();
-                    showNotification(`تم استيراد ${importedCount} حركة بنجاح!`);
+
+                    // مزامنة البيانات المستوردة سحابياً لتظهر على كل الأجهزة
+                    showLoading(true);
+                    for (let tx of importedTxs) {
+                        await fetch(SCRIPT_URL, {
+                            method: "POST",
+                            mode: "no-cors",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ action: "saveTransaction", data: tx, inventory: appData.inventory })
+                        });
+                    }
+                    showLoading(false);
+
+                    showNotification(`تم استيراد ومزامنة ${importedTxs.length} حركة بنجاح سحابياً!`);
                 } catch (err) {
+                    showLoading(false);
                     console.error(err);
-                    showNotification("حدث خطأ أثناء قراءة ملف Excel!");
+                    showNotification("حدث خطأ أثناء قراءة أو مزامنة ملف Excel!");
                 }
                 e.target.value = "";
             };
@@ -1435,7 +1447,7 @@
             showNotification("تم تصدير ملف Excel بنجاح!");
         }
 
-        function importSupplierExcel(e) {
+        async function importSupplierExcel(e) {
             const file = e.target.files[0];
             if (!file) return;
 
@@ -1446,7 +1458,7 @@
             }
 
             const reader = new FileReader();
-            reader.onload = function(evt) {
+            reader.onload = async function(evt) {
                 try {
                     const data = new Uint8Array(evt.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
@@ -1459,7 +1471,7 @@
                         return;
                     }
 
-                    let importedCount = 0;
+                    let importedSupTxs = [];
                     json.forEach(row => {
                         const date = row["التاريخ"] || row["Date"] || new Date().toISOString().slice(0,10);
                         const description = row["البيان"] || row["Description"] || "استيراد Excel";
@@ -1482,15 +1494,29 @@
                         };
 
                         appData.supplierTransactions.push(newTx);
-                        importedCount++;
+                        importedSupTxs.push(newTx);
                     });
 
                     saveCacheData();
                     loadSupplierData();
-                    showNotification(`تم استيراد ${importedCount} حركة للمورد بنجاح!`);
+
+                    // مزامنة حركات المورد المستوردة سحابياً
+                    showLoading(true);
+                    for (let tx of importedSupTxs) {
+                        await fetch(SCRIPT_URL, {
+                            method: "POST",
+                            mode: "no-cors",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ action: "saveSupplierTransaction", data: tx })
+                        });
+                    }
+                    showLoading(false);
+
+                    showNotification(`تم استيراد ومزامنة ${importedSupTxs.length} حركة للمورد بنجاح سحابياً!`);
                 } catch (err) {
+                    showLoading(false);
                     console.error(err);
-                    showNotification("حدث خطأ أثناء قراءة ملف Excel!");
+                    showNotification("حدث خطأ أثناء قراءة أو مزامنة ملف Excel للمورد!");
                 }
                 e.target.value = "";
             };

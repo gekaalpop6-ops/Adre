@@ -319,7 +319,7 @@
                     </div>
                 </div>
 
-                <!-- Daily Summary Boxes (مربعات الأيام وإجمالي الفواتير) -->
+                <!-- Daily Summary Boxes -->
                 <div class="card p-3 mb-4">
                     <h6 class="fw-bold gold-text mb-3"><i class="fa-solid fa-calendar-days me-2"></i>مربعات الإجماليات اليومية (حسب التاريخ)</h6>
                     <div id="dailyBoxesContainer" class="row g-3">
@@ -879,6 +879,20 @@
             document.getElementById('modelAutoCode').value = "M" + String(count).padStart(3, '0');
         }
 
+        // دالة ذكية لتحويل رقم إكسل التسلسلي (مثل 46134) أو التواريخ إلى شكل YYYY-MM-DD
+        function parseExcelDate(val) {
+            if (!val) return new Date().toISOString().slice(0, 10);
+            if (typeof val === 'number') {
+                const utc_days = Math.floor(val - 25569);
+                const date_info = new Date(utc_days * 86400 * 1000);
+                const year = date_info.getUTCFullYear();
+                const month = String(date_info.getUTCMonth() + 1).padStart(2, '0');
+                const day = String(date_info.getUTCDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+            return String(val).trim().slice(0, 10);
+        }
+
         async function fetchDataFromGoogleSheets() {
             if (!navigator.onLine) return;
             try {
@@ -1066,8 +1080,7 @@
                     totalAmt += total;
                     totalPd += paid;
 
-                    // تجميع الإجماليات حسب التاريخ للمربعات اليومية
-                    let dStr = String(t.date || '').slice(0, 10);
+                    let dStr = parseExcelDate(t.date);
                     if (!dailyMap[dStr]) dailyMap[dStr] = 0;
                     dailyMap[dStr] += total;
 
@@ -1192,7 +1205,7 @@
 
                 return {
                     "م": index + 1,
-                    "التاريخ": String(t.date || '').slice(0, 10) + " ", // فرض كقيمة نصية لتاريخ نظيف بالإكسل
+                    "التاريخ": parseExcelDate(t.date) + " ", 
                     "نوع الحركة": t.type || 'بيع',
                     "رقم الموديل": t.modelNumber || '-',
                     "البيان": t.description,
@@ -1240,7 +1253,7 @@
                     let importedTxs = [];
                     json.forEach(row => {
                         let rawDate = row["التاريخ"] || row["Date"] || new Date().toISOString().slice(0,10);
-                        let dateStr = String(rawDate).trim().slice(0, 10);
+                        let dateStr = parseExcelDate(rawDate);
 
                         const type = row["نوع الحركة"] || row["Type"] || "بيع";
                         const modelNumber = row["رقم الموديل"] || row["Model"] || "";
@@ -1370,7 +1383,7 @@
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>${index + 1}</td>
-                        <td>${String(t.date || '').slice(0, 10)}</td>
+                        <td>${parseExcelDate(t.date)}</td>
                         <td class="fw-bold">${t.description}</td>
                         <td>${t.quantity}</td>
                         <td>${t.price} ج.م</td>
@@ -1462,7 +1475,7 @@
 
                 return {
                     "م": index + 1,
-                    "التاريخ": String(t.date || '').slice(0, 10) + " ",
+                    "التاريخ": parseExcelDate(t.date) + " ",
                     "البيان": t.description,
                     "الكمية/الأمتار": t.quantity,
                     "السعر": t.price,
@@ -1508,7 +1521,7 @@
                     let importedSupTxs = [];
                     json.forEach(row => {
                         let rawDate = row["التاريخ"] || row["Date"] || new Date().toISOString().slice(0,10);
-                        let dateStr = String(rawDate).trim().slice(0, 10);
+                        let dateStr = parseExcelDate(rawDate);
 
                         const description = row["البيان"] || row["Description"] || "استيراد Excel";
                         const quantity = parseFloat(row["الكمية/الأمتار"] || row["Quantity"] || 1);
@@ -1634,123 +1647,4 @@
             appData.models.forEach((m, idx) => {
                 const profit = m.price - m.cost;
                 const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><img src="${m.image || 'https://via.placeholder.com/50'}" class="model-img-thumb" onclick="showImageModal('${m.image || ''}')"></td>
-                    <td><span class="badge bg-warning text-dark fw-bold">${m.autoCode}</span></td>
-                    <td class="fw-bold">${m.number}</td>
-                    <td>${m.fabric}</td>
-                    <td>${m.colors}</td>
-                    <td>${m.consumption} متر</td>
-                    <td>${m.cost} ج.م</td>
-                    <td class="text-warning fw-bold">${m.price} ج.م</td>
-                    <td class="text-success fw-bold">${profit} ج.م</td>
-                    <td class="no-print">
-                        <button class="btn btn-outline-danger btn-sm rounded-3" onclick="deleteModel('${m.id}')"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function deleteModel(id) {
-            if (!confirm("هل أنت متأكد من حذف الموديل؟")) return;
-            appData.models = appData.models.filter(m => m.id != id);
-            sendDataToGoogleSheets({ action: "deleteModel", id });
-            loadModelsData();
-            showNotification("تم حذف الموديل بنجاح!");
-        }
-
-        function addInventoryItem(e) {
-            e.preventDefault();
-            const modelNumber = document.getElementById('invModelNumber').value.trim();
-            const fabric = document.getElementById('invFabric').value.trim();
-            const totalQty = parseFloat(document.getElementById('invTotalQty').value) || 0;
-            const outQty = parseFloat(document.getElementById('invOutQty').value) || 0;
-            const price = parseFloat(document.getElementById('invPrice').value) || 0;
-
-            const invObj = {
-                id: 'INV_' + Date.now(),
-                modelNumber, fabric, totalQty, outQty, price,
-                image: tempInvBase64Image
-            };
-
-            if (!appData.inventory) appData.inventory = [];
-            appData.inventory.push(invObj);
-
-            sendDataToGoogleSheets({ action: "saveInventory", data: invObj });
-            loadInventoryData();
-
-            document.getElementById('inventoryForm').reset();
-            tempInvBase64Image = "";
-            showNotification("تم حفظ المخزون بنجاح!");
-        }
-
-        function loadInventoryData() {
-            const tbody = document.getElementById('inventoryTableBody');
-            tbody.innerHTML = "";
-            if (!appData.inventory || appData.inventory.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="text-secondary py-4">لا توجد بيانات مخزون مسجلة</td></tr>';
-                return;
-            }
-
-            appData.inventory.forEach(i => {
-                const remaining = Math.max(0, (parseFloat(i.totalQty) || 0) - (parseFloat(i.outQty) || 0));
-                const totalValue = remaining * (parseFloat(i.price) || 0);
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><img src="${i.image || 'https://via.placeholder.com/50'}" class="model-img-thumb" onclick="showImageModal('${i.image || ''}')"></td>
-                    <td class="fw-bold">${i.modelNumber}</td>
-                    <td>${i.fabric}</td>
-                    <td class="text-warning fw-bold">${i.totalQty}</td>
-                    <td class="text-danger fw-bold">${i.outQty}</td>
-                    <td class="text-success fw-bold fs-5">${remaining}</td>
-                    <td>${i.price} ج.م</td>
-                    <td class="text-warning fw-bold">${totalValue.toFixed(2)} ج.م</td>
-                    <td class="no-print">
-                        <button class="btn btn-outline-danger btn-sm rounded-3" onclick="deleteInventory('${i.id}')"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function deleteInventory(id) {
-            if (!confirm("هل أنت متأكد من حذف هذا الصنف من المخزون؟")) return;
-            appData.inventory = appData.inventory.filter(i => i.id != id);
-            sendDataToGoogleSheets({ action: "deleteInventory", id });
-            loadInventoryData();
-            showNotification("تم حذف الصنف بنجاح!");
-        }
-
-        function renderInventoryModelDropdown() {
-            const select = document.getElementById('txModelSelect');
-            select.innerHTML = '<option value="">بدون خصم مخزون</option>';
-            if (appData.inventory && appData.inventory.length > 0) {
-                appData.inventory.forEach(i => {
-                    const opt = document.createElement('option');
-                    opt.value = i.modelNumber;
-                    opt.textContent = `موديل ${i.modelNumber} (${i.fabric}) - متبقي: ${Math.max(0, i.totalQty - i.outQty)}`;
-                    select.appendChild(opt);
-                });
-            }
-        }
-
-        function onTxModelSelectChange() {
-            const val = document.getElementById('txModelSelect').value;
-            if (!val || !appData.inventory) return;
-            const inv = appData.inventory.find(i => i.modelNumber == val);
-            if (inv) {
-                document.getElementById('txDescription').value = `موديل رقم ${inv.modelNumber} (${inv.fabric})`;
-                document.getElementById('txPrice').value = inv.price || 0;
-            }
-        }
-
-        function showImageModal(src) {
-            if (!src) return;
-            document.getElementById('modalPreviewImg').src = src;
-            new bootstrap.Modal(document.getElementById('imagePreviewModal')).show();
-        }
-    </script>
-</body>
-</html>
+                tr.innerHTML =

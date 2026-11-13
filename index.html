@@ -82,15 +82,15 @@
 
         .custom-nav-tabs {
             border-bottom: 2px solid #1e293b;
-            gap: 8px;
+            gap: 6px;
         }
 
         .custom-nav-tabs .nav-link {
             font-weight: 800;
-            font-size: 1.05rem;
+            font-size: 0.95rem;
             color: #94a3b8;
             border: 1px solid transparent;
-            padding: 0.85rem 1.75rem;
+            padding: 0.75rem 1.25rem;
             border-radius: 12px 12px 0 0;
             transition: all 0.25s ease;
         }
@@ -216,9 +216,7 @@
     <div class="toast-container">
         <div id="liveToast" class="toast align-items-center text-dark bg-warning border-0 rounded-3 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
-                <div class="toast-body fs-6 fw-bold" id="toastMessage">
-                    تمت العملية بنجاح!
-                </div>
+                <div class="toast-body fs-6 fw-bold" id="toastMessage">تمت العملية بنجاح!</div>
                 <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
         </div>
@@ -235,7 +233,7 @@
                 </div>
                 <div>
                     <h1 class="h3 mb-0 gold-text">TREND MAN</h1>
-                    <small class="text-secondary fw-bold">نظام إدارة الحسابات، الموديلات والمخزون الآلي</small>
+                    <small class="text-secondary fw-bold">نظام إدارة الحسابات، التصنيع، الورش، المكواة، العمال والمخزون</small>
                 </div>
             </div>
             <div class="d-flex align-items-center gap-2">
@@ -253,22 +251,42 @@
         <ul class="nav custom-nav-tabs mb-4 no-print" id="mainTab" role="tablist">
             <li class="nav-item">
                 <button class="nav-link active" id="clients-tab" data-bs-toggle="tab" data-bs-target="#clients-section" type="button">
-                    <i class="fa-solid fa-users me-2"></i>حسابات العملاء
+                    <i class="fa-solid fa-users me-1"></i>العملاء
                 </button>
             </li>
             <li class="nav-item">
                 <button class="nav-link" id="suppliers-tab" data-bs-toggle="tab" data-bs-target="#suppliers-section" type="button">
-                    <i class="fa-solid fa-truck-field me-2"></i>حسابات الموردين
+                    <i class="fa-solid fa-truck-field me-1"></i>الموردين
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="factories-tab" data-bs-toggle="tab" data-bs-target="#factories-section" type="button">
+                    <i class="fa-solid fa-industry me-1"></i>حسابات التصنيع والورش
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="ironing-tab" data-bs-toggle="tab" data-bs-target="#ironing-section" type="button">
+                    <i class="fa-solid fa-shirt me-1"></i>مرحلة المكواة
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="workers-tab" data-bs-toggle="tab" data-bs-target="#workers-section" type="button">
+                    <i class="fa-solid fa-user-clock me-1"></i>شؤون العمال والسلف
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="production-tab" data-bs-toggle="tab" data-bs-target="#production-section" type="button">
+                    <i class="fa-solid fa-scissors me-1"></i>قصات القماش
                 </button>
             </li>
             <li class="nav-item">
                 <button class="nav-link" id="models-tab" data-bs-toggle="tab" data-bs-target="#models-section" type="button">
-                    <i class="fa-solid fa-shirt me-2"></i>بيان الموديلات
+                    <i class="fa-solid fa-layer-group me-1"></i>الموديلات
                 </button>
             </li>
             <li class="nav-item">
                 <button class="nav-link" id="inventory-tab" data-bs-toggle="tab" data-bs-target="#inventory-section" type="button">
-                    <i class="fa-solid fa-boxes-stacked me-2"></i>المخزون
+                    <i class="fa-solid fa-boxes-stacked me-1"></i>المخزون
                 </button>
             </li>
         </ul>
@@ -297,7 +315,6 @@
                     </div>
                 </div>
 
-                <!-- Stats Cards -->
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <div class="card p-3 stat-card">
@@ -319,15 +336,6 @@
                     </div>
                 </div>
 
-                <!-- Daily Summary Boxes (مربعات الأيام وإجمالي الفواتير) -->
-                <div class="card p-3 mb-4">
-                    <h6 class="fw-bold gold-text mb-3"><i class="fa-solid fa-calendar-days me-2"></i>مربعات الإجماليات اليومية (حسب التاريخ)</h6>
-                    <div id="dailyBoxesContainer" class="row g-3">
-                        <!-- سيتم تعبئتها تلقائياً -->
-                    </div>
-                </div>
-
-                <!-- Client Form -->
                 <div class="card p-4 no-print mb-4">
                     <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-cart-plus me-2"></i>تسجيل حركة بيع / مرتجع</h5>
                     <form id="transactionForm" onsubmit="addTransaction(event)">
@@ -344,7 +352,7 @@
                                 <input type="date" id="txDate" class="form-control" required>
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label fw-bold gold-text">موديل من المخزون (خصم/إضافة)</label>
+                                <label class="form-label fw-bold gold-text">موديل من المخزون</label>
                                 <select id="txModelSelect" class="form-select border-warning fw-bold" onchange="onTxModelSelectChange()">
                                     <option value="">بدون خصم مخزون</option>
                                 </select>
@@ -374,7 +382,7 @@
                                 <select id="txPaymentMethod" class="form-select">
                                     <option value="نقدي">نقدي</option>
                                     <option value="تحويل بنكي">تحويل بنكي</option>
-                                    <option value="فودافون كاش">فودافون كاش / محفظة</option>
+                                    <option value="فودافون كاش">فودافون كاش</option>
                                     <option value="شيك">شيك</option>
                                     <option value="آجل">آجل</option>
                                 </select>
@@ -386,16 +394,14 @@
                     </form>
                 </div>
 
-                <!-- Ledger Table & Filter -->
                 <div class="card p-3">
-                    <!-- Date Filter Bar -->
                     <div class="row no-print mb-3 align-items-center g-2 bg-dark p-2 rounded-3 border border-secondary mx-0">
                         <div class="col-auto text-warning fw-bold"><i class="fa-solid fa-filter me-1"></i> فلترة بالمدة:</div>
                         <div class="col-md-3">
-                            <input type="date" id="clientFromDate" class="form-control form-control-sm" placeholder="من تاريخ">
+                            <input type="date" id="clientFromDate" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-3">
-                            <input type="date" id="clientToDate" class="form-control form-control-sm" placeholder="إلى تاريخ">
+                            <input type="date" id="clientToDate" class="form-control form-control-sm">
                         </div>
                         <div class="col-auto">
                             <button class="btn btn-sm btn-gold" onclick="loadClientData()"><i class="fa-solid fa-magnifying-glass me-1"></i> تصفية</button>
@@ -455,7 +461,6 @@
                     </div>
                 </div>
 
-                <!-- Supplier Stats -->
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <div class="card p-3 stat-card">
@@ -477,7 +482,6 @@
                     </div>
                 </div>
 
-                <!-- Supplier Form -->
                 <div class="card p-4 no-print mb-4">
                     <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-file-invoice-dollar me-2"></i>إضافة توريد من مورد</h5>
                     <form id="supTransactionForm" onsubmit="addSupplierTransaction(event)">
@@ -487,7 +491,7 @@
                                 <input type="date" id="supTxDate" class="form-control" required>
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label fw-bold">البيان (أثواب/سوست/تجهيز...)</label>
+                                <label class="form-label fw-bold">البيان (أثواب/سوست...)</label>
                                 <input type="text" id="supTxDescription" class="form-control" placeholder="مثال: قماش جينز..." required>
                             </div>
                             <div class="col-md-1">
@@ -511,7 +515,7 @@
                                 <select id="supTxPaymentMethod" class="form-select">
                                     <option value="نقدي">نقدي</option>
                                     <option value="تحويل بنكي">تحويل بنكي</option>
-                                    <option value="فودافون كاش">فودافون كاش / محفظة</option>
+                                    <option value="فودافون كاش">فودافون كاش</option>
                                     <option value="شيك">شيك</option>
                                     <option value="آجل">آجل</option>
                                 </select>
@@ -523,16 +527,14 @@
                     </form>
                 </div>
 
-                <!-- Supplier Ledger Table & Filter -->
                 <div class="card p-3">
-                    <!-- Date Filter Bar -->
                     <div class="row no-print mb-3 align-items-center g-2 bg-dark p-2 rounded-3 border border-secondary mx-0">
                         <div class="col-auto text-warning fw-bold"><i class="fa-solid fa-filter me-1"></i> فلترة بالمدة:</div>
                         <div class="col-md-3">
-                            <input type="date" id="supFromDate" class="form-control form-control-sm" placeholder="من تاريخ">
+                            <input type="date" id="supFromDate" class="form-control form-control-sm">
                         </div>
                         <div class="col-md-3">
-                            <input type="date" id="supToDate" class="form-control form-control-sm" placeholder="إلى تاريخ">
+                            <input type="date" id="supToDate" class="form-control form-control-sm">
                         </div>
                         <div class="col-auto">
                             <button class="btn btn-sm btn-gold" onclick="loadSupplierData()"><i class="fa-solid fa-magnifying-glass me-1"></i> تصفية</button>
@@ -547,10 +549,6 @@
                         </div>
                         <div class="d-flex gap-2 no-print">
                             <button class="btn btn-outline-success btn-sm fw-bold" onclick="exportSupplierExcel()"><i class="fa-solid fa-file-excel me-1"></i> تصدير Excel</button>
-                            <label class="btn btn-outline-info btn-sm fw-bold mb-0" style="cursor: pointer;">
-                                <i class="fa-solid fa-file-import me-1"></i> استيراد Excel
-                                <input type="file" id="supplierExcelInput" accept=".xlsx, .xls, .csv" style="display: none;" onchange="importSupplierExcel(event)">
-                            </label>
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -575,15 +573,369 @@
                 </div>
             </div>
 
-            <!-- SECTION 3: MODELS STATEMENT -->
+            <!-- SECTION 3: FACTORIES & MANUFACTURING ACCOUNTS (حسابات التصنيع والورش الجديدة) -->
+            <div class="tab-pane fade" id="factories-section" role="tabpanel">
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <div class="card p-3 stat-card">
+                            <div class="text-secondary small fw-bold">إجمالي قطع التصنيع</div>
+                            <div class="h3 mb-0 gold-text mt-1" id="mfgTotalQtyStat">0 قطعة</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card p-3 stat-card" style="border-color: #f59e0b;">
+                            <div class="text-secondary small fw-bold">إجمالي تكلفة التصنيع</div>
+                            <div class="h3 mb-0 text-warning fw-bold mt-1" id="mfgTotalCostStat">0.00 ج.م</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card p-3 stat-card" style="border-color: #10b981;">
+                            <div class="text-secondary small fw-bold">إجمالي المدفوع للمصانع</div>
+                            <div class="h3 mb-0 text-success fw-bold mt-1" id="mfgTotalPaidStat">0.00 ج.م</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card p-3 stat-card" style="border-color: #ef4444;">
+                            <div class="text-secondary small fw-bold">المتبقي للمصانع (مديونية)</div>
+                            <div class="h3 mb-0 text-danger fw-bold mt-1" id="mfgTotalBalanceStat">0.00 ج.م</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card p-4 no-print mb-4">
+                    <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-industry me-2"></i>تسجيل أمر تصنيع خارجي / ورشة (خروج قصة)</h5>
+                    <form id="mfgForm" onsubmit="addManufacturingOrder(event)">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold gold-text">اسم المصنع / الورشة *</label>
+                                <input type="text" id="mfgFactoryName" class="form-control" placeholder="مثال: مصنع الأمل للتقفيل" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">رقم الموديل *</label>
+                                <input type="text" id="mfgModelNo" class="form-control fw-bold" placeholder="مثال: 502" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">تاريخ أخذ القصة *</label>
+                                <input type="date" id="mfgDateOut" class="form-control" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">تاريخ الترجيع المتوقع</label>
+                                <input type="date" id="mfgDateIn" class="form-control">
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label fw-bold">أسود</label>
+                                <input type="number" id="mfgBlack" class="form-control" value="0" min="0" oninput="calcMfgForm()">
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label fw-bold">كحلي</label>
+                                <input type="number" id="mfgNavy" class="form-control" value="0" min="0" oninput="calcMfgForm()">
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label fw-bold">ألوان أخرى</label>
+                                <input type="number" id="mfgOther" class="form-control" value="0" min="0" oninput="calcMfgForm()">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold gold-text">إجمالي العدد (تلقائي)</label>
+                                <input type="number" id="mfgTotalQty" class="form-control bg-dark text-warning fw-bold" readonly value="0">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">سعر القطعة (مصنعية) *</label>
+                                <input type="number" step="0.01" id="mfgUnitPrice" class="form-control" value="0" required oninput="calcMfgForm()">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold gold-text">الإجمالي المستحق</label>
+                                <input type="number" id="mfgTotalCost" class="form-control bg-dark text-warning fw-bold" readonly value="0.00">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">دفعة مقدمة (مدفوعة)</label>
+                                <input type="number" step="0.01" id="mfgPaid" class="form-control" value="0" oninput="calcMfgForm()">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold text-danger">المتبقي (ينقص تلقائياً)</label>
+                                <input type="number" id="mfgBalance" class="form-control bg-dark text-danger fw-bold" readonly value="0.00">
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end justify-content-end">
+                                <button type="submit" class="btn btn-gold w-100"><i class="fa-solid fa-check me-1"></i> حفظ التشغيلية</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0 gold-text"><i class="fa-solid fa-list-check me-2"></i>دفتر حسابات ومتابعة المصانع الخارجية</h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-dark-custom table-hover table-bordered text-center align-middle">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>اسم المصنع</th>
+                                    <th>الموديل</th>
+                                    <th>تاريخ الخروج</th>
+                                    <th>تاريخ الترجيع</th>
+                                    <th>أسود</th>
+                                    <th>كحلي</th>
+                                    <th>أخرى</th>
+                                    <th>الإجمالي</th>
+                                    <th>السعر</th>
+                                    <th>الإجمالي المستحق</th>
+                                    <th>المدفوع</th>
+                                    <th>المتبقي</th>
+                                    <th class="no-print">إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="factoriesTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 4: IRONING & FINISHING (مرحلة المكواة والتشطيب الجديدة) -->
+            <div class="tab-pane fade" id="ironing-section" role="tabpanel">
+                <div class="card p-4 no-print mb-4">
+                    <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-shirt me-2"></i>تسجيل استلام وتشطيب المكواة</h5>
+                    <form id="ironForm" onsubmit="addIroningRecord(event)">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold gold-text">رقم الموديل *</label>
+                                <input type="text" id="ironModelNo" class="form-control fw-bold" placeholder="مثال: 502" list="modelsList" required>
+                                <datalist id="modelsList"></datalist>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">تاريخ المكواة *</label>
+                                <input type="date" id="ironDate" class="form-control" required>
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label fw-bold">أسود</label>
+                                <input type="number" id="ironBlack" class="form-control" value="0" min="0" oninput="calcIronForm()">
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label fw-bold">كحلي</label>
+                                <input type="number" id="ironNavy" class="form-control" value="0" min="0" oninput="calcIronForm()">
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label fw-bold">أخرى</label>
+                                <input type="number" id="ironOther" class="form-control" value="0" min="0" oninput="calcIronForm()">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold gold-text">إجمالي المكواة</label>
+                                <input type="number" id="ironTotalQty" class="form-control bg-dark text-warning fw-bold" readonly value="0">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">اسم المكوجي / الوردية</label>
+                                <input type="text" id="ironWorkerName" class="form-control" placeholder="مثال: وردية الصباح">
+                            </div>
+                            <div class="col-md-10">
+                                <label class="form-label fw-bold">ملاحظات الجودة / العجز / الديفوهات</label>
+                                <input type="text" id="ironNotes" class="form-control" placeholder="مثال: ناقص 2 قطع كحلي، تم الكي والتغليف بالكامل...">
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="submit" class="btn btn-gold w-100"><i class="fa-solid fa-check-double me-1"></i> تسجيل المكواة</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0 gold-text"><i class="fa-solid fa-clipboard-list me-2"></i>سجل حركة المكواة ومطابقة الأعداد مع التصنيع</h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-dark-custom table-hover table-bordered text-center align-middle">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>التاريخ</th>
+                                    <th>رقم الموديل</th>
+                                    <th>أسود</th>
+                                    <th>كحلي</th>
+                                    <th>أخرى</th>
+                                    <th>الإجمالي</th>
+                                    <th>المكوجي</th>
+                                    <th>حالة المطابقة مع التصنيع</th>
+                                    <th>ملاحظات الديفوهات</th>
+                                    <th class="no-print">إجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ironTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 5: WORKERS ATTENDANCE & LOANS (شؤون العاملين والحضور والسلف الجديدة) -->
+            <div class="tab-pane fade" id="workers-section" role="tabpanel">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="card p-3 stat-card">
+                            <div class="text-secondary small fw-bold">حضور العمال اليوم</div>
+                            <div class="h3 mb-0 gold-text mt-1" id="workersPresentStat">0 عامل</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card p-3 stat-card" style="border-color: #ef4444;">
+                            <div class="text-secondary small fw-bold">إجمالي السلف اليومية المسجلة</div>
+                            <div class="h3 mb-0 text-danger fw-bold mt-1" id="workersLoansStat">0.00 ج.م</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card p-4 no-print mb-4">
+                    <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-user-clock me-2"></i>تسجيل حضور، انصراف، وسلفة عامل</h5>
+                    <form id="workerForm" onsubmit="addWorkerRecord(event)">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold gold-text">اسم العامل *</label>
+                                <input type="text" id="workerName" class="form-control fw-bold" placeholder="اكتب اسم العامل" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">التاريخ *</label>
+                                <input type="date" id="workerDate" class="form-control" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">ميعاد الحضور</label>
+                                <div class="input-group">
+                                    <input type="time" id="workerTimeIn" class="form-control">
+                                    <button type="button" class="btn btn-outline-warning btn-sm" onclick="setNowTime('workerTimeIn')">الآن</button>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">ميعاد الانصراف</label>
+                                <div class="input-group">
+                                    <input type="time" id="workerTimeOut" class="form-control">
+                                    <button type="button" class="btn btn-outline-warning btn-sm" onclick="setNowTime('workerTimeOut')">الآن</button>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold text-danger">سلفة يومية (ج.م)</label>
+                                <input type="number" step="0.5" id="workerDailyLoan" class="form-control" value="0" min="0">
+                            </div>
+                            <div class="col-md-10">
+                                <label class="form-label fw-bold">ملاحظات (تأخير / إضافي / مهمة)</label>
+                                <input type="text" id="workerNotes" class="form-control" placeholder="اختياري...">
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="submit" class="btn btn-gold w-100"><i class="fa-solid fa-user-check me-1"></i> حفظ السجل</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0 gold-text"><i class="fa-solid fa-table me-2"></i>كشف الحضور والانصراف والسلف اليومية</h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-dark-custom table-hover table-bordered text-center align-middle">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>التاريخ</th>
+                                    <th>اسم العامل</th>
+                                    <th>الحضور</th>
+                                    <th>الانصراف</th>
+                                    <th>ساعات العمل</th>
+                                    <th>السلفة اليومية</th>
+                                    <th>ملاحظات</th>
+                                    <th class="no-print">إجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody id="workersTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 6: PRODUCTION CUTTING -->
+            <div class="tab-pane fade" id="production-section" role="tabpanel">
+                <div class="card p-4 no-print mb-4">
+                    <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-scissors me-2"></i>تسجيل أمر قص وتصنيع قماش</h5>
+                    <form id="productionForm" onsubmit="addProductionOrder(event)">
+                        <div class="row g-3">
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold gold-text">رقم الموديل</label>
+                                <input type="text" id="prodModelNumber" class="form-control fw-bold" placeholder="مثال: 502" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">تاريخ تسليم القصة</label>
+                                <input type="date" id="prodCutDate" class="form-control" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">اسم الخامة / القماش</label>
+                                <input type="text" id="prodFabricName" class="form-control" placeholder="مثال: جينز ليكرا أصلية" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">عدد الأسود</label>
+                                <input type="number" id="prodBlackQty" class="form-control" value="0" min="0" oninput="calculateProdTotals()">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">عدد الكحلي</label>
+                                <input type="number" id="prodNavyQty" class="form-control" value="0" min="0" oninput="calculateProdTotals()">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">عدد ألوان أخرى (اسم اللون)</label>
+                                <input type="text" id="prodOtherColorsName" class="form-control" placeholder="مثال: 20 تلجي + 15 أبيض">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">كمية الألوان الأخرى</label>
+                                <input type="number" id="prodOtherColorsQty" class="form-control" value="0" min="0" oninput="calculateProdTotals()">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold gold-text">الإجمالي الكلي للعدد</label>
+                                <input type="number" id="prodTotalQty" class="form-control bg-dark text-warning fw-bold" readonly value="0">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">سعر فئة الحتة</label>
+                                <input type="number" step="0.01" id="prodUnitPrice" class="form-control" value="0" required oninput="calculateProdTotals()">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold gold-text">إجمالي التكلفة الكلية</label>
+                                <input type="number" id="prodTotalPrice" class="form-control bg-dark text-warning fw-bold" readonly value="0.00">
+                            </div>
+                            <div class="col-md-8 d-flex align-items-end justify-content-end">
+                                <button type="submit" class="btn btn-gold px-4"><i class="fa-solid fa-plus me-1"></i> حفظ وإضافة القصة للمخزون</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0 gold-text"><i class="fa-solid fa-list-check me-2"></i>دفتر وسجل قصات ومراحل التصنيع</h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-dark-custom table-hover table-bordered text-center align-middle">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>رقم الموديل</th>
+                                    <th>تاريخ القصة</th>
+                                    <th>الخامة</th>
+                                    <th>أسود</th>
+                                    <th>كحلي</th>
+                                    <th>أخرى</th>
+                                    <th>الإجمالي</th>
+                                    <th>سعر الفئة</th>
+                                    <th>الإجمالي الكلي</th>
+                                    <th class="no-print">إجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productionTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 7: MODELS STATEMENT -->
             <div class="tab-pane fade" id="models-section" role="tabpanel">
                 <div class="card p-4 no-print mb-4">
-                    <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-shirt me-2"></i>إضافة موديل تصنيع جديد</h5>
+                    <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-layer-group me-2"></i>إضافة موديل تصنيع جديد</h5>
                     <form id="modelForm" onsubmit="addModel(event)">
                         <div class="row g-3">
                             <div class="col-md-2">
                                 <label class="form-label fw-bold">كود السيستم</label>
-                                <input type="text" id="modelAutoCode" class="form-control bg-dark text-warning fw-bold" readonly placeholder="تلقائي">
+                                <input type="text" id="modelAutoCode" class="form-control bg-dark text-warning fw-bold" readonly>
                             </div>
                             <div class="col-md-2">
                                 <label class="form-label fw-bold">رقم / اسم الموديل</label>
@@ -594,39 +946,15 @@
                                 <input type="text" id="modelFabric" class="form-control" placeholder="مثال: جينز ليكرا" required>
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label fw-bold">الألوان المتاحة للموديل</label>
-                                <div class="border rounded p-2 bg-dark" style="max-height: 100px; overflow-y: auto;">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input model-color-check" type="checkbox" value="أسود" id="colorBlack">
-                                        <label class="form-check-label" for="colorBlack">أسود</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input model-color-check" type="checkbox" value="كحلي" id="colorNavy">
-                                        <label class="form-check-label" for="colorNavy">كحلي</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input model-color-check" type="checkbox" value="أبيض" id="colorWhite">
-                                        <label class="form-check-label" for="colorWhite">أبيض</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input model-color-check" type="checkbox" value="تلجي" id="colorIce">
-                                        <label class="form-check-label" for="colorIce">تلجي</label>
-                                    </div>
-                                    <div class="mt-1">
-                                        <input type="text" id="modelOtherColors" class="form-control form-control-sm" placeholder="ألوان أخرى (فواصل بـ ,)">
-                                    </div>
-                                </div>
+                                <label class="form-label fw-bold">الألوان المتاحة</label>
+                                <input type="text" id="modelOtherColors" class="form-control" placeholder="أسود، كحلي، أبيض...">
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label fw-bold">كمية استهلاك القماش (للقطعة)</label>
-                                <div class="input-group">
-                                    <input type="number" step="0.01" id="modelFabricConsumption" class="form-control" placeholder="مثال: 1.25" required>
-                                    <span class="input-group-text bg-dark text-warning border-secondary">متر</span>
-                                </div>
+                                <label class="form-label fw-bold">استهلاك القماش (للقطعة)</label>
+                                <input type="number" step="0.01" id="modelFabricConsumption" class="form-control" placeholder="مثال: 1.25 متر" required>
                             </div>
-
                             <div class="col-md-2">
-                                <label class="form-label fw-bold">تكلفة القطعة (تقديري)</label>
+                                <label class="form-label fw-bold">تكلفة القطعة</label>
                                 <input type="number" step="0.01" id="modelCost" class="form-control" placeholder="0.00" required>
                             </div>
                             <div class="col-md-2">
@@ -637,31 +965,27 @@
                                 <label class="form-label fw-bold">صورة الموديل</label>
                                 <input type="file" id="modelImageInput" class="form-control" accept="image/*" onchange="previewModelImage(event)">
                             </div>
-                            <div class="col-md-4 d-flex align-items-end justify-content-end">
-                                <button type="submit" class="btn btn-gold px-4 w-100"><i class="fa-solid fa-plus me-1"></i> حفظ الموديل</button>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button type="submit" class="btn btn-gold w-100"><i class="fa-solid fa-plus me-1"></i> حفظ الموديل</button>
                             </div>
                         </div>
                     </form>
                 </div>
 
-                <!-- Models Table -->
                 <div class="card p-3">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="fw-bold mb-0 gold-text"><i class="fa-solid fa-layer-group me-2"></i>دفتر دليل الموديلات</h5>
-                    </div>
                     <div class="table-responsive">
                         <table class="table table-dark-custom table-hover table-bordered text-center align-middle">
                             <thead>
                                 <tr>
                                     <th>صورة</th>
-                                    <th>كود السيستم</th>
-                                    <th>رقم الموديل</th>
-                                    <th>نوع القماش</th>
-                                    <th>الألوان المتاحة</th>
-                                    <th>استهلاك القطعة</th>
-                                    <th>تكلفة القطعة</th>
-                                    <th>سعر البيع</th>
-                                    <th>هامش الربح</th>
+                                    <th>كود</th>
+                                    <th>الموديل</th>
+                                    <th>القماش</th>
+                                    <th>الألوان</th>
+                                    <th>الاستهلاك</th>
+                                    <th>التكلفة</th>
+                                    <th>السعر</th>
+                                    <th>الربح</th>
                                     <th class="no-print">إجراء</th>
                                 </tr>
                             </thead>
@@ -671,7 +995,7 @@
                 </div>
             </div>
 
-            <!-- SECTION 4: INVENTORY -->
+            <!-- SECTION 8: INVENTORY -->
             <div class="tab-pane fade" id="inventory-section" role="tabpanel">
                 <div class="card p-4 no-print mb-4">
                     <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-boxes-stacked me-2"></i>تسجيل مخزون موديل</h5>
@@ -686,7 +1010,7 @@
                                 <input type="text" id="invFabric" class="form-control" placeholder="مثال: جينز ليكرا" required>
                             </div>
                             <div class="col-md-2">
-                                <label class="form-label fw-bold">تم التصنيع (عدد أساسي)</label>
+                                <label class="form-label fw-bold">تم التصنيع</label>
                                 <input type="number" id="invTotalQty" class="form-control fw-bold text-warning" value="0" required oninput="calcRemainingInventory()">
                             </div>
                             <div class="col-md-2">
@@ -694,41 +1018,37 @@
                                 <input type="number" id="invOutQty" class="form-control fw-bold text-danger" value="0" required oninput="calcRemainingInventory()">
                             </div>
                             <div class="col-md-2">
-                                <label class="form-label fw-bold">المتبقي حالياً</label>
+                                <label class="form-label fw-bold">المتبقي</label>
                                 <input type="number" id="invRemainingQty" class="form-control bg-dark fw-bold text-success fs-5" readonly value="0">
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label fw-bold">سعر البيع للقطعة (ج.م)</label>
+                                <label class="form-label fw-bold">سعر البيع</label>
                                 <input type="number" step="0.01" id="invPrice" class="form-control" placeholder="0.00" required>
                             </div>
                             <div class="col-md-5">
                                 <label class="form-label fw-bold">صورة الموديل</label>
                                 <input type="file" id="invImageInput" class="form-control" accept="image/*" onchange="previewInventoryImage(event)">
                             </div>
-                            <div class="col-md-4 d-flex align-items-end justify-content-end">
-                                <button type="submit" class="btn btn-gold px-4 w-100"><i class="fa-solid fa-box-archive me-1"></i> حفظ في المخزون</button>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button type="submit" class="btn btn-gold w-100"><i class="fa-solid fa-box-archive me-1"></i> حفظ في المخزون</button>
                             </div>
                         </div>
                     </form>
                 </div>
 
-                <!-- Inventory Table -->
                 <div class="card p-3">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="fw-bold mb-0 gold-text"><i class="fa-solid fa-warehouse me-2"></i>جدول حركة وتقارير المخزون</h5>
-                    </div>
                     <div class="table-responsive">
                         <table class="table table-dark-custom table-hover table-bordered text-center align-middle">
                             <thead>
                                 <tr>
-                                    <th>صورة الموديل</th>
-                                    <th>رقم الموديل</th>
+                                    <th>صورة</th>
+                                    <th>الموديل</th>
                                     <th>الخامة</th>
-                                    <th>تم التصنيع (عدد أساسي)</th>
+                                    <th>تم التصنيع</th>
                                     <th>خرج لعملاء</th>
-                                    <th>المتبقي بالمخزون</th>
-                                    <th>سعر البيع</th>
-                                    <th>إجمالي قيمة المتبقي</th>
+                                    <th>المتبقي</th>
+                                    <th>السعر</th>
+                                    <th>إجمالي القيمة</th>
                                     <th class="no-print">إجراء</th>
                                 </tr>
                             </thead>
@@ -741,12 +1061,35 @@
         </div>
     </div>
 
-    <!-- Image Modal Preview -->
+    <!-- Modals -->
     <div class="modal fade" id="imagePreviewModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content bg-dark border-warning shadow-lg rounded-4">
                 <div class="modal-body text-center p-3">
-                    <img id="modalPreviewImg" src="" class="img-fluid rounded-3" alt="صورة الموديل">
+                    <img id="modalPreviewImg" src="" class="img-fluid rounded-3" alt="صورة">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Payment For Factory -->
+    <div class="modal fade" id="factoryPaymentModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white border-warning rounded-4">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title fw-bold gold-text">إضافة دفعة مالية للمصنع</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <input type="hidden" id="modalMfgId">
+                    <p class="mb-2">المصنع: <strong id="modalMfgFactoryName" class="text-warning"></strong></p>
+                    <p class="mb-3">المتبقي الحالي: <strong id="modalMfgCurrentBalance" class="text-danger"></strong> ج.م</p>
+                    <label class="form-label fw-bold">قيمة الدفعة الجديدة (ج.م)</label>
+                    <input type="number" step="0.5" id="modalNewPaymentAmount" class="form-control form-control-lg" placeholder="أدخل المبلغ">
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-gold" onclick="submitFactoryPayment()">خصم وتحديث الرصيد</button>
                 </div>
             </div>
         </div>
@@ -762,7 +1105,7 @@
                 </div>
                 <div class="modal-body p-4">
                     <input type="text" id="newClientName" class="form-control form-control-lg mb-3" placeholder="اسم العميل / المحل" required>
-                    <input type="text" id="newClientPhone" class="form-control form-control-lg" placeholder="رقم الهاتف / الواتساب">
+                    <input type="text" id="newClientPhone" class="form-control form-control-lg" placeholder="رقم الهاتف">
                 </div>
                 <div class="modal-footer border-0">
                     <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
@@ -785,9 +1128,8 @@
                     <input type="text" id="newSupplierPhone" class="form-control form-control-lg mb-3" placeholder="رقم الهاتف">
                     <select id="newSupplierCategory" class="form-select form-select-lg">
                         <option value="أقمشة">أقمشة</option>
-                        <option value="مستلزمات واكسسوارات">مستلزمات واكسسوارات (أزرار/سوست...)</option>
-                        <option value="مغاسل وتجهيز">مغاسل وتجهيز</option>
-                        <option value="عام">مورد عام</option>
+                        <option value="مستلزمات">مستلزمات وأكسسوارات</option>
+                        <option value="مغاسل">مغاسل وتجهيز</option>
                     </select>
                 </div>
                 <div class="modal-footer border-0">
@@ -803,9 +1145,14 @@
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzPBpVjjhJpCATuqCHZtK_Hq14YsZZXWdQYj_9v8pS9sX0hsP2pD5N1sykB89Vybov/exec";
-        const LOCAL_STORAGE_KEY = "TREND_MAN_APP_DATA_CACHE";
+        const LOCAL_STORAGE_KEY = "TREND_MAN_APP_DATA_CACHE_V2";
 
-        let appData = { clients: [], transactions: [], suppliers: [], supplierTransactions: [], models: [], inventory: [] };
+        let appData = {
+            clients: [], transactions: [],
+            suppliers: [], supplierTransactions: [],
+            factoryAccounts: [], ironing: [], workers: [],
+            production: [], models: [], inventory: []
+        };
         let currentClientId = null;
         let currentSupplierId = null;
         let tempBase64Image = "";
@@ -814,7 +1161,11 @@
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('txDate').valueAsDate = new Date();
             document.getElementById('supTxDate').valueAsDate = new Date();
-            
+            document.getElementById('mfgDateOut').valueAsDate = new Date();
+            document.getElementById('ironDate').valueAsDate = new Date();
+            document.getElementById('workerDate').valueAsDate = new Date();
+            document.getElementById('prodCutDate').valueAsDate = new Date();
+
             window.addEventListener('online', updateNetworkStatus);
             window.addEventListener('offline', updateNetworkStatus);
 
@@ -830,8 +1181,7 @@
 
         function showNotification(msg) {
             document.getElementById('toastMessage').textContent = msg;
-            const toastEl = document.getElementById('liveToast');
-            const toast = new bootstrap.Toast(toastEl);
+            const toast = new bootstrap.Toast(document.getElementById('liveToast'));
             toast.show();
         }
 
@@ -844,7 +1194,7 @@
         function saveCacheData() {
             try {
                 localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(appData));
-            } catch (e) { console.error("Cache Save Error", e); }
+            } catch (e) { console.error("Cache Error", e); }
         }
 
         function loadCacheData() {
@@ -863,20 +1213,17 @@
 
             renderClientOptions();
             loadClientData();
-
             renderSupplierOptions();
             loadSupplierData();
-
+            loadManufacturingData();
+            loadIroningData();
+            loadWorkersData();
+            loadProductionData();
             generateNextAutoCode();
             loadModelsData();
-
             loadInventoryData();
             renderInventoryModelDropdown();
-        }
-
-        function generateNextAutoCode() {
-            const count = (appData.models ? appData.models.length : 0) + 1;
-            document.getElementById('modelAutoCode').value = "M" + String(count).padStart(3, '0');
+            renderModelDatalist();
         }
 
         async function fetchDataFromGoogleSheets() {
@@ -914,13 +1261,12 @@
                 showNotification("تم المزامنة بنجاح مع السحابة!");
             } catch (e) {
                 console.error("Sync Error", e);
-                showNotification("فشل الاتصال السحابي، تم الحفظ محلياً");
             } finally {
                 showLoading(false);
             }
         }
 
-        /* ==================== CLIENTS MANAGEMENT ==================== */
+        /* --- CLIENTS --- */
         function renderClientOptions() {
             const select = document.getElementById('clientSelect');
             select.innerHTML = "";
@@ -941,16 +1287,13 @@
             const name = document.getElementById('newClientName').value.trim();
             const phone = document.getElementById('newClientPhone').value.trim();
             if (!name) { alert("أدخل اسم العميل"); return; }
-
             const newClient = { id: 'C_' + Date.now(), name, phone };
             if (!appData.clients) appData.clients = [];
             appData.clients.push(newClient);
             currentClientId = newClient.id;
-
             sendDataToGoogleSheets({ action: "saveClient", data: newClient });
             renderClientOptions();
             loadClientData();
-
             document.getElementById('newClientName').value = "";
             document.getElementById('newClientPhone').value = "";
             bootstrap.Modal.getInstance(document.getElementById('addClientModal')).hide();
@@ -958,158 +1301,73 @@
         }
 
         function clearCurrentClientAccount() {
-            if (!currentClientId) {
-                showNotification("الرجاء اختيار العميل أولاً!");
-                return;
-            }
-
-            const client = appData.clients.find(c => c.id == currentClientId);
-            const clientName = client ? client.name : "العميل";
-
-            const password = prompt(`أدخل كلمة المرور لتأكيد تصفير حساب العميل "${clientName}":`);
-            if (password === null) return;
-
-            if (password !== "123") {
-                alert("كلمة المرور غير صحيحة! تم إلغاء عملية التصفير.");
-                return;
-            }
-
-            if (!confirm(`تحذير: سيتم حذف جميع حركات وفواتير العميل "${clientName}" ليصبح رصيده صفراً. هل أنت متأكد؟`)) {
-                return;
-            }
-
+            if (!currentClientId) return;
+            if (prompt("أدخل كلمة المرور (123) لتأكيد التصفير:") !== "123") { alert("كلمة المرور غير صحيحة"); return; }
             appData.transactions = appData.transactions.filter(t => t.clientId != currentClientId);
-
             sendDataToGoogleSheets({ action: "clearClientTransactions", clientId: currentClientId, remainingTransactions: appData.transactions });
-            
             loadClientData();
-            showNotification("تم تصفير حساب العميل بنجاح!");
+            showNotification("تم تصفير الحساب بنجاح!");
         }
 
         function deleteCurrentClientAccount() {
-            if (!currentClientId) {
-                showNotification("الرجاء اختيار العميل المراد حذفه أولاً!");
-                return;
-            }
-
-            const client = appData.clients.find(c => c.id == currentClientId);
-            const clientName = client ? client.name : "العميل";
-
-            const password = prompt(`أدخل كلمة المرور لتأكيد حذف حساب العميل "${clientName}" بالكامل:`);
-            if (password === null) return;
-
-            if (password !== "123") {
-                alert("كلمة المرور غير صحيحة! تم إلغاء عملية الحذف.");
-                return;
-            }
-
-            if (!confirm(`تحذير: سيتم حذف حساب العميل "${clientName}" وجميع حركاته وفواتيره نهائياً. هل أنت متأكد؟`)) {
-                return;
-            }
-
+            if (!currentClientId) return;
+            if (prompt("أدخل كلمة المرور (123) لتأكيد الحذف:") !== "123") { alert("كلمة المرور غير صحيحة"); return; }
             appData.transactions = appData.transactions.filter(t => t.clientId != currentClientId);
             appData.clients = appData.clients.filter(c => c.id != currentClientId);
-
             currentClientId = appData.clients.length > 0 ? appData.clients[0].id : null;
-
             sendDataToGoogleSheets({ action: "deleteClientAccount", clientId: currentClientId, remainingClients: appData.clients, remainingTransactions: appData.transactions });
-            
             renderClientOptions();
             loadClientData();
-            showNotification("تم حذف حساب العميل بنجاح!");
+            showNotification("تم حذف العميل!");
         }
 
         function loadClientData() {
             const select = document.getElementById('clientSelect');
             if (select.value) currentClientId = select.value;
-
             const client = appData.clients ? appData.clients.find(c => c.id == currentClientId) : null;
             document.getElementById('clientNameDisplay').textContent = client ? client.name : "اختر عميل";
-
             const tbody = document.getElementById('ledgerTableBody');
             tbody.innerHTML = "";
-
-            const dailyContainer = document.getElementById('dailyBoxesContainer');
-            dailyContainer.innerHTML = "";
-
-            if (!currentClientId) {
-                document.getElementById('totalAmount').textContent = "0.00 ج.م";
-                document.getElementById('totalPaid').textContent = "0.00 ج.م";
-                document.getElementById('finalBalance').textContent = "0.00 ج.م";
-                tbody.innerHTML = '<tr><td colspan="11" class="text-secondary py-4">لا يوجد عملاء متاحين</td></tr>';
-                dailyContainer.innerHTML = '<div class="text-secondary small">لا توجد بيانات</div>';
-                return;
-            }
-
-            const fromDate = document.getElementById('clientFromDate').value;
-            const toDate = document.getElementById('clientToDate').value;
+            if (!currentClientId) return;
 
             let txs = appData.transactions ? appData.transactions.filter(t => t.clientId == currentClientId) : [];
+            const fromDate = document.getElementById('clientFromDate').value;
+            const toDate = document.getElementById('clientToDate').value;
             if (fromDate) txs = txs.filter(t => t.date >= fromDate);
             if (toDate) txs = txs.filter(t => t.date <= toDate);
+            txs.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-            let totalAmt = 0;
-            let totalPd = 0;
-            let runningBalance = 0;
-            let dailyMap = {};
-
+            let totalAmt = 0, totalPd = 0, runningBal = 0;
             if (txs.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="11" class="text-secondary py-4">لا توجد حركات مسجلة لهذا العميل في الفترة المحددة</td></tr>';
-                dailyContainer.innerHTML = '<div class="text-secondary small">لا توجد أيام مسجلة للفترة الحالية</div>';
+                tbody.innerHTML = '<tr><td colspan="11" class="text-secondary py-3">لا توجد حركات مسجلة</td></tr>';
             } else {
-                txs.forEach((t, index) => {
-                    const total = parseFloat(t.total) || 0;
-                    const paid = parseFloat(t.paid) || 0;
-                    const net = total - paid;
-                    runningBalance += net;
-
-                    totalAmt += total;
-                    totalPd += paid;
-
-                    // تجميع الإجماليات حسب التاريخ للمربعات اليومية
-                    let dStr = String(t.date || '').slice(0, 10);
-                    if (!dailyMap[dStr]) dailyMap[dStr] = 0;
-                    dailyMap[dStr] += total;
+                txs.forEach((t, i) => {
+                    const tot = parseFloat(t.total) || 0;
+                    const pd = parseFloat(t.paid) || 0;
+                    runningBal += (tot - pd);
+                    totalAmt += tot;
+                    totalPd += pd;
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td>${dStr}</td>
+                        <td>${i + 1}</td>
+                        <td>${String(t.date || '').slice(0, 10)}</td>
                         <td><span class="badge bg-secondary">${t.modelNumber || '-'}</span></td>
                         <td class="fw-bold">${t.description}</td>
                         <td>${t.quantity}</td>
                         <td>${t.price} ج.م</td>
-                        <td class="fw-bold text-warning">${total} ج.م</td>
-                        <td class="text-success fw-bold">${paid} ج.م</td>
+                        <td class="fw-bold text-warning">${tot.toFixed(2)} ج.م</td>
+                        <td class="text-success fw-bold">${pd.toFixed(2)} ج.م</td>
                         <td><span class="badge bg-dark border border-secondary">${t.paymentMethod}</span></td>
-                        <td class="fw-bold ${runningBalance > 0 ? 'text-danger' : 'text-success'}">${runningBalance.toFixed(2)} ج.م</td>
-                        <td class="no-print">
-                            <button class="btn btn-outline-danger btn-sm rounded-3" onclick="deleteTransaction('${t.id}')">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </td>
+                        <td class="fw-bold ${runningBal > 0 ? 'text-danger' : 'text-success'}">${runningBal.toFixed(2)} ج.م</td>
+                        <td class="no-print"><button class="btn btn-outline-danger btn-sm" onclick="deleteTransaction('${t.id}')"><i class="fa-solid fa-trash"></i></button></td>
                     `;
                     tbody.appendChild(tr);
                 });
-
-                // تعبئة مربعات الأيام وإجمالي الفواتير
-                const sortedDates = Object.keys(dailyMap).sort();
-                sortedDates.forEach(d => {
-                    const col = document.createElement('div');
-                    col.className = 'col-md-3 col-sm-6';
-                    col.innerHTML = `
-                        <div class="card p-3 border-warning text-center" style="background: rgba(19, 27, 46, 0.9);">
-                            <div class="text-warning small fw-bold mb-1"><i class="fa-regular fa-calendar me-1"></i> ${d}</div>
-                            <div class="fs-5 fw-bold gold-text">${dailyMap[d].toFixed(2)} ج.م</div>
-                        </div>
-                    `;
-                    dailyContainer.appendChild(col);
-                });
             }
-
             document.getElementById('totalAmount').textContent = totalAmt.toFixed(2) + " ج.م";
             document.getElementById('totalPaid').textContent = totalPd.toFixed(2) + " ج.م";
-            document.getElementById('finalBalance').textContent = runningBalance.toFixed(2) + " ج.م";
+            document.getElementById('finalBalance').textContent = runningBal.toFixed(2) + " ج.م";
         }
 
         function resetClientFilter() {
@@ -1120,186 +1378,91 @@
 
         function addTransaction(e) {
             e.preventDefault();
-            if (!currentClientId) { alert("اختر عميل أولاً"); return; }
-
-            const type = document.getElementById('txType').value;
-            const date = String(document.getElementById('txDate').value);
-            const modelNumber = document.getElementById('txModelSelect').value;
-            const description = document.getElementById('txDescription').value.trim();
-            const quantity = parseFloat(document.getElementById('txQuantity').value) || 0;
-            const price = parseFloat(document.getElementById('txPrice').value) || 0;
-            const total = parseFloat(document.getElementById('txTotal').value) || 0;
-            const paid = parseFloat(document.getElementById('txPaid').value) || 0;
-            const paymentMethod = document.getElementById('txPaymentMethod').value;
-
+            if (!currentClientId) return;
             const tx = {
                 id: 'TX_' + Date.now(),
                 clientId: currentClientId,
-                type, date, modelNumber, description, quantity, price, total, paid, paymentMethod
+                type: document.getElementById('txType').value,
+                date: document.getElementById('txDate').value,
+                modelNumber: document.getElementById('txModelSelect').value,
+                description: document.getElementById('txDescription').value.trim(),
+                quantity: parseFloat(document.getElementById('txQuantity').value) || 0,
+                price: parseFloat(document.getElementById('txPrice').value) || 0,
+                total: parseFloat(document.getElementById('txTotal').value) || 0,
+                paid: parseFloat(document.getElementById('txPaid').value) || 0,
+                paymentMethod: document.getElementById('txPaymentMethod').value
             };
-
             if (!appData.transactions) appData.transactions = [];
             appData.transactions.push(tx);
 
-            if (modelNumber && appData.inventory) {
-                const inv = appData.inventory.find(i => i.modelNumber == modelNumber);
+            if (tx.modelNumber && appData.inventory) {
+                const inv = appData.inventory.find(i => i.modelNumber == tx.modelNumber);
                 if (inv) {
-                    if (type === 'بيع') inv.outQty = (parseFloat(inv.outQty) || 0) + quantity;
-                    else if (type === 'مرتجع') inv.outQty = Math.max(0, (parseFloat(inv.outQty) || 0) - quantity);
+                    if (tx.type === 'بيع') inv.outQty = (parseFloat(inv.outQty) || 0) + tx.quantity;
                 }
             }
 
             sendDataToGoogleSheets({ action: "saveTransaction", data: tx, inventory: appData.inventory });
             loadClientData();
             loadInventoryData();
-
             document.getElementById('transactionForm').reset();
             document.getElementById('txDate').valueAsDate = new Date();
-            showNotification("تم تسجيل الحركة بنجاح!");
+            showNotification("تم الحفظ بنجاح!");
         }
 
         function deleteTransaction(txId) {
-            if (!confirm("هل أنت متأكد من حذف هذه الحركة؟")) return;
+            if (!confirm("حذف هذه الحركة؟")) return;
             appData.transactions = appData.transactions.filter(t => t.id != txId);
             sendDataToGoogleSheets({ action: "deleteTransaction", id: txId });
             loadClientData();
-            showNotification("تم حذف الحركة بنجاح!");
+            showNotification("تم الحذف!");
         }
 
-        /* ==================== CLIENT EXCEL EXPORT & IMPORT ==================== */
         function exportClientExcel() {
             const client = appData.clients.find(c => c.id == currentClientId);
-            const clientName = client ? client.name : "عميل";
-            
-            const fromDate = document.getElementById('clientFromDate').value;
-            const toDate = document.getElementById('clientToDate').value;
-            
-            let txs = appData.transactions.filter(t => t.clientId == currentClientId);
-            if (fromDate) txs = txs.filter(t => t.date >= fromDate);
-            if (toDate) txs = txs.filter(t => t.date <= toDate);
-
-            if (txs.length === 0) {
-                showNotification("لا توجد حركات لتصديرها!");
-                return;
-            }
-
-            let runningBalance = 0;
-            const dataToExport = txs.map((t, index) => {
-                const total = parseFloat(t.total) || 0;
-                const paid = parseFloat(t.paid) || 0;
-                const net = total - paid;
-                runningBalance += net;
-
-                return {
-                    "م": index + 1,
-                    "التاريخ": String(t.date || '').slice(0, 10) + " ", // فرض كقيمة نصية لتاريخ نظيف بالإكسل
-                    "نوع الحركة": t.type || 'بيع',
-                    "رقم الموديل": t.modelNumber || '-',
-                    "البيان": t.description,
-                    "العدد": t.quantity,
-                    "السعر": t.price,
-                    "الإجمالي": total,
-                    "المقبوضات": paid,
-                    "طريقة الدفع": t.paymentMethod,
-                    "الرصيد المتبقي": runningBalance
-                };
-            });
-
-            const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "كشف حساب العميل");
-            
-            XLSX.writeFile(workbook, `كشف_حساب_${clientName}_${new Date().toISOString().slice(0,10)}.xlsx`);
-            showNotification("تم تصدير ملف Excel بنجاح!");
+            const txs = appData.transactions.filter(t => t.clientId == currentClientId);
+            if (txs.length === 0) { alert("لا توجد بيانات"); return; }
+            const ws = XLSX.utils.json_to_sheet(txs);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "كشف حساب");
+            XLSX.writeFile(wb, `كشف_حساب_${client ? client.name : 'عميل'}.xlsx`);
         }
 
         async function importClientExcel(e) {
             const file = e.target.files[0];
-            if (!file) return;
-
-            if (!currentClientId) {
-                showNotification("الرجاء اختيار العميل أولاً!");
-                e.target.value = "";
-                return;
-            }
-
+            if (!file || !currentClientId) return;
             const reader = new FileReader();
             reader.onload = async function(evt) {
-                try {
-                    const data = new Uint8Array(evt.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const firstSheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[firstSheetName];
-                    const json = XLSX.utils.sheet_to_json(worksheet);
-
-                    if (json.length === 0) {
-                        showNotification("الملف فارغ أو غير صالح!");
-                        return;
-                    }
-
-                    let importedTxs = [];
-                    json.forEach(row => {
-                        let rawDate = row["التاريخ"] || row["Date"] || new Date().toISOString().slice(0,10);
-                        let dateStr = String(rawDate).trim().slice(0, 10);
-
-                        const type = row["نوع الحركة"] || row["Type"] || "بيع";
-                        const modelNumber = row["رقم الموديل"] || row["Model"] || "";
-                        const description = row["البيان"] || row["Description"] || "استيراد Excel";
-                        const quantity = parseFloat(row["العدد"] || row["Quantity"] || 1);
-                        const price = parseFloat(row["السعر"] || row["Price"] || 0);
-                        const total = quantity * price;
-                        const paid = parseFloat(row["المقبوضات"] || row["Paid"] || 0);
-                        const paymentMethod = row["طريقة الدفع"] || row["PaymentMethod"] || "نقدي";
-
-                        const newTx = {
-                            id: 'TX_' + Date.now() + '_' + Math.floor(Math.random()*1000),
-                            clientId: currentClientId,
-                            type: type,
-                            date: dateStr,
-                            modelNumber: modelNumber,
-                            description: description,
-                            quantity: quantity,
-                            price: price,
-                            total: total,
-                            paid: paid,
-                            paymentMethod: paymentMethod
-                        };
-
-                        appData.transactions.push(newTx);
-                        importedTxs.push(newTx);
+                const data = new Uint8Array(evt.target.result);
+                const wb = XLSX.read(data, { type: 'array' });
+                const json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+                json.forEach(row => {
+                    appData.transactions.push({
+                        id: 'TX_' + Date.now() + Math.random(),
+                        clientId: currentClientId,
+                        date: row["التاريخ"] || new Date().toISOString().slice(0,10),
+                        modelNumber: row["رقم الموديل"] || "",
+                        description: row["البيان"] || "استيراد",
+                        quantity: parseFloat(row["العدد"]) || 1,
+                        price: parseFloat(row["السعر"]) || 0,
+                        total: (parseFloat(row["العدد"]) || 1) * (parseFloat(row["السعر"]) || 0),
+                        paid: parseFloat(row["المقبوضات"]) || 0,
+                        paymentMethod: "نقدي"
                     });
-
-                    saveCacheData();
-                    loadClientData();
-
-                    showLoading(true);
-                    for (let tx of importedTxs) {
-                        await fetch(SCRIPT_URL, {
-                            method: "POST",
-                            mode: "no-cors",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ action: "saveTransaction", data: tx, inventory: appData.inventory })
-                        });
-                    }
-                    showLoading(false);
-
-                    showNotification(`تم استيراد ومزامنة ${importedTxs.length} حركة بنجاح سحابياً!`);
-                } catch (err) {
-                    showLoading(false);
-                    console.error(err);
-                    showNotification("حدث خطأ أثناء قراءة أو مزامنة ملف Excel!");
-                }
-                e.target.value = "";
+                });
+                saveCacheData();
+                loadClientData();
+                showNotification("تم الاستيراد بنجاح!");
             };
             reader.readAsArrayBuffer(file);
         }
 
-        /* ==================== SUPPLIERS MANAGEMENT ==================== */
+        /* --- SUPPLIERS --- */
         function renderSupplierOptions() {
             const select = document.getElementById('supplierSelect');
             select.innerHTML = "";
             if (!appData.suppliers || appData.suppliers.length === 0) {
-                select.innerHTML = '<option value="">لا توجد موردين مسجلين</option>';
+                select.innerHTML = '<option value="">لا توجد موردين</option>';
                 return;
             }
             appData.suppliers.forEach(s => {
@@ -1313,425 +1476,606 @@
 
         function createNewSupplier() {
             const name = document.getElementById('newSupplierName').value.trim();
-            const phone = document.getElementById('newSupplierPhone').value.trim();
-            const category = document.getElementById('newSupplierCategory').value;
-            if (!name) { alert("أدخل اسم المورد"); return; }
-
-            const newSupplier = { id: 'S_' + Date.now(), name, phone, category };
+            if (!name) return;
+            const newSup = { id: 'S_' + Date.now(), name, phone: document.getElementById('newSupplierPhone').value.trim(), category: document.getElementById('newSupplierCategory').value };
             if (!appData.suppliers) appData.suppliers = [];
-            appData.suppliers.push(newSupplier);
-            currentSupplierId = newSupplier.id;
-
-            sendDataToGoogleSheets({ action: "saveSupplier", data: newSupplier });
+            appData.suppliers.push(newSup);
+            currentSupplierId = newSup.id;
+            sendDataToGoogleSheets({ action: "saveSupplier", data: newSup });
             renderSupplierOptions();
             loadSupplierData();
-
-            document.getElementById('newSupplierName').value = "";
-            document.getElementById('newSupplierPhone').value = "";
             bootstrap.Modal.getInstance(document.getElementById('addSupplierModal')).hide();
-            showNotification("تم إضافة المورد بنجاح!");
+            showNotification("تم إضافة المورد!");
         }
 
         function loadSupplierData() {
             const select = document.getElementById('supplierSelect');
             if (select.value) currentSupplierId = select.value;
-
-            const supplier = appData.suppliers ? appData.suppliers.find(s => s.id == currentSupplierId) : null;
-            document.getElementById('supplierNameDisplay').textContent = supplier ? supplier.name : "اختر مورد";
-
+            const sup = appData.suppliers ? appData.suppliers.find(s => s.id == currentSupplierId) : null;
+            document.getElementById('supplierNameDisplay').textContent = sup ? sup.name : "اختر مورد";
             const tbody = document.getElementById('supLedgerTableBody');
             tbody.innerHTML = "";
-
             if (!currentSupplierId) return;
 
-            const fromDate = document.getElementById('supFromDate').value;
-            const toDate = document.getElementById('supToDate').value;
-
             let txs = appData.supplierTransactions ? appData.supplierTransactions.filter(t => t.supplierId == currentSupplierId) : [];
-            if (fromDate) txs = txs.filter(t => t.date >= fromDate);
-            if (toDate) txs = txs.filter(t => t.date <= toDate);
+            txs.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-            let totalAmt = 0;
-            let totalPd = 0;
-            let runningBalance = 0;
-
+            let totalAmt = 0, totalPd = 0, runningBal = 0;
             if (txs.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" class="text-secondary py-4">لا توجد حركات مسجلة لهذا المورد في الفترة المحددة</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" class="text-secondary py-3">لا توجد حركات</td></tr>';
             } else {
-                txs.forEach((t, index) => {
-                    const total = parseFloat(t.total) || 0;
-                    const paid = parseFloat(t.paid) || 0;
-                    const net = total - paid;
-                    runningBalance += net;
-
-                    totalAmt += total;
-                    totalPd += paid;
-
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td>${String(t.date || '').slice(0, 10)}</td>
-                        <td class="fw-bold">${t.description}</td>
-                        <td>${t.quantity}</td>
-                        <td>${t.price} ج.م</td>
-                        <td class="fw-bold text-warning">${total} ج.م</td>
-                        <td class="text-success fw-bold">${paid} ج.م</td>
-                        <td><span class="badge bg-dark border border-secondary">${t.paymentMethod}</span></td>
-                        <td class="fw-bold ${runningBalance > 0 ? 'text-danger' : 'text-success'}">${runningBalance.toFixed(2)} ج.م</td>
-                        <td class="no-print">
-                            <button class="btn btn-outline-danger btn-sm rounded-3" onclick="deleteSupplierTransaction('${t.id}')">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </td>
+                txs.forEach((t, i) => {
+                    const tot = parseFloat(t.total) || 0;
+                    const pd = parseFloat(t.paid) || 0;
+                    runningBal += (tot - pd);
+                    totalAmt += tot;
+                    totalPd += pd;
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>${String(t.date || '').slice(0, 10)}</td>
+                            <td class="fw-bold">${t.description}</td>
+                            <td>${t.quantity}</td>
+                            <td>${t.price} ج.م</td>
+                            <td class="fw-bold text-warning">${tot.toFixed(2)} ج.م</td>
+                            <td class="text-success fw-bold">${pd.toFixed(2)} ج.م</td>
+                            <td><span class="badge bg-dark border border-secondary">${t.paymentMethod}</span></td>
+                            <td class="fw-bold ${runningBal > 0 ? 'text-danger' : 'text-success'}">${runningBal.toFixed(2)} ج.م</td>
+                            <td class="no-print"><button class="btn btn-outline-danger btn-sm" onclick="deleteSupplierTx('${t.id}')"><i class="fa-solid fa-trash"></i></button></td>
+                        </tr>
                     `;
-                    tbody.appendChild(tr);
                 });
             }
-
             document.getElementById('supTotalAmount').textContent = totalAmt.toFixed(2) + " ج.م";
             document.getElementById('supTotalPaid').textContent = totalPd.toFixed(2) + " ج.م";
-            document.getElementById('supFinalBalance').textContent = runningBalance.toFixed(2) + " ج.م";
+            document.getElementById('supFinalBalance').textContent = runningBal.toFixed(2) + " ج.م";
         }
 
-        function resetSupplierFilter() {
-            document.getElementById('supFromDate').value = "";
-            document.getElementById('supToDate').value = "";
-            loadSupplierData();
-        }
+        function resetSupplierFilter() { loadSupplierData(); }
 
         function addSupplierTransaction(e) {
             e.preventDefault();
-            if (!currentSupplierId) { alert("اختر مورد أولاً"); return; }
-
-            const date = String(document.getElementById('supTxDate').value);
-            const description = document.getElementById('supTxDescription').value.trim();
-            const quantity = parseFloat(document.getElementById('supTxQuantity').value) || 0;
-            const price = parseFloat(document.getElementById('supTxPrice').value) || 0;
-            const total = parseFloat(document.getElementById('supTxTotal').value) || 0;
-            const paid = parseFloat(document.getElementById('supTxPaid').value) || 0;
-            const paymentMethod = document.getElementById('supTxPaymentMethod').value;
-
+            if (!currentSupplierId) return;
             const tx = {
                 id: 'STX_' + Date.now(),
                 supplierId: currentSupplierId,
-                date, description, quantity, price, total, paid, paymentMethod
+                date: document.getElementById('supTxDate').value,
+                description: document.getElementById('supTxDescription').value.trim(),
+                quantity: parseFloat(document.getElementById('supTxQuantity').value) || 0,
+                price: parseFloat(document.getElementById('supTxPrice').value) || 0,
+                total: parseFloat(document.getElementById('supTxTotal').value) || 0,
+                paid: parseFloat(document.getElementById('supTxPaid').value) || 0,
+                paymentMethod: document.getElementById('supTxPaymentMethod').value
             };
-
             if (!appData.supplierTransactions) appData.supplierTransactions = [];
             appData.supplierTransactions.push(tx);
-
             sendDataToGoogleSheets({ action: "saveSupplierTransaction", data: tx });
             loadSupplierData();
-
             document.getElementById('supTransactionForm').reset();
             document.getElementById('supTxDate').valueAsDate = new Date();
-            showNotification("تم تسجيل حركة المورد بنجاح!");
+            showNotification("تم الحفظ بنجاح!");
         }
 
-        function deleteSupplierTransaction(txId) {
-            if (!confirm("هل أنت متأكد من حذف هذه الحركة؟")) return;
-            appData.supplierTransactions = appData.supplierTransactions.filter(t => t.id != txId);
-            sendDataToGoogleSheets({ action: "deleteSupplierTransaction", id: txId });
+        function deleteSupplierTx(id) {
+            appData.supplierTransactions = appData.supplierTransactions.filter(t => t.id != id);
+            sendDataToGoogleSheets({ action: "deleteSupplierTransaction", id });
             loadSupplierData();
-            showNotification("تم حذف الحركة بنجاح!");
+            showNotification("تم الحذف!");
         }
 
-        /* ==================== SUPPLIER EXCEL EXPORT & IMPORT ==================== */
         function exportSupplierExcel() {
-            const supplier = appData.suppliers.find(s => s.id == currentSupplierId);
-            const supplierName = supplier ? supplier.name : "مورد";
-            
-            const fromDate = document.getElementById('supFromDate').value;
-            const toDate = document.getElementById('supToDate').value;
-            
-            let txs = appData.supplierTransactions.filter(t => t.supplierId == currentSupplierId);
-            if (fromDate) txs = txs.filter(t => t.date >= fromDate);
-            if (toDate) txs = txs.filter(t => t.date <= toDate);
+            const txs = appData.supplierTransactions.filter(t => t.supplierId == currentSupplierId);
+            if (txs.length === 0) { alert("لا توجد بيانات"); return; }
+            const ws = XLSX.utils.json_to_sheet(txs);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "كشف حساب مورد");
+            XLSX.writeFile(wb, "كشف_حساب_مورد.xlsx");
+        }
 
-            if (txs.length === 0) {
-                showNotification("لا توجد حركات لتصديرها!");
+        /* --- MODULE 1: FACTORIES & MANUFACTURING (حسابات التصنيع والورش) --- */
+        function calcMfgForm() {
+            const b = parseFloat(document.getElementById('mfgBlack').value) || 0;
+            const n = parseFloat(document.getElementById('mfgNavy').value) || 0;
+            const o = parseFloat(document.getElementById('mfgOther').value) || 0;
+            const totQty = b + n + o;
+            const price = parseFloat(document.getElementById('mfgUnitPrice').value) || 0;
+            const paid = parseFloat(document.getElementById('mfgPaid').value) || 0;
+            const totCost = totQty * price;
+            const bal = totCost - paid;
+
+            document.getElementById('mfgTotalQty').value = totQty;
+            document.getElementById('mfgTotalCost').value = totCost.toFixed(2);
+            document.getElementById('mfgBalance').value = bal.toFixed(2);
+        }
+
+        function addManufacturingOrder(e) {
+            e.preventDefault();
+            const record = {
+                id: 'MFG_' + Date.now(),
+                factoryName: document.getElementById('mfgFactoryName').value.trim(),
+                modelNo: document.getElementById('mfgModelNo').value.trim(),
+                dateOut: document.getElementById('mfgDateOut').value,
+                dateIn: document.getElementById('mfgDateIn').value || 'قيد التصنيع',
+                black: parseInt(document.getElementById('mfgBlack').value) || 0,
+                navy: parseInt(document.getElementById('mfgNavy').value) || 0,
+                other: parseInt(document.getElementById('mfgOther').value) || 0,
+                totalQty: parseInt(document.getElementById('mfgTotalQty').value) || 0,
+                unitPrice: parseFloat(document.getElementById('mfgUnitPrice').value) || 0,
+                totalCost: parseFloat(document.getElementById('mfgTotalCost').value) || 0,
+                paid: parseFloat(document.getElementById('mfgPaid').value) || 0,
+                balance: parseFloat(document.getElementById('mfgBalance').value) || 0
+            };
+
+            if (!appData.factoryAccounts) appData.factoryAccounts = [];
+            appData.factoryAccounts.unshift(record);
+            sendDataToGoogleSheets({ action: "saveFactoryAccount", data: record });
+            loadManufacturingData();
+            document.getElementById('mfgForm').reset();
+            document.getElementById('mfgDateOut').valueAsDate = new Date();
+            calcMfgForm();
+            showNotification("تم تسجيل أمر التصنيع الخارجي بنجاح!");
+        }
+
+        function loadManufacturingData() {
+            const tbody = document.getElementById('factoriesTableBody');
+            tbody.innerHTML = "";
+            if (!appData.factoryAccounts || appData.factoryAccounts.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="14" class="text-secondary py-3">لا توجد حركات مصانع مسجلة</td></tr>';
+                document.getElementById('mfgTotalQtyStat').textContent = "0 قطعة";
+                document.getElementById('mfgTotalCostStat').textContent = "0.00 ج.م";
+                document.getElementById('mfgTotalPaidStat').textContent = "0.00 ج.م";
+                document.getElementById('mfgTotalBalanceStat').textContent = "0.00 ج.م";
                 return;
             }
 
-            let runningBalance = 0;
-            const dataToExport = txs.map((t, index) => {
-                const total = parseFloat(t.total) || 0;
-                const paid = parseFloat(t.paid) || 0;
-                const net = total - paid;
-                runningBalance += net;
+            let sumQty = 0, sumCost = 0, sumPaid = 0, sumBal = 0;
+            appData.factoryAccounts.forEach((f, idx) => {
+                const bal = f.totalCost - f.paid;
+                sumQty += f.totalQty;
+                sumCost += f.totalCost;
+                sumPaid += f.paid;
+                sumBal += bal;
 
-                return {
-                    "م": index + 1,
-                    "التاريخ": String(t.date || '').slice(0, 10) + " ",
-                    "البيان": t.description,
-                    "الكمية/الأمتار": t.quantity,
-                    "السعر": t.price,
-                    "الإجمالي": total,
-                    "المسدد له": paid,
-                    "طريقة السداد": t.paymentMethod,
-                    "المتبقي للمورد": runningBalance
-                };
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${idx + 1}</td>
+                        <td class="fw-bold">${f.factoryName}</td>
+                        <td><span class="badge bg-warning text-dark fw-bold">${f.modelNo}</span></td>
+                        <td>${f.dateOut}</td>
+                        <td>${f.dateIn}</td>
+                        <td>${f.black}</td>
+                        <td>${f.navy}</td>
+                        <td>${f.other}</td>
+                        <td class="fw-bold text-warning">${f.totalQty}</td>
+                        <td>${f.unitPrice} ج.م</td>
+                        <td class="fw-bold">${f.totalCost.toFixed(2)} ج.م</td>
+                        <td class="text-success fw-bold">${f.paid.toFixed(2)} ج.م</td>
+                        <td class="text-danger fw-bold">${bal.toFixed(2)} ج.م</td>
+                        <td class="no-print">
+                            <button class="btn btn-outline-success btn-sm me-1" onclick="openFactoryPaymentModal('${f.id}')" title="إضافة دفعة"><i class="fa-solid fa-money-bill-wave"></i></button>
+                            <button class="btn btn-outline-danger btn-sm" onclick="deleteFactoryRecord('${f.id}')"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
             });
 
-            const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "كشف حساب المورد");
-            
-            XLSX.writeFile(workbook, `كشف_حساب_مورد_${supplierName}_${new Date().toISOString().slice(0,10)}.xlsx`);
-            showNotification("تم تصدير ملف Excel بنجاح!");
+            document.getElementById('mfgTotalQtyStat').textContent = sumQty + " قطعة";
+            document.getElementById('mfgTotalCostStat').textContent = sumCost.toFixed(2) + " ج.م";
+            document.getElementById('mfgTotalPaidStat').textContent = sumPaid.toFixed(2) + " ج.م";
+            document.getElementById('mfgTotalBalanceStat').textContent = sumBal.toFixed(2) + " ج.م";
         }
 
-        async function importSupplierExcel(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+        function openFactoryPaymentModal(id) {
+            const item = appData.factoryAccounts.find(x => x.id == id);
+            if (!item) return;
+            document.getElementById('modalMfgId').value = id;
+            document.getElementById('modalMfgFactoryName').textContent = item.factoryName + " (موديل: " + item.modelNo + ")";
+            document.getElementById('modalMfgCurrentBalance').textContent = (item.totalCost - item.paid).toFixed(2);
+            document.getElementById('modalNewPaymentAmount').value = "";
+            new bootstrap.Modal(document.getElementById('factoryPaymentModal')).show();
+        }
 
-            if (!currentSupplierId) {
-                showNotification("الرجاء اختيار المورد أولاً!");
-                e.target.value = "";
+        function submitFactoryPayment() {
+            const id = document.getElementById('modalMfgId').value;
+            const amt = parseFloat(document.getElementById('modalNewPaymentAmount').value) || 0;
+            if (amt <= 0) return;
+            const item = appData.factoryAccounts.find(x => x.id == id);
+            if (item) {
+                item.paid += amt;
+                saveCacheData();
+                sendDataToGoogleSheets({ action: "updateFactoryPayment", id, paid: item.paid });
+                loadManufacturingData();
+                bootstrap.Modal.getInstance(document.getElementById('factoryPaymentModal')).hide();
+                showNotification("تم خصم الدفعة بنجاح وتحديث الرصيد!");
+            }
+        }
+
+        function deleteFactoryRecord(id) {
+            if (!confirm("حذف هذا السجل؟")) return;
+            appData.factoryAccounts = appData.factoryAccounts.filter(x => x.id != id);
+            sendDataToGoogleSheets({ action: "deleteFactoryAccount", id });
+            loadManufacturingData();
+            showNotification("تم الحذف!");
+        }
+
+        /* --- MODULE 2: IRONING & FINISHING (مرحلة المكواة) --- */
+        function calcIronForm() {
+            const b = parseInt(document.getElementById('ironBlack').value) || 0;
+            const n = parseInt(document.getElementById('ironNavy').value) || 0;
+            const o = parseInt(document.getElementById('ironOther').value) || 0;
+            document.getElementById('ironTotalQty').value = b + n + o;
+        }
+
+        function renderModelDatalist() {
+            const dl = document.getElementById('modelsList');
+            dl.innerHTML = "";
+            let uniqueModels = new Set();
+            if (appData.factoryAccounts) appData.factoryAccounts.forEach(f => uniqueModels.add(f.modelNo));
+            if (appData.models) appData.models.forEach(m => uniqueModels.add(m.number));
+            uniqueModels.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m;
+                dl.appendChild(opt);
+            });
+        }
+
+        function addIroningRecord(e) {
+            e.preventDefault();
+            const record = {
+                id: 'IRON_' + Date.now(),
+                modelNo: document.getElementById('ironModelNo').value.trim(),
+                date: document.getElementById('ironDate').value,
+                black: parseInt(document.getElementById('ironBlack').value) || 0,
+                navy: parseInt(document.getElementById('ironNavy').value) || 0,
+                other: parseInt(document.getElementById('ironOther').value) || 0,
+                totalQty: parseInt(document.getElementById('ironTotalQty').value) || 0,
+                workerName: document.getElementById('ironWorkerName').value.trim() || '-',
+                notes: document.getElementById('ironNotes').value.trim() || 'سليم وجاهز للتغليف'
+            };
+
+            if (!appData.ironing) appData.ironing = [];
+            appData.ironing.unshift(record);
+            sendDataToGoogleSheets({ action: "saveIroning", data: record });
+            loadIroningData();
+            document.getElementById('ironForm').reset();
+            document.getElementById('ironDate').valueAsDate = new Date();
+            calcIronForm();
+            showNotification("تم تسجيل مرحلة المكواة بنجاح!");
+        }
+
+        function loadIroningData() {
+            const tbody = document.getElementById('ironTableBody');
+            tbody.innerHTML = "";
+            renderModelDatalist();
+
+            if (!appData.ironing || appData.ironing.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="11" class="text-secondary py-3">لا توجد سجلات مكواة</td></tr>';
                 return;
             }
 
-            const reader = new FileReader();
-            reader.onload = async function(evt) {
-                try {
-                    const data = new Uint8Array(evt.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const firstSheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[firstSheetName];
-                    const json = XLSX.utils.sheet_to_json(worksheet);
-
-                    if (json.length === 0) {
-                        showNotification("الملف فارغ أو غير صالح!");
-                        return;
-                    }
-
-                    let importedSupTxs = [];
-                    json.forEach(row => {
-                        let rawDate = row["التاريخ"] || row["Date"] || new Date().toISOString().slice(0,10);
-                        let dateStr = String(rawDate).trim().slice(0, 10);
-
-                        const description = row["البيان"] || row["Description"] || "استيراد Excel";
-                        const quantity = parseFloat(row["الكمية/الأمتار"] || row["Quantity"] || 1);
-                        const price = parseFloat(row["السعر"] || row["Price"] || 0);
-                        const total = quantity * price;
-                        const paid = parseFloat(row["المسدد له"] || row["Paid"] || 0);
-                        const paymentMethod = row["طريقة السداد"] || row["PaymentMethod"] || "نقدي";
-
-                        const newTx = {
-                            id: 'STX_' + Date.now() + '_' + Math.floor(Math.random()*1000),
-                            supplierId: currentSupplierId,
-                            date: dateStr,
-                            description: description,
-                            quantity: quantity,
-                            price: price,
-                            total: total,
-                            paid: paid,
-                            paymentMethod: paymentMethod
-                        };
-
-                        appData.supplierTransactions.push(newTx);
-                        importedSupTxs.push(newTx);
-                    });
-
-                    saveCacheData();
-                    loadSupplierData();
-
-                    showLoading(true);
-                    for (let tx of importedSupTxs) {
-                        await fetch(SCRIPT_URL, {
-                            method: "POST",
-                            mode: "no-cors",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ action: "saveSupplierTransaction", data: tx })
-                        });
-                    }
-                    showLoading(false);
-
-                    showNotification(`تم استيراد ومزامنة ${importedSupTxs.length} حركة للمورد بنجاح سحابياً!`);
-                } catch (err) {
-                    showLoading(false);
-                    console.error(err);
-                    showNotification("حدث خطأ أثناء قراءة أو مزامنة ملف Excel للمورد!");
+            appData.ironing.forEach((item, idx) => {
+                let mfgTotal = 0;
+                if (appData.factoryAccounts) {
+                    appData.factoryAccounts.filter(f => f.modelNo == item.modelNo).forEach(f => mfgTotal += f.totalQty);
                 }
-                e.target.value = "";
-            };
-            reader.readAsArrayBuffer(file);
+
+                let matchBadge = '<span class="badge bg-secondary">غير مسجل بالتصنيع</span>';
+                if (mfgTotal > 0) {
+                    const diff = item.totalQty - mfgTotal;
+                    if (diff === 0) matchBadge = '<span class="badge bg-success">مطابق تماماً (' + mfgTotal + ')</span>';
+                    else if (diff < 0) matchBadge = '<span class="badge bg-danger">عجز ' + Math.abs(diff) + ' قطعة (التصنيع: ' + mfgTotal + ')</span>';
+                    else matchBadge = '<span class="badge bg-warning text-dark">زيادة ' + diff + ' قطعة (التصنيع: ' + mfgTotal + ')</span>';
+                }
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${idx + 1}</td>
+                        <td>${item.date}</td>
+                        <td><span class="badge bg-warning text-dark fw-bold">${item.modelNo}</span></td>
+                        <td>${item.black}</td>
+                        <td>${item.navy}</td>
+                        <td>${item.other}</td>
+                        <td class="fw-bold text-warning">${item.totalQty}</td>
+                        <td>${item.workerName}</td>
+                        <td>${matchBadge}</td>
+                        <td>${item.notes}</td>
+                        <td class="no-print"><button class="btn btn-outline-danger btn-sm" onclick="deleteIroningRecord('${item.id}')"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                `;
+            });
         }
 
-        /* ==================== COMMON UTILS ==================== */
-        function calculateTotal(qtyId, priceId, totalId) {
-            const q = parseFloat(document.getElementById(qtyId).value) || 0;
-            const p = parseFloat(document.getElementById(priceId).value) || 0;
-            document.getElementById(totalId).value = (q * p).toFixed(2);
+        function deleteIroningRecord(id) {
+            appData.ironing = appData.ironing.filter(x => x.id != id);
+            sendDataToGoogleSheets({ action: "deleteIroning", id });
+            loadIroningData();
+            showNotification("تم الحذف!");
+        }
+
+        /* --- MODULE 3: WORKERS ATTENDANCE & LOANS (شؤون العمال والسلف) --- */
+        function setNowTime(elementId) {
+            const now = new Date();
+            const timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0');
+            document.getElementById(elementId).value = timeStr;
+        }
+
+        function addWorkerRecord(e) {
+            e.preventDefault();
+            const record = {
+                id: 'W_' + Date.now(),
+                name: document.getElementById('workerName').value.trim(),
+                date: document.getElementById('workerDate').value,
+                timeIn: document.getElementById('workerTimeIn').value || '--:--',
+                timeOut: document.getElementById('workerTimeOut').value || 'لم ينصرف',
+                dailyLoan: parseFloat(document.getElementById('workerDailyLoan').value) || 0,
+                notes: document.getElementById('workerNotes').value.trim() || '-'
+            };
+
+            if (!appData.workers) appData.workers = [];
+            appData.workers.unshift(record);
+            sendDataToGoogleSheets({ action: "saveWorkerRecord", data: record });
+            loadWorkersData();
+            document.getElementById('workerForm').reset();
+            document.getElementById('workerDate').valueAsDate = new Date();
+            showNotification("تم حفظ سجل العامل بنجاح!");
+        }
+
+        function loadWorkersData() {
+            const tbody = document.getElementById('workersTableBody');
+            tbody.innerHTML = "";
+            if (!appData.workers || appData.workers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-secondary py-3">لا توجد سجلات عمال</td></tr>';
+                document.getElementById('workersPresentStat').textContent = "0 عامل";
+                document.getElementById('workersLoansStat').textContent = "0.00 ج.م";
+                return;
+            }
+
+            const today = new Date().toISOString().slice(0, 10);
+            let presentToday = 0;
+            let totalLoans = 0;
+
+            appData.workers.forEach((w, idx) => {
+                if (w.date === today) presentToday++;
+                totalLoans += w.dailyLoan;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${idx + 1}</td>
+                        <td>${w.date}</td>
+                        <td class="fw-bold">${w.name}</td>
+                        <td><span class="badge bg-success">${w.timeIn}</span></td>
+                        <td><span class="badge bg-secondary">${w.timeOut}</span></td>
+                        <td>-</td>
+                        <td class="text-danger fw-bold">${w.dailyLoan > 0 ? w.dailyLoan.toFixed(2) + ' ج.م' : '-'}</td>
+                        <td>${w.notes}</td>
+                        <td class="no-print"><button class="btn btn-outline-danger btn-sm" onclick="deleteWorkerRecord('${w.id}')"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('workersPresentStat').textContent = presentToday + " عامل";
+            document.getElementById('workersLoansStat').textContent = totalLoans.toFixed(2) + " ج.م";
+        }
+
+        function deleteWorkerRecord(id) {
+            appData.workers = appData.workers.filter(x => x.id != id);
+            sendDataToGoogleSheets({ action: "deleteWorkerRecord", id });
+            loadWorkersData();
+            showNotification("تم الحذف!");
+        }
+
+        /* --- PRODUCTION CUTTING & MODELS & INVENTORY --- */
+        function calculateProdTotals() {
+            const b = parseFloat(document.getElementById('prodBlackQty').value) || 0;
+            const n = parseFloat(document.getElementById('prodNavyQty').value) || 0;
+            const o = parseFloat(document.getElementById('prodOtherColorsQty').value) || 0;
+            const tot = b + n + o;
+            document.getElementById('prodTotalQty').value = tot;
+            const price = parseFloat(document.getElementById('prodUnitPrice').value) || 0;
+            document.getElementById('prodTotalPrice').value = (tot * price).toFixed(2);
+        }
+
+        function addProductionOrder(e) {
+            e.preventDefault();
+            const item = {
+                id: 'PROD_' + Date.now(),
+                modelNumber: document.getElementById('prodModelNumber').value.trim(),
+                cutDate: document.getElementById('prodCutDate').value,
+                fabricName: document.getElementById('prodFabricName').value.trim(),
+                blackQty: parseFloat(document.getElementById('prodBlackQty').value) || 0,
+                navyQty: parseFloat(document.getElementById('prodNavyQty').value) || 0,
+                otherColorsName: document.getElementById('prodOtherColorsName').value.trim(),
+                otherColorsQty: parseFloat(document.getElementById('prodOtherColorsQty').value) || 0,
+                totalQty: parseFloat(document.getElementById('prodTotalQty').value) || 0,
+                unitPrice: parseFloat(document.getElementById('prodUnitPrice').value) || 0,
+                totalPrice: parseFloat(document.getElementById('prodTotalPrice').value) || 0
+            };
+
+            if (!appData.production) appData.production = [];
+            appData.production.push(item);
+            sendDataToGoogleSheets({ action: "saveProduction", data: item });
+            loadProductionData();
+            document.getElementById('productionForm').reset();
+            document.getElementById('prodCutDate').valueAsDate = new Date();
+            showNotification("تم حفظ القصة بنجاح!");
+        }
+
+        function loadProductionData() {
+            const tbody = document.getElementById('productionTableBody');
+            tbody.innerHTML = "";
+            if (!appData.production || appData.production.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="11" class="text-secondary py-3">لا توجد قصات مسجلة</td></tr>';
+                return;
+            }
+            appData.production.forEach((p, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${idx + 1}</td>
+                        <td><span class="badge bg-warning text-dark fw-bold">${p.modelNumber}</span></td>
+                        <td>${String(p.cutDate || '').slice(0, 10)}</td>
+                        <td class="fw-bold">${p.fabricName}</td>
+                        <td>${p.blackQty}</td>
+                        <td>${p.navyQty}</td>
+                        <td>${p.otherColorsQty > 0 ? p.otherColorsQty : '-'}</td>
+                        <td class="fw-bold text-warning">${p.totalQty}</td>
+                        <td>${p.unitPrice} ج.م</td>
+                        <td class="text-success fw-bold">${p.totalPrice.toFixed(2)} ج.م</td>
+                        <td class="no-print"><button class="btn btn-outline-danger btn-sm" onclick="deleteProductionItem('${p.id}')"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function deleteProductionItem(id) {
+            appData.production = appData.production.filter(x => x.id != id);
+            sendDataToGoogleSheets({ action: "deleteProduction", id });
+            loadProductionData();
+            showNotification("تم الحذف!");
+        }
+
+        function generateNextAutoCode() {
+            const count = (appData.models ? appData.models.length : 0) + 1;
+            document.getElementById('modelAutoCode').value = "M" + String(count).padStart(3, '0');
         }
 
         function previewModelImage(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) { tempBase64Image = evt.target.result; };
-                reader.readAsDataURL(file);
+            const f = e.target.files[0];
+            if (f) {
+                const r = new FileReader();
+                r.onload = function(evt) { tempBase64Image = evt.target.result; };
+                r.readAsDataURL(f);
             }
-        }
-
-        function previewInventoryImage(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) { tempInvBase64Image = evt.target.result; };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function calcRemainingInventory() {
-            const total = parseFloat(document.getElementById('invTotalQty').value) || 0;
-            const out = parseFloat(document.getElementById('invOutQty').value) || 0;
-            document.getElementById('invRemainingQty').value = Math.max(0, total - out);
         }
 
         function addModel(e) {
             e.preventDefault();
-            const autoCode = document.getElementById('modelAutoCode').value;
-            const number = document.getElementById('modelNumber').value.trim();
-            const fabric = document.getElementById('modelFabric').value.trim();
-            const consumption = parseFloat(document.getElementById('modelFabricConsumption').value) || 0;
-            const cost = parseFloat(document.getElementById('modelCost').value) || 0;
-            const price = parseFloat(document.getElementById('modelPrice').value) || 0;
-
-            let colors = [];
-            document.querySelectorAll('.model-color-check:checked').forEach(cb => colors.push(cb.value));
-            const otherColors = document.getElementById('modelOtherColors').value.trim();
-            if (otherColors) {
-                otherColors.split(',').forEach(c => { if(c.trim()) colors.push(c.trim()); });
-            }
-
-            const modelObj = {
+            const model = {
                 id: 'M_' + Date.now(),
-                autoCode, number, fabric, colors: colors.join(', '), consumption, cost, price,
+                autoCode: document.getElementById('modelAutoCode').value,
+                number: document.getElementById('modelNumber').value.trim(),
+                fabric: document.getElementById('modelFabric').value.trim(),
+                colors: document.getElementById('modelOtherColors').value.trim(),
+                consumption: parseFloat(document.getElementById('modelFabricConsumption').value) || 0,
+                cost: parseFloat(document.getElementById('modelCost').value) || 0,
+                price: parseFloat(document.getElementById('modelPrice').value) || 0,
                 image: tempBase64Image
             };
-
             if (!appData.models) appData.models = [];
-            appData.models.push(modelObj);
-
-            sendDataToGoogleSheets({ action: "saveModel", data: modelObj });
+            appData.models.push(model);
+            sendDataToGoogleSheets({ action: "saveModel", data: model });
             loadModelsData();
             generateNextAutoCode();
-
             document.getElementById('modelForm').reset();
             tempBase64Image = "";
-            showNotification("تم حفظ الموديل بنجاح!");
+            showNotification("تم حفظ الموديل!");
         }
 
         function loadModelsData() {
             const tbody = document.getElementById('modelsTableBody');
             tbody.innerHTML = "";
             if (!appData.models || appData.models.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" class="text-secondary py-4">لا توجد موديلات مسجلة</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" class="text-secondary py-3">لا توجد موديلات</td></tr>';
                 return;
             }
-
-            appData.models.forEach((m, idx) => {
-                const profit = m.price - m.cost;
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><img src="${m.image || 'https://via.placeholder.com/50'}" class="model-img-thumb" onclick="showImageModal('${m.image || ''}')"></td>
-                    <td><span class="badge bg-warning text-dark fw-bold">${m.autoCode}</span></td>
-                    <td class="fw-bold">${m.number}</td>
-                    <td>${m.fabric}</td>
-                    <td>${m.colors}</td>
-                    <td>${m.consumption} متر</td>
-                    <td>${m.cost} ج.م</td>
-                    <td class="text-warning fw-bold">${m.price} ج.م</td>
-                    <td class="text-success fw-bold">${profit} ج.م</td>
-                    <td class="no-print">
-                        <button class="btn btn-outline-danger btn-sm rounded-3" onclick="deleteModel('${m.id}')"><i class="fa-solid fa-trash"></i></button>
-                    </td>
+            appData.models.forEach(m => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><img src="${m.image || 'https://via.placeholder.com/50'}" class="model-img-thumb" onclick="showImageModal('${m.image}')"></td>
+                        <td><span class="badge bg-warning text-dark">${m.autoCode}</span></td>
+                        <td class="fw-bold">${m.number}</td>
+                        <td>${m.fabric}</td>
+                        <td>${m.colors}</td>
+                        <td>${m.consumption} م</td>
+                        <td>${m.cost} ج.م</td>
+                        <td class="text-warning fw-bold">${m.price} ج.م</td>
+                        <td class="text-success fw-bold">${(m.price - m.cost).toFixed(2)} ج.م</td>
+                        <td class="no-print"><button class="btn btn-outline-danger btn-sm" onclick="deleteModel('${m.id}')"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
                 `;
-                tbody.appendChild(tr);
             });
         }
 
         function deleteModel(id) {
-            if (!confirm("هل أنت متأكد من حذف الموديل؟")) return;
             appData.models = appData.models.filter(m => m.id != id);
             sendDataToGoogleSheets({ action: "deleteModel", id });
             loadModelsData();
-            showNotification("تم حذف الموديل بنجاح!");
+            showNotification("تم الحذف!");
+        }
+
+        function previewInventoryImage(e) {
+            const f = e.target.files[0];
+            if (f) {
+                const r = new FileReader();
+                r.onload = function(evt) { tempInvBase64Image = evt.target.result; };
+                r.readAsDataURL(f);
+            }
+        }
+
+        function calcRemainingInventory() {
+            const t = parseFloat(document.getElementById('invTotalQty').value) || 0;
+            const o = parseFloat(document.getElementById('invOutQty').value) || 0;
+            document.getElementById('invRemainingQty').value = Math.max(0, t - o);
         }
 
         function addInventoryItem(e) {
             e.preventDefault();
-            const modelNumber = document.getElementById('invModelNumber').value.trim();
-            const fabric = document.getElementById('invFabric').value.trim();
-            const totalQty = parseFloat(document.getElementById('invTotalQty').value) || 0;
-            const outQty = parseFloat(document.getElementById('invOutQty').value) || 0;
-            const price = parseFloat(document.getElementById('invPrice').value) || 0;
-
-            const invObj = {
+            const inv = {
                 id: 'INV_' + Date.now(),
-                modelNumber, fabric, totalQty, outQty, price,
+                modelNumber: document.getElementById('invModelNumber').value.trim(),
+                fabric: document.getElementById('invFabric').value.trim(),
+                totalQty: parseFloat(document.getElementById('invTotalQty').value) || 0,
+                outQty: parseFloat(document.getElementById('invOutQty').value) || 0,
+                price: parseFloat(document.getElementById('invPrice').value) || 0,
                 image: tempInvBase64Image
             };
-
             if (!appData.inventory) appData.inventory = [];
-            appData.inventory.push(invObj);
-
-            sendDataToGoogleSheets({ action: "saveInventory", data: invObj });
+            appData.inventory.push(inv);
+            sendDataToGoogleSheets({ action: "saveInventory", data: inv });
             loadInventoryData();
-
+            renderInventoryModelDropdown();
             document.getElementById('inventoryForm').reset();
             tempInvBase64Image = "";
-            showNotification("تم حفظ المخزون بنجاح!");
+            showNotification("تم الحفظ بالمخزون!");
         }
 
         function loadInventoryData() {
             const tbody = document.getElementById('inventoryTableBody');
             tbody.innerHTML = "";
             if (!appData.inventory || appData.inventory.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="text-secondary py-4">لا توجد بيانات مخزون مسجلة</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" class="text-secondary py-3">لا توجد بيانات مخزون</td></tr>';
                 return;
             }
-
             appData.inventory.forEach(i => {
-                const remaining = Math.max(0, (parseFloat(i.totalQty) || 0) - (parseFloat(i.outQty) || 0));
-                const totalValue = remaining * (parseFloat(i.price) || 0);
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><img src="${i.image || 'https://via.placeholder.com/50'}" class="model-img-thumb" onclick="showImageModal('${i.image || ''}')"></td>
-                    <td class="fw-bold">${i.modelNumber}</td>
-                    <td>${i.fabric}</td>
-                    <td class="text-warning fw-bold">${i.totalQty}</td>
-                    <td class="text-danger fw-bold">${i.outQty}</td>
-                    <td class="text-success fw-bold fs-5">${remaining}</td>
-                    <td>${i.price} ج.م</td>
-                    <td class="text-warning fw-bold">${totalValue.toFixed(2)} ج.م</td>
-                    <td class="no-print">
-                        <button class="btn btn-outline-danger btn-sm rounded-3" onclick="deleteInventory('${i.id}')"><i class="fa-solid fa-trash"></i></button>
-                    </td>
+                const rem = Math.max(0, i.totalQty - i.outQty);
+                tbody.innerHTML += `
+                    <tr>
+                        <td><img src="${i.image || 'https://via.placeholder.com/50'}" class="model-img-thumb" onclick="showImageModal('${i.image}')"></td>
+                        <td class="fw-bold">${i.modelNumber}</td>
+                        <td>${i.fabric}</td>
+                        <td class="text-warning fw-bold">${i.totalQty}</td>
+                        <td class="text-danger fw-bold">${i.outQty}</td>
+                        <td class="text-success fw-bold fs-5">${rem}</td>
+                        <td>${i.price} ج.م</td>
+                        <td class="text-warning fw-bold">${(rem * i.price).toFixed(2)} ج.م</td>
+                        <td class="no-print"><button class="btn btn-outline-danger btn-sm" onclick="deleteInventory('${i.id}')"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
                 `;
-                tbody.appendChild(tr);
             });
         }
 
         function deleteInventory(id) {
-            if (!confirm("هل أنت متأكد من حذف هذا الصنف من المخزون؟")) return;
             appData.inventory = appData.inventory.filter(i => i.id != id);
             sendDataToGoogleSheets({ action: "deleteInventory", id });
             loadInventoryData();
-            showNotification("تم حذف الصنف بنجاح!");
+            showNotification("تم الحذف!");
         }
 
         function renderInventoryModelDropdown() {
             const select = document.getElementById('txModelSelect');
             select.innerHTML = '<option value="">بدون خصم مخزون</option>';
-            if (appData.inventory && appData.inventory.length > 0) {
+            if (appData.inventory) {
                 appData.inventory.forEach(i => {
-                    const opt = document.createElement('option');
-                    opt.value = i.modelNumber;
-                    opt.textContent = `موديل ${i.modelNumber} (${i.fabric}) - متبقي: ${Math.max(0, i.totalQty - i.outQty)}`;
-                    select.appendChild(opt);
+                    select.innerHTML += `<option value="${i.modelNumber}">موديل ${i.modelNumber} (${i.fabric}) - متبقي: ${Math.max(0, i.totalQty - i.outQty)}</option>`;
                 });
             }
         }

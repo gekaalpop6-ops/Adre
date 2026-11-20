@@ -1,8 +1,3 @@
-
-
-
-رمز HTML
-trend_man_system-v2
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -229,7 +224,7 @@ trend_man_system-v2
 
     <!-- App Header -->
     <header class="app-header no-print">
-        <div class="container d-flex justify-content-between align-items-center">
+        <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div class="d-flex align-items-center gap-3">
                 <div class="brand-logo-container">
                     <svg class="brand-logo" viewBox="0 0 450 160" xmlns="http://www.w3.org/2000/svg">
@@ -242,11 +237,11 @@ trend_man_system-v2
                 </div>
             </div>
             <div class="d-flex align-items-center gap-2">
-                <button class="btn btn-outline-info btn-sm px-3 rounded-3 fw-bold" onclick="fetchDataFromGoogleSheets()" title="تحديث البيانات من السحابة">
-                    <i class="fa-solid fa-arrows-rotate me-1"></i> تحديث
-                </button>
                 <span id="roleBadge" class="badge bg-warning text-dark px-3 py-2 fw-bold">مدير النظام</span>
                 <span id="offlineBadge" class="offline-status-badge"><i class="fa-solid fa-wifi-slash me-1"></i> أوفلاين</span>
+                <button class="btn btn-outline-info btn-sm px-3 rounded-3" onclick="fetchDataFromGoogleSheets()" title="سحب البيانات من الشيت">
+                    <i class="fa-solid fa-rotate me-1"></i> مزامنة
+                </button>
                 <button class="btn btn-outline-warning btn-sm px-3 rounded-3" onclick="window.print()">
                     <i class="fa-solid fa-print me-1"></i> طباعة
                 </button>
@@ -581,7 +576,7 @@ trend_man_system-v2
                 </div>
             </div>
 
-            <!-- SECTION 3: FACTORIES & MANUFACTURING ACCOUNTS (حسابات التصنيع والورش) -->
+            <!-- SECTION 3: FACTORIES & MANUFACTURING ACCOUNTS -->
             <div class="tab-pane fade" id="factories-section" role="tabpanel">
                 <div class="row mb-3">
                     <div class="col-md-3">
@@ -699,7 +694,7 @@ trend_man_system-v2
                 </div>
             </div>
 
-            <!-- SECTION 4: IRONING & FINISHING (مرحلة المكواة) -->
+            <!-- SECTION 4: IRONING & FINISHING -->
             <div class="tab-pane fade" id="ironing-section" role="tabpanel">
                 <div class="card p-4 no-print mb-4">
                     <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-shirt me-2"></i>تسجيل استلام وتشطيب المكواة</h5>
@@ -772,7 +767,7 @@ trend_man_system-v2
                 </div>
             </div>
 
-            <!-- SECTION 5: WORKERS ATTENDANCE & LOANS (شؤون العمال والسلف) -->
+            <!-- SECTION 5: WORKERS ATTENDANCE & LOANS -->
             <div class="tab-pane fade" id="workers-section" role="tabpanel">
                 <div class="row mb-3">
                     <div class="col-md-6">
@@ -855,7 +850,7 @@ trend_man_system-v2
                 </div>
             </div>
 
-            <!-- SECTION 6: PRODUCTION CUTTING (قصات القماش) -->
+            <!-- SECTION 6: PRODUCTION CUTTING -->
             <div class="tab-pane fade" id="production-section" role="tabpanel">
                 <div class="card p-4 no-print mb-4">
                     <h5 class="card-title mb-3 gold-text"><i class="fa-solid fa-scissors me-2"></i>تسجيل أمر قص وتصنيع قماش</h5>
@@ -902,7 +897,7 @@ trend_man_system-v2
                                 <input type="number" id="prodTotalPrice" class="form-control bg-dark text-warning fw-bold" readonly value="0.00">
                             </div>
                             <div class="col-md-8 d-flex align-items-end justify-content-end">
-                                <button type="submit" class="btn btn-gold px-4"><i class="fa-solid fa-plus me-1"></i> حفظ القصة</button>
+                                <button type="submit" class="btn btn-gold px-4"><i class="fa-solid fa-plus me-1"></i> حفظ وإضافة القصة للمخزون</button>
                             </div>
                         </div>
                     </form>
@@ -1152,7 +1147,7 @@ trend_man_system-v2
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz2zQO-NY0REzFGiCOKumVCZhsjC5NYTvAt4KgLciCX19g_AJhfdc22vS2V2N3tfjc1/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw69tF1QeS7G_MWN49ltUbZsmbaiyX5p6dCSbK1v1R8_gkj58Pq_RhZ-z7fLz7ycCF9/exec";
         const LOCAL_STORAGE_KEY = "TREND_MAN_APP_DATA_CACHE_V3";
 
         let appData = {
@@ -1199,42 +1194,6 @@ trend_man_system-v2
             else badge.style.display = 'none';
         }
 
-        function normalizeDateStr(val) {
-            if (!val) return "";
-            if (typeof val === 'number') {
-                const utc_days = Math.floor(val - 25569);
-                const d = new Date(utc_days * 86400 * 1000);
-                return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
-            }
-            return String(val).trim().slice(0, 10);
-        }
-
-        function compressImageFile(file, maxWidth = 500, quality = 0.65) {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        const scale = Math.min(1, maxWidth / img.width);
-                        const canvas = document.createElement('canvas');
-                        canvas.width = img.width * scale;
-                        canvas.height = img.height * scale;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        resolve(canvas.toDataURL('image/jpeg', quality));
-                    };
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-
-        function calculateTotal(qtyId, priceId, totalId) {
-            const q = parseFloat(document.getElementById(qtyId).value) || 0;
-            const p = parseFloat(document.getElementById(priceId).value) || 0;
-            document.getElementById(totalId).value = (q * p).toFixed(2);
-        }
-
         function saveCacheData() {
             try {
                 localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(appData));
@@ -1245,13 +1204,7 @@ trend_man_system-v2
             try {
                 const cached = localStorage.getItem(LOCAL_STORAGE_KEY);
                 if (cached) {
-                    const parsed = JSON.parse(cached);
-                    appData = Object.assign({
-                        clients: [], transactions: [],
-                        suppliers: [], supplierTransactions: [],
-                        factoryAccounts: [], ironing: [], workers: [],
-                        production: [], models: [], inventory: []
-                    }, parsed);
+                    appData = JSON.parse(cached);
                     renderAllDataUI();
                 }
             } catch (e) { console.error("Cache Read Error", e); }
@@ -1280,9 +1233,9 @@ trend_man_system-v2
             if (!navigator.onLine) return;
             try {
                 showLoading(true);
-                const res = await fetch(SCRIPT_URL + "?action=getData&t=" + Date.now());
+                const res = await fetch(SCRIPT_URL + "?action=getData");
                 const json = await res.json();
-                if (json && json.status === "success" && json.data) {
+                if (json && json.status === "success") {
                     appData = Object.assign({
                         clients: [], transactions: [],
                         suppliers: [], supplierTransactions: [],
@@ -1311,13 +1264,12 @@ trend_man_system-v2
                 await fetch(SCRIPT_URL, {
                     method: "POST",
                     mode: "no-cors",
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 });
                 showNotification("تمت المزامنة بنجاح مع Google Sheets!");
             } catch (e) {
                 console.error("Sync Error", e);
-                showNotification("تعذر الاتصال بالسحابة، تم الحفظ محلياً");
             } finally {
                 showLoading(false);
             }
@@ -1335,7 +1287,7 @@ trend_man_system-v2
                 const opt = document.createElement('option');
                 opt.value = c.id;
                 opt.textContent = `${c.name} (${c.phone || 'بدون هاتف'})`;
-                if (String(c.id) === String(currentClientId)) opt.selected = true;
+                if (c.id == currentClientId) opt.selected = true;
                 select.appendChild(opt);
             });
         }
@@ -1345,6 +1297,7 @@ trend_man_system-v2
             const phone = document.getElementById('newClientPhone').value.trim();
             if (!name) { alert("أدخل اسم العميل"); return; }
             const newClient = { id: 'C_' + Date.now(), name, phone };
+            if (!appData.clients) appData.clients = [];
             appData.clients.push(newClient);
             currentClientId = newClient.id;
             sendDataToGoogleSheets({ action: "saveClient", data: newClient });
@@ -1353,42 +1306,45 @@ trend_man_system-v2
             document.getElementById('newClientName').value = "";
             document.getElementById('newClientPhone').value = "";
             bootstrap.Modal.getInstance(document.getElementById('addClientModal')).hide();
+            showNotification("تم إضافة العميل بنجاح!");
         }
 
         function clearCurrentClientAccount() {
             if (!currentClientId) return;
             if (prompt("أدخل كلمة المرور (123) لتأكيد التصفير:") !== "123") { alert("كلمة المرور غير صحيحة"); return; }
-            appData.transactions = appData.transactions.filter(t => String(t.clientId) !== String(currentClientId));
+            appData.transactions = appData.transactions.filter(t => t.clientId != currentClientId);
             sendDataToGoogleSheets({ action: "clearClientTransactions", clientId: currentClientId, remainingTransactions: appData.transactions });
             loadClientData();
+            showNotification("تم تصفير الحساب بنجاح!");
         }
 
         function deleteCurrentClientAccount() {
             if (!currentClientId) return;
             if (prompt("أدخل كلمة المرور (123) لتأكيد الحذف:") !== "123") { alert("كلمة المرور غير صحيحة"); return; }
-            appData.transactions = appData.transactions.filter(t => String(t.clientId) !== String(currentClientId));
-            appData.clients = appData.clients.filter(c => String(c.id) !== String(currentClientId));
+            appData.transactions = appData.transactions.filter(t => t.clientId != currentClientId);
+            appData.clients = appData.clients.filter(c => c.id != currentClientId);
             currentClientId = appData.clients.length > 0 ? appData.clients[0].id : null;
             sendDataToGoogleSheets({ action: "deleteClientAccount", clientId: currentClientId, remainingClients: appData.clients, remainingTransactions: appData.transactions });
             renderClientOptions();
             loadClientData();
+            showNotification("تم حذف العميل!");
         }
 
         function loadClientData() {
             const select = document.getElementById('clientSelect');
             if (select.value) currentClientId = select.value;
-            const client = appData.clients.find(c => String(c.id) === String(currentClientId));
+            const client = appData.clients ? appData.clients.find(c => c.id == currentClientId) : null;
             document.getElementById('clientNameDisplay').textContent = client ? client.name : "اختر عميل";
             const tbody = document.getElementById('ledgerTableBody');
             tbody.innerHTML = "";
             if (!currentClientId) return;
 
-            let txs = appData.transactions.filter(t => String(t.clientId) === String(currentClientId));
+            let txs = appData.transactions ? appData.transactions.filter(t => t.clientId == currentClientId) : [];
             const fromDate = document.getElementById('clientFromDate').value;
             const toDate = document.getElementById('clientToDate').value;
-            if (fromDate) txs = txs.filter(t => normalizeDateStr(t.date) >= fromDate);
-            if (toDate) txs = txs.filter(t => normalizeDateStr(t.date) <= toDate);
-            txs.sort((a, b) => new Date(normalizeDateStr(a.date)) - new Date(normalizeDateStr(b.date)));
+            if (fromDate) txs = txs.filter(t => t.date >= fromDate);
+            if (toDate) txs = txs.filter(t => t.date <= toDate);
+            txs.sort((a, b) => new Date(a.date) - new Date(b.date));
 
             let totalAmt = 0, totalPd = 0, runningBal = 0;
             if (txs.length === 0) {
@@ -1404,7 +1360,7 @@ trend_man_system-v2
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>${i + 1}</td>
-                        <td>${normalizeDateStr(t.date)}</td>
+                        <td>${String(t.date || '').slice(0, 10)}</td>
                         <td><span class="badge bg-secondary">${t.modelNumber || '-'}</span></td>
                         <td class="fw-bold">${t.description}</td>
                         <td>${t.quantity}</td>
@@ -1445,13 +1401,13 @@ trend_man_system-v2
                 paid: parseFloat(document.getElementById('txPaid').value) || 0,
                 paymentMethod: document.getElementById('txPaymentMethod').value
             };
+            if (!appData.transactions) appData.transactions = [];
             appData.transactions.push(tx);
 
             if (tx.modelNumber && appData.inventory) {
-                const inv = appData.inventory.find(i => String(i.modelNumber) === String(tx.modelNumber));
+                const inv = appData.inventory.find(i => i.modelNumber == tx.modelNumber);
                 if (inv) {
                     if (tx.type === 'بيع') inv.outQty = (parseFloat(inv.outQty) || 0) + tx.quantity;
-                    else if (tx.type === 'مرتجع') inv.outQty = Math.max(0, (parseFloat(inv.outQty) || 0) - tx.quantity);
                 }
             }
 
@@ -1460,18 +1416,20 @@ trend_man_system-v2
             loadInventoryData();
             document.getElementById('transactionForm').reset();
             document.getElementById('txDate').valueAsDate = new Date();
+            showNotification("تم الحفظ بنجاح!");
         }
 
         function deleteTransaction(txId) {
             if (!confirm("حذف هذه الحركة؟")) return;
-            appData.transactions = appData.transactions.filter(t => String(t.id) !== String(txId));
+            appData.transactions = appData.transactions.filter(t => t.id != txId);
             sendDataToGoogleSheets({ action: "deleteTransaction", id: txId });
             loadClientData();
+            showNotification("تم الحذف!");
         }
 
         function exportClientExcel() {
-            const client = appData.clients.find(c => String(c.id) === String(currentClientId));
-            const txs = appData.transactions.filter(t => String(t.clientId) === String(currentClientId));
+            const client = appData.clients.find(c => c.id == currentClientId);
+            const txs = appData.transactions.filter(t => t.clientId == currentClientId);
             if (txs.length === 0) { alert("لا توجد بيانات"); return; }
             const ws = XLSX.utils.json_to_sheet(txs);
             const wb = XLSX.utils.book_new();
@@ -1487,26 +1445,23 @@ trend_man_system-v2
                 const data = new Uint8Array(evt.target.result);
                 const wb = XLSX.read(data, { type: 'array' });
                 const json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
-                for (const row of json) {
-                    const qty = parseFloat(row["العدد"]) || 1;
-                    const prc = parseFloat(row["السعر"]) || 0;
-                    const tx = {
-                        id: 'TX_' + Date.now() + '_' + Math.floor(Math.random() * 10000),
+                json.forEach(row => {
+                    appData.transactions.push({
+                        id: 'TX_' + Date.now() + Math.random(),
                         clientId: currentClientId,
-                        type: row["نوع الحركة"] || "بيع",
-                        date: normalizeDateStr(row["التاريخ"]) || new Date().toISOString().slice(0,10),
+                        date: row["التاريخ"] || new Date().toISOString().slice(0,10),
                         modelNumber: row["رقم الموديل"] || "",
                         description: row["البيان"] || "استيراد",
-                        quantity: qty,
-                        price: prc,
-                        total: qty * prc,
+                        quantity: parseFloat(row["العدد"]) || 1,
+                        price: parseFloat(row["السعر"]) || 0,
+                        total: (parseFloat(row["العدد"]) || 1) * (parseFloat(row["السعر"]) || 0),
                         paid: parseFloat(row["المقبوضات"]) || 0,
-                        paymentMethod: row["طريقة الدفع"] || "نقدي"
-                    };
-                    appData.transactions.push(tx);
-                    await sendDataToGoogleSheets({ action: "saveTransaction", data: tx });
-                }
+                        paymentMethod: "نقدي"
+                    });
+                });
+                saveCacheData();
                 loadClientData();
+                showNotification("تم الاستيراد بنجاح!");
             };
             reader.readAsArrayBuffer(file);
         }
@@ -1523,7 +1478,7 @@ trend_man_system-v2
                 const opt = document.createElement('option');
                 opt.value = s.id;
                 opt.textContent = `${s.name} (${s.category || 'عام'})`;
-                if (String(s.id) === String(currentSupplierId)) opt.selected = true;
+                if (s.id == currentSupplierId) opt.selected = true;
                 select.appendChild(opt);
             });
         }
@@ -1532,29 +1487,27 @@ trend_man_system-v2
             const name = document.getElementById('newSupplierName').value.trim();
             if (!name) return;
             const newSup = { id: 'S_' + Date.now(), name, phone: document.getElementById('newSupplierPhone').value.trim(), category: document.getElementById('newSupplierCategory').value };
+            if (!appData.suppliers) appData.suppliers = [];
             appData.suppliers.push(newSup);
             currentSupplierId = newSup.id;
             sendDataToGoogleSheets({ action: "saveSupplier", data: newSup });
             renderSupplierOptions();
             loadSupplierData();
             bootstrap.Modal.getInstance(document.getElementById('addSupplierModal')).hide();
+            showNotification("تم إضافة المورد!");
         }
 
         function loadSupplierData() {
             const select = document.getElementById('supplierSelect');
             if (select.value) currentSupplierId = select.value;
-            const sup = appData.suppliers.find(s => String(s.id) === String(currentSupplierId));
+            const sup = appData.suppliers ? appData.suppliers.find(s => s.id == currentSupplierId) : null;
             document.getElementById('supplierNameDisplay').textContent = sup ? sup.name : "اختر مورد";
             const tbody = document.getElementById('supLedgerTableBody');
             tbody.innerHTML = "";
             if (!currentSupplierId) return;
 
-            let txs = appData.supplierTransactions.filter(t => String(t.supplierId) === String(currentSupplierId));
-            const fromDate = document.getElementById('supFromDate').value;
-            const toDate = document.getElementById('supToDate').value;
-            if (fromDate) txs = txs.filter(t => normalizeDateStr(t.date) >= fromDate);
-            if (toDate) txs = txs.filter(t => normalizeDateStr(t.date) <= toDate);
-            txs.sort((a, b) => new Date(normalizeDateStr(a.date)) - new Date(normalizeDateStr(b.date)));
+            let txs = appData.supplierTransactions ? appData.supplierTransactions.filter(t => t.supplierId == currentSupplierId) : [];
+            txs.sort((a, b) => new Date(a.date) - new Date(b.date));
 
             let totalAmt = 0, totalPd = 0, runningBal = 0;
             if (txs.length === 0) {
@@ -1569,7 +1522,7 @@ trend_man_system-v2
                     tbody.innerHTML += `
                         <tr>
                             <td>${i + 1}</td>
-                            <td>${normalizeDateStr(t.date)}</td>
+                            <td>${String(t.date || '').slice(0, 10)}</td>
                             <td class="fw-bold">${t.description}</td>
                             <td>${t.quantity}</td>
                             <td>${t.price} ج.م</td>
@@ -1587,11 +1540,7 @@ trend_man_system-v2
             document.getElementById('supFinalBalance').textContent = runningBal.toFixed(2) + " ج.م";
         }
 
-        function resetSupplierFilter() {
-            document.getElementById('supFromDate').value = "";
-            document.getElementById('supToDate').value = "";
-            loadSupplierData();
-        }
+        function resetSupplierFilter() { loadSupplierData(); }
 
         function addSupplierTransaction(e) {
             e.preventDefault();
@@ -1607,21 +1556,24 @@ trend_man_system-v2
                 paid: parseFloat(document.getElementById('supTxPaid').value) || 0,
                 paymentMethod: document.getElementById('supTxPaymentMethod').value
             };
+            if (!appData.supplierTransactions) appData.supplierTransactions = [];
             appData.supplierTransactions.push(tx);
             sendDataToGoogleSheets({ action: "saveSupplierTransaction", data: tx });
             loadSupplierData();
             document.getElementById('supTransactionForm').reset();
             document.getElementById('supTxDate').valueAsDate = new Date();
+            showNotification("تم الحفظ بنجاح!");
         }
 
         function deleteSupplierTx(id) {
-            appData.supplierTransactions = appData.supplierTransactions.filter(t => String(t.id) !== String(id));
+            appData.supplierTransactions = appData.supplierTransactions.filter(t => t.id != id);
             sendDataToGoogleSheets({ action: "deleteSupplierTransaction", id });
             loadSupplierData();
+            showNotification("تم الحذف!");
         }
 
         function exportSupplierExcel() {
-            const txs = appData.supplierTransactions.filter(t => String(t.supplierId) === String(currentSupplierId));
+            const txs = appData.supplierTransactions.filter(t => t.supplierId == currentSupplierId);
             if (txs.length === 0) { alert("لا توجد بيانات"); return; }
             const ws = XLSX.utils.json_to_sheet(txs);
             const wb = XLSX.utils.book_new();
@@ -1629,7 +1581,7 @@ trend_man_system-v2
             XLSX.writeFile(wb, "كشف_حساب_مورد.xlsx");
         }
 
-        /* --- MODULE 1: FACTORIES & MANUFACTURING (حسابات التصنيع والورش) --- */
+        /* --- MODULE 1: FACTORIES & MANUFACTURING --- */
         function calcMfgForm() {
             const b = parseFloat(document.getElementById('mfgBlack').value) || 0;
             const n = parseFloat(document.getElementById('mfgNavy').value) || 0;
@@ -1663,12 +1615,14 @@ trend_man_system-v2
                 balance: parseFloat(document.getElementById('mfgBalance').value) || 0
             };
 
+            if (!appData.factoryAccounts) appData.factoryAccounts = [];
             appData.factoryAccounts.unshift(record);
             sendDataToGoogleSheets({ action: "saveFactoryAccount", data: record });
             loadManufacturingData();
             document.getElementById('mfgForm').reset();
             document.getElementById('mfgDateOut').valueAsDate = new Date();
             calcMfgForm();
+            showNotification("تم تسجيل أمر التصنيع الخارجي بنجاح!");
         }
 
         function loadManufacturingData() {
@@ -1685,7 +1639,7 @@ trend_man_system-v2
 
             let sumQty = 0, sumCost = 0, sumPaid = 0, sumBal = 0;
             appData.factoryAccounts.forEach((f, idx) => {
-                const qty = parseInt(f.totalQty) || 0;
+                const qty = parseFloat(f.totalQty) || 0;
                 const cost = parseFloat(f.totalCost) || 0;
                 const paid = parseFloat(f.paid) || 0;
                 const bal = cost - paid;
@@ -1698,15 +1652,15 @@ trend_man_system-v2
                 tbody.innerHTML += `
                     <tr>
                         <td>${idx + 1}</td>
-                        <td class="fw-bold">${f.factoryName || ''}</td>
-                        <td><span class="badge bg-warning text-dark fw-bold">${f.modelNo || ''}</span></td>
-                        <td>${normalizeDateStr(f.dateOut)}</td>
-                        <td>${f.dateIn && f.dateIn !== 'قيد التصنيع' ? normalizeDateStr(f.dateIn) : (f.dateIn || 'قيد التصنيع')}</td>
-                        <td>${parseInt(f.black) || 0}</td>
-                        <td>${parseInt(f.navy) || 0}</td>
-                        <td>${parseInt(f.other) || 0}</td>
+                        <td class="fw-bold">${f.factoryName}</td>
+                        <td><span class="badge bg-warning text-dark fw-bold">${f.modelNo}</span></td>
+                        <td>${String(f.dateOut || '').slice(0, 10)}</td>
+                        <td>${String(f.dateIn || '').slice(0, 10)}</td>
+                        <td>${f.black}</td>
+                        <td>${f.navy}</td>
+                        <td>${f.other}</td>
                         <td class="fw-bold text-warning">${qty}</td>
-                        <td>${parseFloat(f.unitPrice) || 0} ج.م</td>
+                        <td>${f.unitPrice} ج.م</td>
                         <td class="fw-bold">${cost.toFixed(2)} ج.م</td>
                         <td class="text-success fw-bold">${paid.toFixed(2)} ج.م</td>
                         <td class="text-danger fw-bold">${bal.toFixed(2)} ج.م</td>
@@ -1725,7 +1679,7 @@ trend_man_system-v2
         }
 
         function openFactoryPaymentModal(id) {
-            const item = appData.factoryAccounts.find(x => String(x.id) === String(id));
+            const item = appData.factoryAccounts.find(x => x.id == id);
             if (!item) return;
             const cost = parseFloat(item.totalCost) || 0;
             const paid = parseFloat(item.paid) || 0;
@@ -1740,24 +1694,27 @@ trend_man_system-v2
             const id = document.getElementById('modalMfgId').value;
             const amt = parseFloat(document.getElementById('modalNewPaymentAmount').value) || 0;
             if (amt <= 0) return;
-            const item = appData.factoryAccounts.find(x => String(x.id) === String(id));
+            const item = appData.factoryAccounts.find(x => x.id == id);
             if (item) {
                 item.paid = (parseFloat(item.paid) || 0) + amt;
                 item.balance = (parseFloat(item.totalCost) || 0) - item.paid;
+                saveCacheData();
                 sendDataToGoogleSheets({ action: "updateFactoryPayment", id, paid: item.paid });
                 loadManufacturingData();
                 bootstrap.Modal.getInstance(document.getElementById('factoryPaymentModal')).hide();
+                showNotification("تم خصم الدفعة بنجاح وتحديث الرصيد!");
             }
         }
 
         function deleteFactoryRecord(id) {
             if (!confirm("حذف هذا السجل؟")) return;
-            appData.factoryAccounts = appData.factoryAccounts.filter(x => String(x.id) !== String(id));
+            appData.factoryAccounts = appData.factoryAccounts.filter(x => x.id != id);
             sendDataToGoogleSheets({ action: "deleteFactoryAccount", id });
             loadManufacturingData();
+            showNotification("تم الحذف!");
         }
 
-        /* --- MODULE 2: IRONING & FINISHING (مرحلة المكواة) --- */
+        /* --- MODULE 2: IRONING & FINISHING --- */
         function calcIronForm() {
             const b = parseInt(document.getElementById('ironBlack').value) || 0;
             const n = parseInt(document.getElementById('ironNavy').value) || 0;
@@ -1792,12 +1749,14 @@ trend_man_system-v2
                 notes: document.getElementById('ironNotes').value.trim() || 'سليم وجاهز للتغليف'
             };
 
+            if (!appData.ironing) appData.ironing = [];
             appData.ironing.unshift(record);
             sendDataToGoogleSheets({ action: "saveIroning", data: record });
             loadIroningData();
             document.getElementById('ironForm').reset();
             document.getElementById('ironDate').valueAsDate = new Date();
             calcIronForm();
+            showNotification("تم تسجيل مرحلة المكواة بنجاح!");
         }
 
         function loadIroningData() {
@@ -1813,15 +1772,13 @@ trend_man_system-v2
             appData.ironing.forEach((item, idx) => {
                 let mfgTotal = 0;
                 if (appData.factoryAccounts) {
-                    appData.factoryAccounts
-                        .filter(f => String(f.modelNo) === String(item.modelNo))
-                        .forEach(f => mfgTotal += (parseInt(f.totalQty) || 0));
+                    appData.factoryAccounts.filter(f => String(f.modelNo) === String(item.modelNo)).forEach(f => mfgTotal += (parseFloat(f.totalQty) || 0));
                 }
 
-                const ironTotal = parseInt(item.totalQty) || 0;
+                const ironQty = parseFloat(item.totalQty) || 0;
                 let matchBadge = '<span class="badge bg-secondary">غير مسجل بالتصنيع</span>';
                 if (mfgTotal > 0) {
-                    const diff = ironTotal - mfgTotal;
+                    const diff = ironQty - mfgTotal;
                     if (diff === 0) matchBadge = '<span class="badge bg-success">مطابق تماماً (' + mfgTotal + ')</span>';
                     else if (diff < 0) matchBadge = '<span class="badge bg-danger">عجز ' + Math.abs(diff) + ' قطعة (التصنيع: ' + mfgTotal + ')</span>';
                     else matchBadge = '<span class="badge bg-warning text-dark">زيادة ' + diff + ' قطعة (التصنيع: ' + mfgTotal + ')</span>';
@@ -1830,15 +1787,15 @@ trend_man_system-v2
                 tbody.innerHTML += `
                     <tr>
                         <td>${idx + 1}</td>
-                        <td>${normalizeDateStr(item.date)}</td>
-                        <td><span class="badge bg-warning text-dark fw-bold">${item.modelNo || ''}</span></td>
-                        <td>${parseInt(item.black) || 0}</td>
-                        <td>${parseInt(item.navy) || 0}</td>
-                        <td>${parseInt(item.other) || 0}</td>
-                        <td class="fw-bold text-warning">${ironTotal}</td>
-                        <td>${item.workerName || '-'}</td>
+                        <td>${String(item.date || '').slice(0, 10)}</td>
+                        <td><span class="badge bg-warning text-dark fw-bold">${item.modelNo}</span></td>
+                        <td>${item.black}</td>
+                        <td>${item.navy}</td>
+                        <td>${item.other}</td>
+                        <td class="fw-bold text-warning">${ironQty}</td>
+                        <td>${item.workerName}</td>
                         <td>${matchBadge}</td>
-                        <td>${item.notes || '-'}</td>
+                        <td>${item.notes}</td>
                         <td class="no-print"><button class="btn btn-outline-danger btn-sm" onclick="deleteIroningRecord('${item.id}')"><i class="fa-solid fa-trash"></i></button></td>
                     </tr>
                 `;
@@ -1846,27 +1803,29 @@ trend_man_system-v2
         }
 
         function deleteIroningRecord(id) {
-            appData.ironing = appData.ironing.filter(x => String(x.id) !== String(id));
+            appData.ironing = appData.ironing.filter(x => x.id != id);
             sendDataToGoogleSheets({ action: "deleteIroning", id });
             loadIroningData();
+            showNotification("تم الحذف!");
         }
 
-        /* --- MODULE 3: WORKERS ATTENDANCE & LOANS (شؤون العمال والسلف) --- */
+        /* --- MODULE 3: WORKERS ATTENDANCE & LOANS --- */
         function setNowTime(elementId) {
             const now = new Date();
             const timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0');
             document.getElementById(elementId).value = timeStr;
         }
 
-        function calcWorkHours(timeIn, timeOut) {
-            if (!timeIn || !timeOut || !timeIn.includes(':') || !timeOut.includes(':')) return '-';
-            const [h1, m1] = timeIn.split(':').map(Number);
-            const [h2, m2] = timeOut.split(':').map(Number);
-            let mins = (h2 * 60 + m2) - (h1 * 60 + m1);
+        function calcWorkHoursText(timeIn, timeOut) {
+            if (!timeIn || !timeOut || timeIn === '--:--' || timeOut === 'لم ينصرف') return '-';
+            const p1 = timeIn.split(':');
+            const p2 = timeOut.split(':');
+            if (p1.length < 2 || p2.length < 2) return '-';
+            let mins = (parseInt(p2[0]) * 60 + parseInt(p2[1])) - (parseInt(p1[0]) * 60 + parseInt(p1[1]));
             if (mins < 0) mins += 24 * 60;
-            const hrs = Math.floor(mins / 60);
-            const remMins = mins % 60;
-            return `${hrs} س ${remMins} د`;
+            const h = Math.floor(mins / 60);
+            const m = mins % 60;
+            return `${h} س و ${m} د`;
         }
 
         function addWorkerRecord(e) {
@@ -1881,11 +1840,13 @@ trend_man_system-v2
                 notes: document.getElementById('workerNotes').value.trim() || '-'
             };
 
+            if (!appData.workers) appData.workers = [];
             appData.workers.unshift(record);
             sendDataToGoogleSheets({ action: "saveWorkerRecord", data: record });
             loadWorkersData();
             document.getElementById('workerForm').reset();
             document.getElementById('workerDate').valueAsDate = new Date();
+            showNotification("تم حفظ سجل العامل بنجاح!");
         }
 
         function loadWorkersData() {
@@ -1903,7 +1864,7 @@ trend_man_system-v2
             let totalLoans = 0;
 
             appData.workers.forEach((w, idx) => {
-                const wDate = normalizeDateStr(w.date);
+                const wDate = String(w.date || '').slice(0, 10);
                 const loan = parseFloat(w.dailyLoan) || 0;
                 if (wDate === today) presentToday++;
                 totalLoans += loan;
@@ -1912,12 +1873,12 @@ trend_man_system-v2
                     <tr>
                         <td>${idx + 1}</td>
                         <td>${wDate}</td>
-                        <td class="fw-bold">${w.name || ''}</td>
-                        <td><span class="badge bg-success">${w.timeIn || '--:--'}</span></td>
-                        <td><span class="badge bg-secondary">${w.timeOut || 'لم ينصرف'}</span></td>
-                        <td>${calcWorkHours(w.timeIn, w.timeOut)}</td>
+                        <td class="fw-bold">${w.name}</td>
+                        <td><span class="badge bg-success">${w.timeIn}</span></td>
+                        <td><span class="badge bg-secondary">${w.timeOut}</span></td>
+                        <td>${calcWorkHoursText(w.timeIn, w.timeOut)}</td>
                         <td class="text-danger fw-bold">${loan > 0 ? loan.toFixed(2) + ' ج.م' : '-'}</td>
-                        <td>${w.notes || '-'}</td>
+                        <td>${w.notes}</td>
                         <td class="no-print"><button class="btn btn-outline-danger btn-sm" onclick="deleteWorkerRecord('${w.id}')"><i class="fa-solid fa-trash"></i></button></td>
                     </tr>
                 `;
@@ -1928,9 +1889,10 @@ trend_man_system-v2
         }
 
         function deleteWorkerRecord(id) {
-            appData.workers = appData.workers.filter(x => String(x.id) !== String(id));
+            appData.workers = appData.workers.filter(x => x.id != id);
             sendDataToGoogleSheets({ action: "deleteWorkerRecord", id });
             loadWorkersData();
+            showNotification("تم الحذف!");
         }
 
         /* --- PRODUCTION CUTTING & MODELS & INVENTORY --- */
@@ -1960,11 +1922,13 @@ trend_man_system-v2
                 totalPrice: parseFloat(document.getElementById('prodTotalPrice').value) || 0
             };
 
+            if (!appData.production) appData.production = [];
             appData.production.push(item);
             sendDataToGoogleSheets({ action: "saveProduction", data: item });
             loadProductionData();
             document.getElementById('productionForm').reset();
             document.getElementById('prodCutDate').valueAsDate = new Date();
+            showNotification("تم حفظ القصة بنجاح!");
         }
 
         function loadProductionData() {
@@ -1975,20 +1939,18 @@ trend_man_system-v2
                 return;
             }
             appData.production.forEach((p, idx) => {
-                const otherQty = parseFloat(p.otherColorsQty) || 0;
-                const totPrice = parseFloat(p.totalPrice) || 0;
                 tbody.innerHTML += `
                     <tr>
                         <td>${idx + 1}</td>
-                        <td><span class="badge bg-warning text-dark fw-bold">${p.modelNumber || ''}</span></td>
-                        <td>${normalizeDateStr(p.cutDate)}</td>
-                        <td class="fw-bold">${p.fabricName || ''}</td>
-                        <td>${parseFloat(p.blackQty) || 0}</td>
-                        <td>${parseFloat(p.navyQty) || 0}</td>
-                        <td>${otherQty > 0 ? `${otherQty} (${p.otherColorsName || ''})` : '-'}</td>
-                        <td class="fw-bold text-warning">${parseFloat(p.totalQty) || 0}</td>
-                        <td>${parseFloat(p.unitPrice) || 0} ج.م</td>
-                        <td class="text-success fw-bold">${totPrice.toFixed(2)} ج.م</td>
+                        <td><span class="badge bg-warning text-dark fw-bold">${p.modelNumber}</span></td>
+                        <td>${String(p.cutDate || '').slice(0, 10)}</td>
+                        <td class="fw-bold">${p.fabricName}</td>
+                        <td>${p.blackQty}</td>
+                        <td>${p.navyQty}</td>
+                        <td>${p.otherColorsQty > 0 ? p.otherColorsQty : '-'}</td>
+                        <td class="fw-bold text-warning">${p.totalQty}</td>
+                        <td>${p.unitPrice} ج.م</td>
+                        <td class="text-success fw-bold">${(parseFloat(p.totalPrice)||0).toFixed(2)} ج.م</td>
                         <td class="no-print"><button class="btn btn-outline-danger btn-sm" onclick="deleteProductionItem('${p.id}')"><i class="fa-solid fa-trash"></i></button></td>
                     </tr>
                 `;
@@ -1996,9 +1958,10 @@ trend_man_system-v2
         }
 
         function deleteProductionItem(id) {
-            appData.production = appData.production.filter(x => String(x.id) !== String(id));
+            appData.production = appData.production.filter(x => x.id != id);
             sendDataToGoogleSheets({ action: "deleteProduction", id });
             loadProductionData();
+            showNotification("تم الحذف!");
         }
 
         function generateNextAutoCode() {
@@ -2006,9 +1969,13 @@ trend_man_system-v2
             document.getElementById('modelAutoCode').value = "M" + String(count).padStart(3, '0');
         }
 
-        async function previewModelImage(e) {
+        function previewModelImage(e) {
             const f = e.target.files[0];
-            if (f) tempBase64Image = await compressImageFile(f);
+            if (f) {
+                const r = new FileReader();
+                r.onload = function(evt) { tempBase64Image = evt.target.result; };
+                r.readAsDataURL(f);
+            }
         }
 
         function addModel(e) {
@@ -2024,35 +1991,36 @@ trend_man_system-v2
                 price: parseFloat(document.getElementById('modelPrice').value) || 0,
                 image: tempBase64Image
             };
+            if (!appData.models) appData.models = [];
             appData.models.push(model);
             sendDataToGoogleSheets({ action: "saveModel", data: model });
             loadModelsData();
             generateNextAutoCode();
             document.getElementById('modelForm').reset();
             tempBase64Image = "";
+            showNotification("تم حفظ الموديل!");
         }
 
         function loadModelsData() {
             const tbody = document.getElementById('modelsTableBody');
             tbody.innerHTML = "";
+            renderModelDatalist();
             if (!appData.models || appData.models.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="10" class="text-secondary py-3">لا توجد موديلات</td></tr>';
                 return;
             }
             appData.models.forEach(m => {
-                const cost = parseFloat(m.cost) || 0;
-                const price = parseFloat(m.price) || 0;
                 tbody.innerHTML += `
                     <tr>
-                        <td><img src="${m.image || 'https://via.placeholder.com/50'}" class="model-img-thumb" onclick="showImageModal('${m.image || ''}')"></td>
-                        <td><span class="badge bg-warning text-dark">${m.autoCode || ''}</span></td>
-                        <td class="fw-bold">${m.number || ''}</td>
-                        <td>${m.fabric || ''}</td>
-                        <td>${m.colors || ''}</td>
-                        <td>${m.consumption || 0} م</td>
-                        <td>${cost} ج.م</td>
-                        <td class="text-warning fw-bold">${price} ج.م</td>
-                        <td class="text-success fw-bold">${(price - cost).toFixed(2)} ج.م</td>
+                        <td><img src="${m.image || 'https://via.placeholder.com/50'}" class="model-img-thumb" onclick="showImageModal('${m.image}')"></td>
+                        <td><span class="badge bg-warning text-dark">${m.autoCode}</span></td>
+                        <td class="fw-bold">${m.number}</td>
+                        <td>${m.fabric}</td>
+                        <td>${m.colors}</td>
+                        <td>${m.consumption} م</td>
+                        <td>${m.cost} ج.م</td>
+                        <td class="text-warning fw-bold">${m.price} ج.م</td>
+                        <td class="text-success fw-bold">${(m.price - m.cost).toFixed(2)} ج.م</td>
                         <td class="no-print"><button class="btn btn-outline-danger btn-sm" onclick="deleteModel('${m.id}')"><i class="fa-solid fa-trash"></i></button></td>
                     </tr>
                 `;
@@ -2060,14 +2028,19 @@ trend_man_system-v2
         }
 
         function deleteModel(id) {
-            appData.models = appData.models.filter(m => String(m.id) !== String(id));
+            appData.models = appData.models.filter(m => m.id != id);
             sendDataToGoogleSheets({ action: "deleteModel", id });
             loadModelsData();
+            showNotification("تم الحذف!");
         }
 
-        async function previewInventoryImage(e) {
+        function previewInventoryImage(e) {
             const f = e.target.files[0];
-            if (f) tempInvBase64Image = await compressImageFile(f);
+            if (f) {
+                const r = new FileReader();
+                r.onload = function(evt) { tempInvBase64Image = evt.target.result; };
+                r.readAsDataURL(f);
+            }
         }
 
         function calcRemainingInventory() {
@@ -2087,12 +2060,14 @@ trend_man_system-v2
                 price: parseFloat(document.getElementById('invPrice').value) || 0,
                 image: tempInvBase64Image
             };
+            if (!appData.inventory) appData.inventory = [];
             appData.inventory.push(inv);
             sendDataToGoogleSheets({ action: "saveInventory", data: inv });
             loadInventoryData();
             renderInventoryModelDropdown();
             document.getElementById('inventoryForm').reset();
             tempInvBase64Image = "";
+            showNotification("تم الحفظ بالمخزون!");
         }
 
         function loadInventoryData() {
@@ -2103,20 +2078,17 @@ trend_man_system-v2
                 return;
             }
             appData.inventory.forEach(i => {
-                const totQty = parseFloat(i.totalQty) || 0;
-                const outQty = parseFloat(i.outQty) || 0;
-                const price = parseFloat(i.price) || 0;
-                const rem = Math.max(0, totQty - outQty);
+                const rem = Math.max(0, i.totalQty - i.outQty);
                 tbody.innerHTML += `
                     <tr>
-                        <td><img src="${i.image || 'https://via.placeholder.com/50'}" class="model-img-thumb" onclick="showImageModal('${i.image || ''}')"></td>
-                        <td class="fw-bold">${i.modelNumber || ''}</td>
-                        <td>${i.fabric || ''}</td>
-                        <td class="text-warning fw-bold">${totQty}</td>
-                        <td class="text-danger fw-bold">${outQty}</td>
+                        <td><img src="${i.image || 'https://via.placeholder.com/50'}" class="model-img-thumb" onclick="showImageModal('${i.image}')"></td>
+                        <td class="fw-bold">${i.modelNumber}</td>
+                        <td>${i.fabric}</td>
+                        <td class="text-warning fw-bold">${i.totalQty}</td>
+                        <td class="text-danger fw-bold">${i.outQty}</td>
                         <td class="text-success fw-bold fs-5">${rem}</td>
-                        <td>${price} ج.م</td>
-                        <td class="text-warning fw-bold">${(rem * price).toFixed(2)} ج.م</td>
+                        <td>${i.price} ج.م</td>
+                        <td class="text-warning fw-bold">${(rem * i.price).toFixed(2)} ج.م</td>
                         <td class="no-print"><button class="btn btn-outline-danger btn-sm" onclick="deleteInventory('${i.id}')"><i class="fa-solid fa-trash"></i></button></td>
                     </tr>
                 `;
@@ -2124,9 +2096,10 @@ trend_man_system-v2
         }
 
         function deleteInventory(id) {
-            appData.inventory = appData.inventory.filter(i => String(i.id) !== String(id));
+            appData.inventory = appData.inventory.filter(i => i.id != id);
             sendDataToGoogleSheets({ action: "deleteInventory", id });
             loadInventoryData();
+            showNotification("تم الحذف!");
         }
 
         function renderInventoryModelDropdown() {
@@ -2134,9 +2107,7 @@ trend_man_system-v2
             select.innerHTML = '<option value="">بدون خصم مخزون</option>';
             if (appData.inventory) {
                 appData.inventory.forEach(i => {
-                    const totQty = parseFloat(i.totalQty) || 0;
-                    const outQty = parseFloat(i.outQty) || 0;
-                    select.innerHTML += `<option value="${i.modelNumber}">موديل ${i.modelNumber} (${i.fabric}) - متبقي: ${Math.max(0, totQty - outQty)}</option>`;
+                    select.innerHTML += `<option value="${i.modelNumber}">موديل ${i.modelNumber} (${i.fabric}) - متبقي: ${Math.max(0, i.totalQty - i.outQty)}</option>`;
                 });
             }
         }
@@ -2144,7 +2115,7 @@ trend_man_system-v2
         function onTxModelSelectChange() {
             const val = document.getElementById('txModelSelect').value;
             if (!val || !appData.inventory) return;
-            const inv = appData.inventory.find(i => String(i.modelNumber) === String(val));
+            const inv = appData.inventory.find(i => i.modelNumber == val);
             if (inv) {
                 document.getElementById('txDescription').value = `موديل رقم ${inv.modelNumber} (${inv.fabric})`;
                 document.getElementById('txPrice').value = inv.price || 0;
